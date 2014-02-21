@@ -18,29 +18,44 @@ import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 
 public class MainViewer extends JFrame implements ActionListener{
+	/*************************[ LOGIN LEVEL ]*****************************/
+	private int statLevel = 0;
 	private JTextField idTextField;
 	private JPasswordField passwordField;
 	private JLabel loginInformation;
 	
 	private JButton loginBtn = new JButton("LOGIN");
 	private JButton logoutBtn = new JButton("LOGOUT");
-	
+		
 	private CL_DAO_DB_Mysql dao = new CL_DAO_DB_Mysql(); 
 	private userBean ub;
 	
+	private JPanel loginP;
 	private JPanel jNorth = new JPanel();
 	private JPanel jCenter = new JPanel();
 	
-	private JPanel level1P;
-		private JPanel level1CenterPanel;
-	
-	private JPanel level2P;
-	private JPanel level3P;
-	private JPanel level4P;
+	private JPanel level1CenterPanel;
 	
 	private String idTemp ="";
 	private String pwTemp = "";
 	
+	/*************************[ LEVEL 1 ]*****************************/
+	private JButton inventoryInputBtn = new JButton("[INVENTORY INPUT]");
+	private JButton inventoryFilteringBtn = new JButton("[INVENTORY FILTERING]");
+	private JButton inventoryStatBtn = new JButton("[INVENTORY STAT]");
+	private JPanel level1P;
+	
+	/*************************[ LEVEL 2 ]*****************************/
+	private JButton workVolumeFilteringBtn = new JButton("[WORK VOLUME FILTERING]");
+	private JButton workVolumestat1Btn = new JButton("[WORK VOLUME STAT1]");
+	private JButton workvolumeStat2Btn = new JButton("[WORK VOLUME STAT2]");
+	private JPanel level2P;
+	
+	/*************************[ LEVEL 3 ]*****************************/
+	private JPanel level3P;
+	
+	/*****************************************************************/
+
 	MainViewer(){
 		super("Youngjin Stat & Filtering");
 		super.setVisible(true);
@@ -57,6 +72,24 @@ public class MainViewer extends JFrame implements ActionListener{
 		loginLayout();
 		addActionListner();
 	}
+	public void invisibleButtonControl(int state){
+		System.out.println(state);
+		if(state == 1){
+			inventoryFilteringBtn.setVisible(false);
+			inventoryInputBtn.setVisible(false);
+			inventoryStatBtn.setVisible(false);
+		}
+		else if(state == 2){
+			
+		}
+		else if(state == 3){
+			
+		}
+		else if(state == 4){
+			
+		}
+		validate();
+	}
 	public void init(){
 		loginBtn.setPreferredSize(new Dimension(70,20));
 	}
@@ -66,9 +99,13 @@ public class MainViewer extends JFrame implements ActionListener{
 	}
 	
 	public void loginLayout(){
+		validate();
+		setStateLevel(0);
+		jCenter.removeAll();
 		jNorth.setVisible(true);
-			jNorth.add(logoutBtn);
-			logoutBtn.setVisible(false);
+		jNorth.setLayout(new FlowLayout(FlowLayout.RIGHT));
+		jNorth.add(logoutBtn);
+		logoutBtn.setVisible(false);
 		jNorth.setPreferredSize(new Dimension(0,100));
 		jCenter.setVisible(true);
 		super.add("North",jNorth);
@@ -145,6 +182,7 @@ public class MainViewer extends JFrame implements ActionListener{
 		a.add("West",j[0]);
 		a.add("East",j[1]);
 		a.add("South",j[3]);
+		validate();
 	}
 	public void checkUser(){
 		idTemp = idTextField.getText();
@@ -163,7 +201,7 @@ public class MainViewer extends JFrame implements ActionListener{
 				level3Page();
 			}
 			else if(level == 4){
-				level4Page();
+//				level4Page();
 			}
 		}
 		else{
@@ -172,6 +210,8 @@ public class MainViewer extends JFrame implements ActionListener{
 	}
 	
 	public void logOut(){
+//		invisibleButtonControl(getStateLevel());
+		
 		loginLayout();
 		validate();
 	}
@@ -182,47 +222,79 @@ public class MainViewer extends JFrame implements ActionListener{
 	
 	public void level1PanelLayout(JPanel jp){
 		level1CenterPanel = new JPanel();
-		level1CenterPanel.setBackground(Color.cyan);
 		autoCreateBorderLayout(jp, 300, 300 , 100, 300);
 		jp.add("Center",level1CenterPanel);
+		level1CenterPanel.setLayout(new GridLayout(4,0,10,10));
+		JLabel level1InformationLabel = new JLabel("[ SELECT MENU ]");
+		level1CenterPanel.add(level1InformationLabel);
+		inventoryInputBtn.setVisible(true);
+		inventoryFilteringBtn.setVisible(true);
+		inventoryStatBtn.setVisible(true);
+		level1CenterPanel.add(inventoryInputBtn);
+		level1CenterPanel.add(inventoryFilteringBtn);
+		level1CenterPanel.add(inventoryStatBtn);
+		validate();
+	}
+	public void level2PanelLayout(JPanel jp){
+		level1CenterPanel = new JPanel();
+		autoCreateBorderLayout(jp, 300, 300 , 100, 300);
+		jp.add("Center",level1CenterPanel);
+		level1CenterPanel.setLayout(new GridLayout(4,0,10,10));
+		JLabel level1InformationLabel = new JLabel("[ SELECT MENU ]");
+		level1CenterPanel.add(level1InformationLabel);
+		level1CenterPanel.add(workVolumeFilteringBtn);
+		level1CenterPanel.add(workVolumestat1Btn);
+		level1CenterPanel.add(workvolumeStat2Btn);
+		validate();
 	}
 	
+	public void setStateLevel(int i){
+		this.statLevel = i;
+	}
+	public int getStateLevel(){
+		return statLevel;
+	}
 	public void level1Page(){
+		setStateLevel(1);
 		level1P = new JPanel();
 		level1PanelLayout(level1P);
 		jCenter.removeAll();
 		jCenter.add(level1P);
 		logoutBtnVisible(true);
-		level1P.setBackground(Color.blue);
 		validate();
 	}
 	
 	public void level2Page(){
+		setStateLevel(2);
 		level2P = new JPanel();
+		level2PanelLayout(level2P);
 		jCenter.removeAll();
 		jCenter.add(level2P);
 		logoutBtnVisible(true);
-		level2P.setBackground(Color.yellow);
 		validate();
 	}
 	
 	public void level3Page(){
-		level2P = new JPanel();
+		setStateLevel(3);
+		level3P = new JPanel();
 		jCenter.removeAll();
 		jCenter.add(level2P);
 		logoutBtnVisible(true);
-		level2P.setBackground(Color.red);
+		level3P.setBackground(Color.red);
 		validate();
 	}
 	
-	public void level4Page(){
-		level2P = new JPanel();
-		jCenter.removeAll();
-		jCenter.add(level2P);
-		logoutBtnVisible(true);
-		level2P.setBackground(Color.black);
-		validate();
-	}
+//	public void level4Page(){
+//		setStateLevel(4);
+//		level2P = new JPanel();
+//		jCenter.removeAll();
+//		jCenter.add(level2P);
+//		logoutBtnVisible(true);
+//		level2P.setBackground(Color.black);
+//		validate();
+//	}
+	
+	
 	
 	@Override
 	public void actionPerformed(ActionEvent e) {
@@ -230,8 +302,17 @@ public class MainViewer extends JFrame implements ActionListener{
 		if(e.getSource() == loginBtn){
 			checkUser();
 		}
-		if(e.getSource() == logoutBtn){
+		else if(e.getSource() == logoutBtn){
 			logOut();
+		}
+		else if(e.getSource() == inventoryFilteringBtn){
+			
+		}
+		else if(e.getSource() == inventoryInputBtn){
+			
+		}
+		else if(e.getSource() == inventoryStatBtn){
+			
 		}
 		
 	}

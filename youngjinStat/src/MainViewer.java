@@ -16,6 +16,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
+import javax.swing.border.BevelBorder;
 
 public class MainViewer extends JFrame implements ActionListener{
 	/*************************[ LOGIN LEVEL ]*****************************/
@@ -54,13 +55,16 @@ public class MainViewer extends JFrame implements ActionListener{
 	/*************************[ LEVEL 3 ]*****************************/
 	private JPanel level3P;
 	
+	/*************************[ INVENTORY INPUT ]*****************************/
+	private JPanel inventoryMainPanel;
+	
 	/*****************************************************************/
 
 	MainViewer(){
 		super("Youngjin Stat & Filtering");
 		super.setVisible(true);
 		super.setResizable(false);
-		super.setSize(1000,800);
+		super.setSize(1000,700);
 		super.setLayout(new BorderLayout());
 		Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
 		Dimension frm = super.getSize();
@@ -96,6 +100,7 @@ public class MainViewer extends JFrame implements ActionListener{
 	public void addActionListner(){
 		loginBtn.addActionListener(this);
 		logoutBtn.addActionListener(this);
+		inventoryInputBtn.addActionListener(this);
 	}
 	
 	public void loginLayout(){
@@ -106,7 +111,7 @@ public class MainViewer extends JFrame implements ActionListener{
 		jNorth.setLayout(new FlowLayout(FlowLayout.RIGHT));
 		jNorth.add(logoutBtn);
 		logoutBtn.setVisible(false);
-		jNorth.setPreferredSize(new Dimension(0,100));
+		jNorth.setPreferredSize(new Dimension(0,40));
 		jCenter.setVisible(true);
 		super.add("North",jNorth);
 		super.add("Center",jCenter);
@@ -128,15 +133,15 @@ public class MainViewer extends JFrame implements ActionListener{
 			loginPanel.add(j[i]);
 		}
 		JLabel id = new JLabel("ID");
-		id.setPreferredSize(new Dimension(20,50));
+		id.setPreferredSize(new Dimension(20,40));
 //		JPanel pid = new JPanel();
 //		pid.setPreferredSize(new Dimension(100,50));
 		JLabel pw = new JLabel("PW");
-		pw.setPreferredSize(new Dimension(20,50));
+		pw.setPreferredSize(new Dimension(20,40));
 //		JPanel ppw = new JPanel();
 //		ppw.setPreferredSize(new Dimension(100,50));
 		JPanel t = new JPanel();
-		t.setPreferredSize(new Dimension(120,50));
+		t.setPreferredSize(new Dimension(120,40));
 		j[0].add(loginInformation);
 //		j[1].add(pid);
 		j[1].add(id);
@@ -294,7 +299,22 @@ public class MainViewer extends JFrame implements ActionListener{
 //		validate();
 //	}
 	
-	
+	public void inventoryInputPage(){
+		inventoryMainPanel = new JPanel();
+		JPanel inventoryCenterPanel = new JPanel();
+		autoCreateBorderLayout(inventoryMainPanel, 30, 30 , 0, 20);
+		inventoryMainPanelLayout(inventoryMainPanel);
+		
+		inventoryMainPanel.add("Center",inventoryCenterPanel);
+		jCenter.removeAll();
+		jCenter.add(inventoryMainPanel);
+		logoutBtnVisible(true);
+		validate();
+	}
+	public void inventoryMainPanelLayout(JPanel jp){
+		jp.setLayout(new GridLayout(2,0));
+		
+	}
 	
 	@Override
 	public void actionPerformed(ActionEvent e) {
@@ -309,7 +329,7 @@ public class MainViewer extends JFrame implements ActionListener{
 			
 		}
 		else if(e.getSource() == inventoryInputBtn){
-			
+			inventoryInputPage();
 		}
 		else if(e.getSource() == inventoryStatBtn){
 			

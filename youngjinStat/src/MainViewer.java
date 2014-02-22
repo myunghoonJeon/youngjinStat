@@ -1,6 +1,7 @@
 
 
 import java.awt.BorderLayout;
+
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
@@ -57,9 +58,30 @@ public class MainViewer extends JFrame implements ActionListener{
 	
 	/*************************[ INVENTORY INPUT ]*****************************/
 	private JPanel inventoryMainPanel;
-	String add = "[ ADD ]";
+	String add = "";
+	/*********[ complimentary parameter ]***********/
 	private JButton typeIIUsedBtn = new JButton("(used) Type II - A:191 cuft - "+add);
 	private JButton typeIINewBtn = new JButton("(new) Type II - A:191 cuft - "+add);
+	private JButton special120Btn = new JButton("Special - C:120 cuft - "+add);
+	private JButton special90Btn = new JButton("Special - C:90 cuft - "+add);
+	private JButton special55Btn = new JButton("Special - C:55 cuft - "+add);
+	private JButton stansilBtn = new JButton("STANSIL - "+add);
+	private JButton nailBtn  = new JButton("NAIL - "+add);
+	private JButton cripBtn = new JButton("CRIP - "+add);
+	private JButton compoundBtn = new JButton("COMPOUND - "+add);
+	private JButton hbbox10Btn = new JButton("HB Box - 10.0 cuft -"+add);
+	private JButton hbbox13Btn = new JButton("HB Box - 13.6 cuft -"+add);
+	private JButton hbbox21Btn = new JButton("HB Box - 21.0 cuft -"+add);
+	/*********[ compensation parameter ]***********/
+	private JButton cottonbox2Btn = new JButton("Cotton Box - 2 cuft "+add);
+	private JButton cottonbox4Btn = new JButton("Cotton Box - 4 cuft"+add);
+	private JButton cottonbox6Btn = new JButton("Cotton Box - 6 cuft"+add);
+	private JButton cardboardBtn = new JButton("Card board - "+add);
+	private JButton paperBtn = new JButton("Paper(평면지) - "+add);
+	private JButton tapeBtn = new JButton("Tape - "+add);
+	private JButton insidepaperBtn = new JButton("Inside Paper(선화지) - "+add);
+	private JButton aircapBtn = new JButton("Air Cap - "+add);
+	private JButton wardrobeboxBtn = new JButton("Wardrobe Box - "+add);
 	/*****************************************************************/
 
 	MainViewer(){
@@ -99,11 +121,7 @@ public class MainViewer extends JFrame implements ActionListener{
 	public void init(){
 		loginBtn.setPreferredSize(new Dimension(70,20));
 	}
-	public void addActionListner(){
-		loginBtn.addActionListener(this);
-		logoutBtn.addActionListener(this);
-		inventoryInputBtn.addActionListener(this);
-	}
+
 	
 	public void loginLayout(){
 		validate();
@@ -191,6 +209,7 @@ public class MainViewer extends JFrame implements ActionListener{
 		a.add("South",j[3]);
 		validate();
 	}
+
 	public void checkUser(){
 		idTemp = idTextField.getText();
 		pwTemp = passwordField.getText();
@@ -314,23 +333,54 @@ public class MainViewer extends JFrame implements ActionListener{
 		validate();
 	}
 	public void inventoryMainPanelLayout(JPanel jp){
-		jp.setLayout(new BorderLayout());
-		JPanel top = new JPanel();
-		JPanel bottom = new JPanel();
-		ivmpInnerPanel(top,12);
+		jp.setLayout(new GridLayout(0,2));
+		JPanel west = new JPanel();
+		JPanel east = new JPanel();
+		ivmpInnerPanel(west,13,1);
+		ivmpInnerPanel(east,13,2);
 		/****[grid top & bottom layout]***/
-		jp.add("North",top);
-		jp.add("Center",bottom);
+		jp.add(west);
+		jp.add(east);
 		
 	}
-	public void ivmpInnerPanel(JPanel jp,int x){
-		jp.setLayout(new GridLayout(x,0));
+	public void ivmpBtnSize(){
+		typeIINewBtn.setPreferredSize(new Dimension(300,30));
+		typeIIUsedBtn.setPreferredSize(new Dimension(300,30));
+		special120Btn.setPreferredSize(new Dimension(300,30));
+		special90Btn.setPreferredSize(new Dimension(300,30));
+		special55Btn.setPreferredSize(new Dimension(300,30));
+		stansilBtn.setPreferredSize(new Dimension(300,30));
+		nailBtn.setPreferredSize(new Dimension(300,30));
+		cripBtn.setPreferredSize(new Dimension(300,30));
+		compoundBtn.setPreferredSize(new Dimension(300,30));
+		hbbox10Btn.setPreferredSize(new Dimension(300,30));
+		hbbox13Btn.setPreferredSize(new Dimension(300,30));
+		hbbox21Btn.setPreferredSize(new Dimension(300,30));
+		cottonbox2Btn.setPreferredSize(new Dimension(300,30));
+		cottonbox4Btn.setPreferredSize(new Dimension(300,30));
+		cottonbox6Btn.setPreferredSize(new Dimension(300,30));
+		cardboardBtn.setPreferredSize(new Dimension(300,30));
+		paperBtn.setPreferredSize(new Dimension(300,30));
+		tapeBtn.setPreferredSize(new Dimension(300,30));
+		insidepaperBtn.setPreferredSize(new Dimension(300,30));
+		aircapBtn.setPreferredSize(new Dimension(300,30));
+		wardrobeboxBtn.setPreferredSize(new Dimension(300,30));
+	}
+	public void ivmpInnerPanel(JPanel jp,int x,int flag){
+		ivmpBtnSize();
+		String title="";
+		if(flag == 1){
+			title = "==============[ COMPLIMENTARY ]==============";
+		}
+		else{
+			title = "==============[ COMPENSATION ]==============";
+		}
+		jp.setLayout(new GridLayout(x,0,0,5));
+		jp.setAlignmentX(CENTER_ALIGNMENT);
 		JPanel []pl = new JPanel[x];
 		JPanel []etc = new JPanel[30];
-		int count = 0;
 		for(int i=0;i<x;i++){
 			pl[i] = new JPanel();
-			pl[i].setLayout(new FlowLayout(FlowLayout.LEFT));
 			jp.add(pl[i]);
 		}
 		for(int i=0;i<30;i++){
@@ -339,7 +389,32 @@ public class MainViewer extends JFrame implements ActionListener{
 			etc[i].setBackground(Color.orange);
 		}
 		
-		pl[0].add(new JLabel("   [ COMPLIMENTARY ]   "));
+		pl[0].add(new JPanel().add(new JLabel(title)));
+		if(flag == 1){
+			pl[1].add(typeIINewBtn);
+			pl[2].add(typeIIUsedBtn);
+			pl[3].add(special120Btn);
+			pl[4].add(special90Btn);
+			pl[5].add(special55Btn);
+			pl[6].add(stansilBtn);
+			pl[7].add(nailBtn);
+			pl[8].add(cripBtn);
+			pl[9].add(compoundBtn);
+			pl[10].add(hbbox10Btn);
+			pl[11].add(hbbox13Btn);
+			pl[12].add(hbbox21Btn);
+		}
+		else if(flag == 2){
+			pl[1].add(cottonbox2Btn);
+			pl[2].add(cottonbox4Btn);
+			pl[3].add(cottonbox6Btn);
+			pl[4].add(cardboardBtn);
+			pl[5].add(paperBtn);
+			pl[6].add(tapeBtn);
+			pl[7].add(insidepaperBtn);
+			pl[8].add(aircapBtn);
+			pl[9].add(wardrobeboxBtn);
+		}
 //		pl[1].add(etc[count++]);	pl[1].add(etc[count++].add(new JLabel("CONTAINER"))); 
 //		pl[2].add(etc[count++]);	pl[2].add(etc[count++].add(new JLabel("(NEW)  TYPE II")));	pl[2].add(etc[count++].add(new JLabel("A: 191 CUFT")));
 //		pl[3].add(etc[count++]);	pl[3].add(etc[count++].add(new JLabel("(USED) TYPE II")));	pl[3].add(etc[count++].add(new JLabel("A: 191 CUFT")));
@@ -350,32 +425,105 @@ public class MainViewer extends JFrame implements ActionListener{
 //		pl[8].add(etc[count++]);	pl[8].add(etc[count++].add(new JLabel("NAIL")));			pl[8].add(etc[count++]);
 //		pl[9].add(etc[count++]);	pl[9].add(etc[count++].add(new JLabel("CRIP")));			pl[9].add(etc[count++]);
 //		pl[10].add(etc[count++]);	pl[10].add(etc[count++].add(new JLabel("COMPOUND")));		pl[10].add(etc[count++]);
-		
 	}
 	
 	public void setSize(JPanel p,int x, int y){
 		p.setPreferredSize(new Dimension(x,y));
 	}
 	
+	public void addActionListner(){
+		loginBtn.addActionListener(this);
+		logoutBtn.addActionListener(this);
+		inventoryInputBtn.addActionListener(this);
+		typeIINewBtn.addActionListener(this);
+		typeIIUsedBtn.addActionListener(this);
+		special120Btn.addActionListener(this);
+		special55Btn.addActionListener(this);
+		special90Btn.addActionListener(this);
+		stansilBtn.addActionListener(this);
+		nailBtn.addActionListener(this);
+		cripBtn.addActionListener(this);
+		compoundBtn.addActionListener(this);
+		hbbox10Btn.addActionListener(this);
+		hbbox13Btn.addActionListener(this);
+		hbbox21Btn.addActionListener(this);
+		cottonbox2Btn.addActionListener(this);
+	}
+	
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		// TODO Auto-generated method stub
+		/***********[loginPage Buttons]***********/
 		if(e.getSource() == loginBtn){
 			checkUser();
 		}
 		else if(e.getSource() == logoutBtn){
 			logOut();
 		}
-		else if(e.getSource() == inventoryFilteringBtn){
-			
-		}
+		/***********[inventory Page Buttons]***********/
 		else if(e.getSource() == inventoryInputBtn){
 			inventoryInputPage();
+		}
+		else if(e.getSource() == inventoryFilteringBtn){
+			
 		}
 		else if(e.getSource() == inventoryStatBtn){
 			
 		}
-		
+		else if(e.getSource() == inventoryStatBtn){
+			
+		}
+		else if(e.getSource() == typeIINewBtn){
+			InventoryInputPopup ip = new InventoryInputPopup();
+		}
+		else if(e.getSource() == typeIIUsedBtn){
+			
+		}
+		else if(e.getSource() == special120Btn){
+			
+		}
+		else if(e.getSource() == special55Btn){
+			
+		}
+		else if(e.getSource() == special90Btn){
+			
+		}
+		else if(e.getSource() == nailBtn){
+			
+		}
+		else if(e.getSource() == cripBtn){
+			
+		}
+		else if(e.getSource() == compoundBtn){
+			
+		}
+		else if(e.getSource() == hbbox10Btn){
+			
+		}
+		else if(e.getSource() == hbbox13Btn){
+			
+		}
+		else if(e.getSource() == hbbox21Btn){
+			
+		}
+		else if(e.getSource() == cottonbox2Btn){
+			
+		}
+		else if(e.getSource() == paperBtn){
+			
+		}
+		else if(e.getSource() == tapeBtn){
+			
+		}
+		else if(e.getSource() == insidepaperBtn){
+			
+		}
+		else if(e.getSource() == aircapBtn){
+			
+		}
+		else if(e.getSource() == wardrobeboxBtn){
+			
+		}
+		/******************************************/
 	}
 	
 }

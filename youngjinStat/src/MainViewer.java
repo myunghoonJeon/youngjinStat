@@ -57,7 +57,9 @@ public class MainViewer extends JFrame implements ActionListener{
 	
 	/*************************[ INVENTORY INPUT ]*****************************/
 	private JPanel inventoryMainPanel;
-	
+	String add = "[ ADD ]";
+	private JButton typeIIUsedBtn = new JButton("(used) Type II - A:191 cuft - "+add);
+	private JButton typeIINewBtn = new JButton("(new) Type II - A:191 cuft - "+add);
 	/*****************************************************************/
 
 	MainViewer(){
@@ -300,11 +302,11 @@ public class MainViewer extends JFrame implements ActionListener{
 //	}
 	
 	public void inventoryInputPage(){
+		System.out.println("inventory Page");
 		inventoryMainPanel = new JPanel();
 		JPanel inventoryCenterPanel = new JPanel();
 		autoCreateBorderLayout(inventoryMainPanel, 30, 30 , 0, 20);
-		inventoryMainPanelLayout(inventoryMainPanel);
-		
+		inventoryMainPanelLayout(inventoryCenterPanel);
 		inventoryMainPanel.add("Center",inventoryCenterPanel);
 		jCenter.removeAll();
 		jCenter.add(inventoryMainPanel);
@@ -312,8 +314,47 @@ public class MainViewer extends JFrame implements ActionListener{
 		validate();
 	}
 	public void inventoryMainPanelLayout(JPanel jp){
-		jp.setLayout(new GridLayout(2,0));
+		jp.setLayout(new BorderLayout());
+		JPanel top = new JPanel();
+		JPanel bottom = new JPanel();
+		ivmpInnerPanel(top,12);
+		/****[grid top & bottom layout]***/
+		jp.add("North",top);
+		jp.add("Center",bottom);
 		
+	}
+	public void ivmpInnerPanel(JPanel jp,int x){
+		jp.setLayout(new GridLayout(x,0));
+		JPanel []pl = new JPanel[x];
+		JPanel []etc = new JPanel[30];
+		int count = 0;
+		for(int i=0;i<x;i++){
+			pl[i] = new JPanel();
+			pl[i].setLayout(new FlowLayout(FlowLayout.LEFT));
+			jp.add(pl[i]);
+		}
+		for(int i=0;i<30;i++){
+			etc[i] = new JPanel();
+			setSize(etc[i], 100, 20);
+			etc[i].setBackground(Color.orange);
+		}
+		
+		pl[0].add(new JLabel("   [ COMPLIMENTARY ]   "));
+//		pl[1].add(etc[count++]);	pl[1].add(etc[count++].add(new JLabel("CONTAINER"))); 
+//		pl[2].add(etc[count++]);	pl[2].add(etc[count++].add(new JLabel("(NEW)  TYPE II")));	pl[2].add(etc[count++].add(new JLabel("A: 191 CUFT")));
+//		pl[3].add(etc[count++]);	pl[3].add(etc[count++].add(new JLabel("(USED) TYPE II")));	pl[3].add(etc[count++].add(new JLabel("A: 191 CUFT")));
+//		pl[4].add(etc[count++]);	pl[4].add(etc[count++].add(new JLabel("SPECIAL")));			pl[4].add(etc[count++].add(new JLabel("C: 120 CUFT")));
+//		pl[5].add(etc[count++]);	pl[5].add(etc[count++]);									pl[5].add(etc[count++].add(new JLabel("D: 90 CUFT")));
+//		pl[6].add(etc[count++]);	pl[6].add(etc[count++]);									pl[6].add(etc[count++].add(new JLabel("F: 55 CUFT")));
+//		pl[7].add(etc[count++]);	pl[7].add(etc[count++].add(new JLabel("STANSIL")));			pl[7].add(etc[count++]);
+//		pl[8].add(etc[count++]);	pl[8].add(etc[count++].add(new JLabel("NAIL")));			pl[8].add(etc[count++]);
+//		pl[9].add(etc[count++]);	pl[9].add(etc[count++].add(new JLabel("CRIP")));			pl[9].add(etc[count++]);
+//		pl[10].add(etc[count++]);	pl[10].add(etc[count++].add(new JLabel("COMPOUND")));		pl[10].add(etc[count++]);
+		
+	}
+	
+	public void setSize(JPanel p,int x, int y){
+		p.setPreferredSize(new Dimension(x,y));
 	}
 	
 	@Override

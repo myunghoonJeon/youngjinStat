@@ -473,7 +473,7 @@ public class MainViewer extends JFrame implements ActionListener{
 			
 		}
 		else if(e.getSource() == typeIINewBtn){
-			InventoryInputPopup ip = new InventoryInputPopup();
+			InventoryInputPopup ip = new InventoryInputPopup("typeIINew");
 		}
 		else if(e.getSource() == typeIIUsedBtn){
 			

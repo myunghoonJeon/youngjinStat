@@ -6,27 +6,60 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JTextField;
+import javax.swing.SizeSequence;
 
 
 public class InventoryInputPopup extends JFrame implements ActionListener{
 	/********************************************/
+	String areaList[] = {"YS","OS","PYT","TDC","UJB","TG","BS","KS"};
+	String fromUnit="";
+	/********************************************/
 	JButton purchaseBtn = new JButton("Purchase");
+		JComboBox<String[]> areaCombo;
+		JTextField purchaseScacTextfield = new JTextField(15);
+		JTextField purchaseUnitCostTextfield = new JTextField(15);
+		JTextField purchaseUnitsTextfield = new JTextField(15);
+		JTextField purchasePriseTextfield = new JTextField(15);
+		JTextField purchaseDateTextfield = new JTextField(15);
+		JLabel purchaseLabel = new JLabel("        [ PURCHASE - INPUT ]       ");
+		JLabel purchaseDateLabel = new JLabel("PURCHASE DATE");
+		JLabel purchaseScacLabel = new JLabel("PURCHASE SCAC");
+		JLabel purchaseUnitCostLabel = new JLabel("PURCHASE UNIT COST");
+		JLabel purchaseUnitsLabel = new JLabel("PURCHASE UNITS");
+		JLabel purchasePriseLabel = new JLabel("PURCHASE PRISE");
+		JButton purchaseInputBtn = new JButton("INPUT");
+	/********************************************/
 	JButton suppliedBtn = new JButton("Supplied");
+		JTextField suppliedScacTextfield = new JTextField(15);
+		JTextField suppliedUnitsTextfield = new JTextField(15);
+		JTextField suppliedAreaTextfield = new JTextField(15);
+		JTextField suppliedPriseTextfield = new JTextField(15);
+		JTextField suppliedDateTextfield = new JTextField(15);
+		JLabel suppliedLabel = new JLabel("[ SUPPLIED - INPUT ]");
+		JLabel suppliedDateLabel = new JLabel("SUPPLIED DATE");
+		JLabel suppliedScacLabel = new JLabel("SUPPLIED SCAC");
+		JLabel suppliedUnitsLabel = new JLabel("SUPPLIED UNITS");
+		JLabel suppliedPriseLabel = new JLabel("SUPPLIED PRISE");
+		JButton suppliedInputBtn = new JButton("SUPPLIED INPUT");
 	/********************************************/
 	JPanel p;
 	public void addactionListner(){
 		purchaseBtn.addActionListener(this);
 		suppliedBtn.addActionListener(this);
+		purchaseInputBtn.addActionListener(this);
 	}
 	
-	public InventoryInputPopup() {
+	public InventoryInputPopup(String unit) {
 		super("");
 		super.setVisible(true);
 		super.setResizable(false);
 		super.setSize(300,200);
+		fromUnit = unit;
 		Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
 		Dimension frm = super.getSize();
 		int y = (int)(screen.height/2 - frm.height/2);
@@ -87,19 +120,83 @@ public class InventoryInputPopup extends JFrame implements ActionListener{
 	}
 	
 	public void purchase(){
+		super.setSize(400,250);
+		validate();
 		p.removeAll();
-//		p = new JPanel();
-		p.setLayout(new GridLayout(4,0));
-		JPanel[] jl = new JPanel[4];
-		for(int i=0;i<4;i++){
-			jl[i] = new JPanel();
-			jl[i].add(new JLabel(i+""));
-			p.add(jl[i]);
+		p.setLayout(new GridLayout(7,0));
+		JPanel[] pl = new JPanel[7];
+		getListPanel(pl, 7, 300,50);
+		areaCombo = new JComboBox(areaList);
+		areaCombo.setPreferredSize(new Dimension(100,30));
+		p.add(pl[6]);
+		pl[6].add(purchaseLabel);
+		for(int i=0;i<6;i++){
+			p.add(pl[i]);
+			pl[i].setLayout(new GridLayout(1,2,20,20));
+			if(i==0){
+				JPanel jp1 = new JPanel();
+				JPanel jp2 = new JPanel();
+				jp1.add(purchaseDateLabel);
+				jp2.add(purchaseDateTextfield);
+				pl[i].add(jp1);
+				pl[i].add(jp2);
+				
+			}
+			else if(i==1){
+				JPanel jp1 = new JPanel();
+				JPanel jp2 = new JPanel();
+				jp1.add(purchaseScacLabel);
+				jp2.add(purchaseScacTextfield);
+				pl[i].add(jp1);
+				pl[i].add(jp2);
+			}
+			else if(i==2){
+				JPanel jp1 = new JPanel();
+				JPanel jp2 = new JPanel();
+				jp1.add(purchaseUnitsLabel);
+				jp2.add(purchaseUnitsTextfield);
+				pl[i].add(jp1);
+				pl[i].add(jp2);
+			}
+			else if(i==3){
+				JPanel jp1 = new JPanel();
+				JPanel jp2 = new JPanel();
+				jp1.add(purchaseUnitCostLabel);
+				jp2.add(purchaseUnitCostTextfield);
+				pl[i].add(jp1);
+				pl[i].add(jp2);
+			}
+			else if(i==4){
+				JPanel jp1 = new JPanel();
+				JPanel jp2 = new JPanel();
+				jp1.add(purchasePriseLabel);
+				jp2.add(purchasePriseTextfield);
+				pl[i].add(jp1);
+				pl[i].add(jp2);
+			}
+			else if(i==5){
+				JPanel jp1 = new JPanel();
+				JPanel jp2 = new JPanel();
+				jp2.add(purchaseInputBtn);
+				pl[i].add(jp1);
+				pl[i].add(jp2);
+			}
 		}
 		super.add(p);
 		validate();
 	}
+	
+	public void getListPanel(JPanel[] p,int count,int x, int y){
+		for(int i=0;i<count;i++){
+			p[i] = new JPanel();
+		}
+	}
+	
 	public void supplied(){
+		
+	}
+	
+	public void insert(){
 		
 	}
 	
@@ -114,8 +211,9 @@ public class InventoryInputPopup extends JFrame implements ActionListener{
 			System.out.println("supplied click");
 			supplied();
 		}
-		else{
-			System.out.println("???");
+		else if(e.getSource() == purchaseInputBtn){
+			System.out.println("purchaseInput");
+			insert();
 		}
 	}
 	

@@ -58,7 +58,7 @@ public class MainViewer extends JFrame implements ActionListener{
 	
 	/*************************[ INVENTORY INPUT ]*****************************/
 	private JPanel inventoryMainPanel;
-	String add = "";
+	String add = "[ ADD ]";
 	/*********[ complimentary parameter ]***********/
 	private JButton typeIIUsedBtn = new JButton("(used) Type II - A:191 cuft - "+add);
 	private JButton typeIINewBtn = new JButton("(new) Type II - A:191 cuft - "+add);

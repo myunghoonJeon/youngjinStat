@@ -72,6 +72,10 @@ public class CL_DAO_DB_Mysql implements IT_DAO{
 		}
 	}
 	
+//	public Boolean inventoryInput(){
+//		
+//	}
+	
 	/**
 	public void writeMessage(String board,CL_DataBean data) throws Exception{
 		String sql,columnString,valueString;

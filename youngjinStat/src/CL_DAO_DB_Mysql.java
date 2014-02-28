@@ -13,6 +13,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.Statement;
+import java.util.ArrayList;
 
 
 
@@ -43,6 +44,124 @@ public class CL_DAO_DB_Mysql implements IT_DAO{
 		}
 	}
 	
+	public boolean insertPurchaseInput(String item,String date,String units,String unitcost,String prise,String scac,String type){
+		boolean bool=true;
+		try {
+			connect();
+			sql = "insert into stat_purchase(item,date,units,unitcost,prise,scac,type) values('"+item+"','"+date+"','"+units+"','"+unitcost+"','"+prise+"','"+scac+"','"+type+"');";
+			System.out.println(sql);
+			stmt.executeUpdate(sql);
+			disconnect();
+		} catch (Exception e) {
+			e.printStackTrace();
+			bool=false;
+		}
+		return bool;
+	}
+	
+	public boolean insertSuppliedInput(String item,String date,String units,String area,String prise,String scac,String type){
+		boolean bool=true;
+		try {
+			connect();
+			sql = "insert into stat_supplied(item,date,units,area,prise,scac,type) values('"+item+"','"+date+"','"+units+"','"+area+"','"+prise+"','"+scac+"','"+type+"');";
+			System.out.println(sql);
+			stmt.executeUpdate(sql);
+			disconnect();
+		} catch (Exception e) {
+			e.printStackTrace();
+			bool=false;
+		}
+		return bool;
+	}
+	
+	public ArrayList<String> getItemsList(){
+		ArrayList<String> list = new ArrayList<String>();
+		list.add("ALL");
+		try {
+			connect();
+			sql = "select * from stat_items";
+			System.out.println(sql);
+			rs = stmt.executeQuery(sql);
+			while(rs.next()){
+				list.add(rs.getString("name"));
+			}
+			disconnect();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return list;
+	}
+	
+	public ArrayList<String> getAreaList2(){
+		ArrayList<String> areaList = new ArrayList<String>();
+		areaList.add("ALL");
+		try {
+			connect();
+			sql = "select * from stat_area";
+			System.out.println(sql);
+			rs = stmt.executeQuery(sql);
+			while(rs.next()){
+				areaList.add(rs.getString("name"));
+			}
+			disconnect();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return areaList;
+	}
+	
+	public ArrayList<String> getInventorySuppliedAllItem(){
+		ArrayList<String> result=new ArrayList<>();
+		String in = "";
+		try {
+			connect();
+			sql = "select * from stat_supplied";
+			System.out.println(sql);
+			rs = stmt.executeQuery(sql);
+			while(rs.next()){
+				in = rs.getString("item")+"@"+rs.getString("units");
+				result.add(in);
+			}
+			disconnect();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return result;
+	}
+	
+	public ArrayList<String> getAreaList(){
+		ArrayList<String> areaList = new ArrayList<String>();
+		try {
+			connect();
+			sql = "select * from stat_area";
+			System.out.println(sql);
+			rs = stmt.executeQuery(sql);
+			while(rs.next()){
+				areaList.add(rs.getString("name"));
+			}
+			disconnect();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return areaList;
+	}
+	
+	public ArrayList<String> getScacList(){
+		ArrayList<String> scacList = new ArrayList<String>();
+		try {
+			connect();
+			sql = "select * from stat_scac";
+			System.out.println(sql);
+			rs = stmt.executeQuery(sql);
+			while(rs.next()){
+				scacList.add(rs.getString("name"));
+			}
+			disconnect();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return scacList;
+	}
 	public userBean userAccessValidateCheck(String id,String pw){
 		ub = new userBean();
 		int flag=0;

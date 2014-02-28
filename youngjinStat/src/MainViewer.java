@@ -1,7 +1,6 @@
 
 
 import java.awt.BorderLayout;
-
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
@@ -17,7 +16,6 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
-import javax.swing.border.BevelBorder;
 
 public class MainViewer extends JFrame implements ActionListener{
 	/*************************[ LOGIN LEVEL ]*****************************/
@@ -58,7 +56,7 @@ public class MainViewer extends JFrame implements ActionListener{
 	
 	/*************************[ INVENTORY INPUT ]*****************************/
 	private JPanel inventoryMainPanel;
-	String add = "[ ADD ]";
+	String add = "[ INPUT ]";
 	/*********[ complimentary parameter ]***********/
 	private JButton typeIIUsedBtn = new JButton("(used) Type II - A:191 cuft - "+add);
 	private JButton typeIINewBtn = new JButton("(new) Type II - A:191 cuft - "+add);
@@ -100,6 +98,7 @@ public class MainViewer extends JFrame implements ActionListener{
 		loginLayout();
 		addActionListner();
 	}
+	
 	public void invisibleButtonControl(int state){
 		System.out.println(state);
 		if(state == 1){
@@ -118,6 +117,7 @@ public class MainViewer extends JFrame implements ActionListener{
 		}
 		validate();
 	}
+	
 	public void init(){
 		loginBtn.setPreferredSize(new Dimension(70,20));
 	}
@@ -448,9 +448,17 @@ public class MainViewer extends JFrame implements ActionListener{
 		hbbox13Btn.addActionListener(this);
 		hbbox21Btn.addActionListener(this);
 		cottonbox2Btn.addActionListener(this);
+		inventoryFilteringBtn.addActionListener(this);
 	}
 	
-	@Override
+	public void inputOpen(String item, String type){
+		InventoryInputPopup ip = new InventoryInputPopup(item,type);
+	}
+	
+	public void inventoryFilteringPage(){
+		inventoryFilteringPage ivf = new inventoryFilteringPage();
+	}
+	
 	public void actionPerformed(ActionEvent e) {
 		/***********[loginPage Buttons]***********/
 		if(e.getSource() == loginBtn){
@@ -464,7 +472,7 @@ public class MainViewer extends JFrame implements ActionListener{
 			inventoryInputPage();
 		}
 		else if(e.getSource() == inventoryFilteringBtn){
-			
+			inventoryFilteringPage();
 		}
 		else if(e.getSource() == inventoryStatBtn){
 			
@@ -473,55 +481,61 @@ public class MainViewer extends JFrame implements ActionListener{
 			
 		}
 		else if(e.getSource() == typeIINewBtn){
-			InventoryInputPopup ip = new InventoryInputPopup("typeIINew");
+			inputOpen("TYPE II (NEW)","complimentary");
 		}
 		else if(e.getSource() == typeIIUsedBtn){
-			
+			inputOpen("TYPE II (USED)","complimentary");
 		}
 		else if(e.getSource() == special120Btn){
-			
+			inputOpen("SPECIAL 120 CUFT","complimentary");
 		}
 		else if(e.getSource() == special55Btn){
-			
+			inputOpen("SEPCIAL 55 CUFT","complimentary");
 		}
 		else if(e.getSource() == special90Btn){
-			
+			inputOpen("SPECIAL 90 CUFT","complimentary");
 		}
 		else if(e.getSource() == nailBtn){
-			
+			inputOpen("NAIL","complimentary");
 		}
 		else if(e.getSource() == cripBtn){
-			
+			inputOpen("CRIP","complimentary");
 		}
 		else if(e.getSource() == compoundBtn){
-			
+			inputOpen("COMPOUND","complimentary");
 		}
 		else if(e.getSource() == hbbox10Btn){
-			
+			inputOpen("HB BOX 10.0 CUFT","complimentary");
 		}
 		else if(e.getSource() == hbbox13Btn){
-			
+			inputOpen("HB BOX 13.6 CUFT","complimentary");
 		}
 		else if(e.getSource() == hbbox21Btn){
-			
+			inputOpen("HB BOX 21.0 CUFT","complimentary");
 		}
 		else if(e.getSource() == cottonbox2Btn){
-			
+			inputOpen("COTTON 2 CUFT","compensation");
+		}
+		else if(e.getSource() == cottonbox4Btn){
+			inputOpen("COTTON 4 CUFT","compensation");
+		}
+		else if(e.getSource() == cottonbox6Btn){
+			inputOpen("COTTON 6 CUFT","compensation");
 		}
 		else if(e.getSource() == paperBtn){
-			
+			inputOpen("PAPER(평면지)","compensation");
 		}
 		else if(e.getSource() == tapeBtn){
-			
+			inputOpen("TAPE","compensation");
 		}
 		else if(e.getSource() == insidepaperBtn){
-			
+			inputOpen("INSIDE PAPER(선화지)","compensation");
 		}
 		else if(e.getSource() == aircapBtn){
-			
+			inputOpen("AIR CAP","compensation");
 		}
 		else if(e.getSource() == wardrobeboxBtn){
-			
+			inputOpen("WADROBE BOX","compensation");
 		}
 		/******************************************/
 	}

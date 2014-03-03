@@ -449,6 +449,7 @@ public class MainViewer extends JFrame implements ActionListener{
 		hbbox21Btn.addActionListener(this);
 		cottonbox2Btn.addActionListener(this);
 		inventoryFilteringBtn.addActionListener(this);
+		inventoryStatBtn.addActionListener(this);
 	}
 	
 	public void inputOpen(String item, String type){
@@ -457,6 +458,10 @@ public class MainViewer extends JFrame implements ActionListener{
 	
 	public void inventoryFilteringPage(){
 		inventoryFilteringPage ivf = new inventoryFilteringPage();
+	}
+	
+	public void inventoryStatPage(){ 
+		InventoryStatPage is = new InventoryStatPage();
 	}
 	
 	public void actionPerformed(ActionEvent e) {
@@ -475,10 +480,7 @@ public class MainViewer extends JFrame implements ActionListener{
 			inventoryFilteringPage();
 		}
 		else if(e.getSource() == inventoryStatBtn){
-			
-		}
-		else if(e.getSource() == inventoryStatBtn){
-			
+			inventoryStatPage();
 		}
 		else if(e.getSource() == typeIINewBtn){
 			inputOpen("TYPE II (NEW)","complimentary");
@@ -487,13 +489,13 @@ public class MainViewer extends JFrame implements ActionListener{
 			inputOpen("TYPE II (USED)","complimentary");
 		}
 		else if(e.getSource() == special120Btn){
-			inputOpen("SPECIAL 120 CUFT","complimentary");
+			inputOpen("SPECIAL c: 120 CUFT","complimentary");
 		}
 		else if(e.getSource() == special55Btn){
-			inputOpen("SEPCIAL 55 CUFT","complimentary");
+			inputOpen("SEPCIAL f: 55 CUFT","complimentary");
 		}
 		else if(e.getSource() == special90Btn){
-			inputOpen("SPECIAL 90 CUFT","complimentary");
+			inputOpen("SPECIAL d: 90 CUFT","complimentary");
 		}
 		else if(e.getSource() == nailBtn){
 			inputOpen("NAIL","complimentary");
@@ -523,13 +525,13 @@ public class MainViewer extends JFrame implements ActionListener{
 			inputOpen("COTTON 6 CUFT","compensation");
 		}
 		else if(e.getSource() == paperBtn){
-			inputOpen("PAPER(평면지)","compensation");
+			inputOpen("PAPER (평면지)","compensation");
 		}
 		else if(e.getSource() == tapeBtn){
 			inputOpen("TAPE","compensation");
 		}
 		else if(e.getSource() == insidepaperBtn){
-			inputOpen("INSIDE PAPER(선화지)","compensation");
+			inputOpen("INSIDE PAPER (선화지)","compensation");
 		}
 		else if(e.getSource() == aircapBtn){
 			inputOpen("AIR CAP","compensation");

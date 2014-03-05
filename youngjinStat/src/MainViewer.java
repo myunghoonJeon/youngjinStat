@@ -450,6 +450,7 @@ public class MainViewer extends JFrame implements ActionListener{
 		cottonbox2Btn.addActionListener(this);
 		inventoryFilteringBtn.addActionListener(this);
 		inventoryStatBtn.addActionListener(this);
+		workVolumeFilteringBtn.addActionListener(this);
 	}
 	
 	public void inputOpen(String item, String type){
@@ -464,6 +465,10 @@ public class MainViewer extends JFrame implements ActionListener{
 		InventoryStatPage is = new InventoryStatPage();
 	}
 	
+	public void workVolumeFilteringPage(){
+		WorkVolumeFilteringPage wvf = new WorkVolumeFilteringPage();
+	}
+	
 	public void actionPerformed(ActionEvent e) {
 		/***********[loginPage Buttons]***********/
 		if(e.getSource() == loginBtn){
@@ -472,15 +477,9 @@ public class MainViewer extends JFrame implements ActionListener{
 		else if(e.getSource() == logoutBtn){
 			logOut();
 		}
-		/***********[inventory Page Buttons]***********/
+		/***********[inventory INPUT Buttons]***********/
 		else if(e.getSource() == inventoryInputBtn){
 			inventoryInputPage();
-		}
-		else if(e.getSource() == inventoryFilteringBtn){
-			inventoryFilteringPage();
-		}
-		else if(e.getSource() == inventoryStatBtn){
-			inventoryStatPage();
 		}
 		else if(e.getSource() == typeIINewBtn){
 			inputOpen("TYPE II (NEW)","complimentary");
@@ -539,7 +538,17 @@ public class MainViewer extends JFrame implements ActionListener{
 		else if(e.getSource() == wardrobeboxBtn){
 			inputOpen("WADROBE BOX","compensation");
 		}
-		/******************************************/
+		/***********[inventory FILTERING , STAT Buttons]***********/
+		else if(e.getSource() == inventoryFilteringBtn){
+			inventoryFilteringPage();
+		}
+		else if(e.getSource() == inventoryStatBtn){
+			inventoryStatPage();
+		}
+		/***********[work volume filtering Buttons]***********/
+		else if(e.getSource() == workVolumeFilteringBtn){
+			workVolumeFilteringPage();
+		}
 	}
 	
 }

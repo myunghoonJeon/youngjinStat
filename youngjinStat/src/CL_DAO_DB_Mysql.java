@@ -25,7 +25,8 @@ public class CL_DAO_DB_Mysql implements IT_DAO{
 	private String sql="";
 	private String sql2="";
 	private userBean ub = null;
-	private ResultSet rs = null;
+	private ResultSet rs = null; 
+	
 	public void connect() throws Exception{
 		try {
 			Class.forName(jdbc_driver);
@@ -59,7 +60,30 @@ public class CL_DAO_DB_Mysql implements IT_DAO{
 		}
 		return bool;
 	}
-	
+	public ArrayList<String> getInOutList(){
+		ArrayList<String> list = new ArrayList<>();
+		list.add("OUT");
+		list.add("IN");
+		return list;
+	}
+	public ArrayList<String> getCodeList(){
+		ArrayList<String> list = new ArrayList<>();
+		list.add("ALL");
+		try {
+			connect();
+			sql = "select * from stat_codelist";
+			rs = stmt.executeQuery(sql);
+			String result="";
+			while(rs.next()){
+				result = rs.getString("code");
+				list.add(result);
+			}
+			disconnect();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return list;
+	}
 	public boolean insertSuppliedInput(String item,String date,String units,String area,String prise,String scac,String type){
 		boolean bool=true;
 		try {
@@ -115,11 +139,12 @@ public class CL_DAO_DB_Mysql implements IT_DAO{
 		return list;
 	}
 	
-	public ArrayList<String> getInventoryStat(String item,String area,String begin,String end){
+	public ArrayList<InventoryStatBeans> getInventoryStat(String item,String area,String begin,String end){
 		String sqlSupplied="";
 		String sqlPurchase="";
 		String sqlBeginSupplied="";
 		String sqlBeginPurchase="";
+		item = item.toUpperCase();
 		System.out.println(begin+"===>"+end);
 		ArrayList<InventoryStatBeans> list = new ArrayList<InventoryStatBeans>();
 		try {
@@ -130,29 +155,57 @@ public class CL_DAO_DB_Mysql implements IT_DAO{
 						String beginDate = begin.substring(0, 4)+"0101";
 						System.out.println("beginDate : "+beginDate);
 						sqlBeginSupplied = "select * from stat_supplied where date > date_format('"+beginDate+"','%y-%m-%d') and date < date_format('"+begin+"','%y-%m-%d')";
-						System.out.println(sqlBeginSupplied);
 						sqlBeginPurchase = "select * from stat_purchase where date > date_format('"+beginDate+"','%y-%m-%d') and date < date_format('"+begin+"','%y-%m-%d')";
 						sqlSupplied = "select * from stat_supplied where date > date_format('"+begin+"','%y-%m-%d') and date < date_format('"+end+"','%y-%m-%d')";
 						sqlPurchase = "select * from stat_purchase where date > date_format('"+begin+"','%y-%m-%d') and date < date_format('"+end+"','%y-%m-%d')";
-						System.out.println(sqlBeginPurchase);
+						System.out.println("sql beginPruchase : "+sqlBeginPurchase);
+						System.out.println("sql purchase : "+sqlPurchase);
+						System.out.println("sql supplied : "+sqlSupplied);
 					}
 				}
 				else{// item all , area selected
 					if(!begin.equals("") && !begin.equals("")){//input all date
 						String beginDate = begin.substring(0, 4)+"0101";
 						System.out.println("beginDate : "+beginDate);
-						sqlBeginSupplied = "select * from stat_supplied where area='"+area+"'date > date_format('"+beginDate+"','%y-%m-%d') and date < date_format('"+begin+"','%y-%m-%d')";
-						System.out.println(sqlBeginSupplied);
-						sqlBeginPurchase = "select * from stat_purchase where area='"+area+"'date > date_format('"+beginDate+"','%y-%m-%d') and date < date_format('"+begin+"','%y-%m-%d')";
-						sqlSupplied = "select * from stat_supplied where area='"+area+"'date > date_format('"+begin+"','%y-%m-%d') and date < date_format('"+end+"','%y-%m-%d')";
-						sqlPurchase = "select * from stat_purchase where area='"+area+"'date > date_format('"+begin+"','%y-%m-%d') and date < date_format('"+end+"','%y-%m-%d')";		
+						sqlBeginSupplied = "select * from stat_supplied where area='"+area+"' and date > date_format('"+beginDate+"','%y-%m-%d') and date < date_format('"+begin+"','%y-%m-%d')";
+						sqlBeginPurchase = "select * from stat_purchase where area='"+area+"' and date > date_format('"+beginDate+"','%y-%m-%d') and date < date_format('"+begin+"','%y-%m-%d')";
+						sqlSupplied = "select * from stat_supplied where area='"+area+"' and date > date_format('"+begin+"','%y-%m-%d') and date < date_format('"+end+"','%y-%m-%d')";
+						sqlPurchase = "select * from stat_purchase where area='"+area+"' and date > date_format('"+begin+"','%y-%m-%d') and date < date_format('"+end+"','%y-%m-%d')";		
 					}
 					
 				}
 			}
+			else{//selected ITEM
+				if(area.equals("ALL")){//iteam selected , area all
+					if(!begin.equals("") && !end.equals("")){//input all date
+						String beginDate = begin.substring(0, 4)+"0101";
+						System.out.println("beginDate : "+beginDate);
+						sqlBeginSupplied = "select * from stat_supplied where item='"+item+"' and date > date_format('"+beginDate+"','%y-%m-%d') and date < date_format('"+begin+"','%y-%m-%d')";
+						sqlBeginPurchase = "select * from stat_purchase where item='"+item+"' and date > date_format('"+beginDate+"','%y-%m-%d') and date < date_format('"+begin+"','%y-%m-%d')";
+						sqlSupplied = "select * from stat_supplied where item='"+item+"' and date > date_format('"+begin+"','%y-%m-%d') and date < date_format('"+end+"','%y-%m-%d')";
+						sqlPurchase = "select * from stat_purchase where item='"+item+"' and date > date_format('"+begin+"','%y-%m-%d') and date < date_format('"+end+"','%y-%m-%d')";
+						System.out.println("sql beginPruchase : "+sqlBeginPurchase);
+						System.out.println("sql purchase : "+sqlPurchase);
+						System.out.println("sql supplied : "+sqlSupplied);
+					}
+				}
+				else{// item selected , area selected
+					if(!begin.equals("") && !begin.equals("")){//input all date
+						String beginDate = begin.substring(0, 4)+"0101";
+						System.out.println("beginDate : "+beginDate);
+						sqlBeginSupplied = "select * from stat_supplied where item='"+item+"'and area='"+area+"' and date > date_format('"+beginDate+"','%y-%m-%d') and date < date_format('"+begin+"','%y-%m-%d')";
+						sqlBeginPurchase = "select * from stat_purchase where item='"+item+"' and area='"+area+"' and date > date_format('"+beginDate+"','%y-%m-%d') and date < date_format('"+begin+"','%y-%m-%d')";
+						sqlSupplied = "select * from stat_supplied where item='"+item+"'and area='"+area+"' and date > date_format('"+begin+"','%y-%m-%d') and date < date_format('"+end+"','%y-%m-%d')";
+						sqlPurchase = "select * from stat_purchase where item='"+item+"'and area='"+area+"' and date > date_format('"+begin+"','%y-%m-%d') and date < date_format('"+end+"','%y-%m-%d')";		
+					}
+					
+				}
+			
+				
+			}
 			
 //			System.out.println(sql);
-			rs = stmt.executeQuery(sqlBeginSupplied); //up amounts //down quantity
+			rs = stmt.executeQuery(sqlBeginSupplied); //begin section up amounts //down quantity
 			InventoryStatBeans isb=null;
 			while(rs.next()){
 				String itemName = rs.getString("item");
@@ -161,7 +214,7 @@ public class CL_DAO_DB_Mysql implements IT_DAO{
 				if(flag!=-10){//existing
 					int units = rs.getInt("units");
 					int prise = rs.getInt("prise");
-					int addAmounts = units*prise;
+					int addAmounts = prise;
 					int currentUnits = list.get(flag).getBeginningQuantity() - units;
 					int currentAmounts = list.get(flag).getBeginningAmounts()+addAmounts;
 					list.get(flag).setBeginningAmounts(currentAmounts);
@@ -172,7 +225,7 @@ public class CL_DAO_DB_Mysql implements IT_DAO{
 					System.out.println("add isb");
 					int units = rs.getInt("units");
 					int prise = rs.getInt("prise");
-					int addAmounts = units*prise;
+					int addAmounts = prise;
 					int currentAmounts = addAmounts;
 					isb.setItem(itemName);
 					isb.setBeginningAmounts(currentAmounts);
@@ -180,43 +233,114 @@ public class CL_DAO_DB_Mysql implements IT_DAO{
 					list.add(isb);
 				}
 			}
-			rs = stmt.executeQuery(sqlBeginPurchase);//down amounts // up quantity
-					while(rs.next()){
-						String itemName = rs.getString("item");
-						System.out.println(itemName);
-						int flag = checkItemExisting(itemName, list);
-						if(flag!=-10){//existing
-							int units = rs.getInt("units");
-							int prise = rs.getInt("prise");
-							int addAmounts = prise;
-							int currentUnits = list.get(flag).getBeginningQuantity() + units;
-							int currentAmounts = list.get(flag).getBeginningAmounts()-addAmounts;
-							list.get(flag).setBeginningAmounts(currentAmounts);
-							list.get(flag).setBeginningQuantity(currentUnits);
-						}
-						else{//not existing
-							isb = new InventoryStatBeans();
-							System.out.println("add isb");
-							int units = rs.getInt("units");
-							int prise = rs.getInt("prise");
-							int addAmounts = prise;
-							int currentAmounts = addAmounts;
-							isb.setItem(itemName);
-							isb.setBeginningAmounts(-1*currentAmounts);
-							isb.setBeginningQuantity(units);
-							list.add(isb);
-						}
-					}		
+			System.out.println("????");
+			System.out.println("sqlBeginPurchase : "+sqlBeginPurchase);
+			rs = stmt.executeQuery(sqlBeginPurchase);//begin section down amounts // up quantity
+			while(rs.next()){
+				String itemName = rs.getString("item");
+				System.out.println(itemName);
+				int flag = checkItemExisting(itemName, list);
+				if(flag!=-10){//existing
+					int units = rs.getInt("units");
+					int prise = rs.getInt("prise");
+					int addAmounts = prise;
+					int currentUnits = list.get(flag).getBeginningQuantity() + units;
+					int currentAmounts = list.get(flag).getBeginningAmounts()-addAmounts;
+					list.get(flag).setBeginningAmounts(currentAmounts);
+					list.get(flag).setBeginningQuantity(currentUnits);
+				}
+				else{//not existing
+					isb = new InventoryStatBeans();
+					System.out.println("add isb");
+					int units = rs.getInt("units");
+					int prise = rs.getInt("prise");
+					int addAmounts = prise;
+					int currentAmounts = addAmounts;
+					isb.setItem(itemName);
+					isb.setBeginningAmounts(-1*currentAmounts);
+					isb.setBeginningQuantity(units);
+					list.add(isb);
+				}
+			}
+			rs = stmt.executeQuery(sqlPurchase);//down amounts // up quantity
+			while(rs.next()){
+				String itemName = rs.getString("item");
+				System.out.println(itemName);
+				int flag = checkItemExisting(itemName, list);
+				if(flag!=-10){//existing
+					int units = rs.getInt("units");
+					int prise = rs.getInt("prise");
+					int addAmounts = prise;
+					int currentUnits = list.get(flag).getIncreaseQuantity() + units;
+					int currentAmounts = list.get(flag).getDecreaseQuantity()-addAmounts;
+					list.get(flag).setIncreaseQuantity(currentUnits);
+					list.get(flag).setDecreaseAmounts(currentAmounts);
+				}
+				else{//not existing
+					isb = new InventoryStatBeans();
+					System.out.println("add isb");
+					int units = rs.getInt("units");
+					int prise = rs.getInt("prise");
+					int addAmounts = prise;
+					int currentAmounts = addAmounts;
+					isb.setItem(itemName);
+					isb.setIncreaseQuantity(units);
+					isb.setDecreaseAmounts(-1*currentAmounts);
+					list.add(isb);
+				}
+			}
+			rs = stmt.executeQuery(sqlSupplied); //decrease section up amounts //down quantity
+			while(rs.next()){
+				String itemName = rs.getString("item");
+				System.out.println(itemName);
+				int flag = checkItemExisting(itemName, list);
+				if(flag!=-10){//existing
+					int units = rs.getInt("units");
+					int prise = rs.getInt("prise");
+					int addAmounts = prise;
+					int currentUnits = list.get(flag).getDecreaseQuantity() - units;
+					int currentAmounts = list.get(flag).getIncreaseAmounts() + addAmounts;
+					list.get(flag).setIncreaseAmounts(currentAmounts);
+					list.get(flag).setDecreaseQuantity(currentUnits);
+				}
+				else{//not existing
+					isb = new InventoryStatBeans();
+					System.out.println("add isb");
+					int units = rs.getInt("units");
+					int prise = rs.getInt("prise");
+					int addAmounts = prise;
+					int currentAmounts = addAmounts;
+					isb.setItem(itemName);
+					isb.setIncreaseAmounts(currentAmounts);
+					isb.setDecreaseQuantity(-1*units);
+					list.add(isb);
+				}
+			}
+			
 			for(int i=0;i<list.size();i++){
-				System.out.println("item Name : "+list.get(i).item);
-				System.out.println("item Quantity : "+list.get(i).beginningQuantity);
-				System.out.println("item Amounts : "+list.get(i).beginningAmounts);
+				int endQuantity=0;
+				int endAmounts=0;
+				endQuantity += list.get(i).getBeginningQuantity()+list.get(i).getDecreaseQuantity()+list.get(i).getIncreaseQuantity();
+				endAmounts += list.get(i).getBeginningAmounts()+list.get(i).getDecreaseAmounts()+list.get(i).getIncreaseAmounts();
+				list.get(i).setEndingQuantity(endQuantity);
+				list.get(i).setEndingAmounts(endAmounts);
+				System.out.println("=============[DAO]=============");
+				System.out.println("Beginning item Name : "+list.get(i).item);
+				System.out.println("Beginning item Quantity : "+list.get(i).getBeginningQuantity());
+				System.out.println("Beginning item Amounts : "+list.get(i).getBeginningAmounts());
+				System.out.println("Increse Quantity : "+list.get(i).getIncreaseQuantity());
+				System.out.println("Increse Amounts : "+list.get(i).getIncreaseAmounts());
+				System.out.println("Decrease Quantity : "+list.get(i).getDecreaseQuantity());
+				System.out.println("Decrease Amounts : "+list.get(i).getDecreaseAmounts());
+				System.out.println("Ending Quantity : "+endQuantity);
+				System.out.println("Ending Amounts : "+endAmounts);
+				System.out.println();
 			}
 			disconnect();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		return null;
+		return list;
 	}
 	public int checkItemExisting(String item,ArrayList<InventoryStatBeans> isb){
 		int index = -10;
@@ -266,7 +390,11 @@ public class CL_DAO_DB_Mysql implements IT_DAO{
 		}
 		return list;
 	}
-	
+	public ArrayList<String> getInventoryStatArea(){
+		ArrayList<String> areaList = new ArrayList<String>();
+		areaList.add("ALL");
+		return areaList;
+	}
 	public ArrayList<String> getAreaList2(){
 		ArrayList<String> areaList = new ArrayList<String>();
 		areaList.add("ALL");
@@ -353,6 +481,121 @@ public class CL_DAO_DB_Mysql implements IT_DAO{
 		}
 		return scacList;
 	}
+	
+	public ArrayList<String> getScacListWork(){
+		ArrayList<String> scacList = new ArrayList<String>();
+		scacList.add("ALL");
+		try {
+			connect();
+			sql = "select * from stat_scac";
+			System.out.println(sql);
+			rs = stmt.executeQuery(sql);
+			while(rs.next()){
+				scacList.add(rs.getString("name"));
+			}
+			disconnect();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return scacList;
+	}
+	public ArrayList<GblBeans> getOutboundGblList(String scac,String inout,String code, String area, String begin,String end){
+		ArrayList<GblBeans> list = new ArrayList<>();
+		String gblno="";
+			int whereflag=0;
+			String sql="";
+			String condition="";
+			String table="";
+//			System.out.println(scac);
+			sql="select * from gbl";
+			if(!scac.equals("ALL")){
+				if(whereflag==0){
+					condition+=" where scac='"+scac+"'";
+					whereflag=1;
+				}
+				else{
+					condition+=" and scac='"+scac+"'";
+				}
+			}
+			if(!code.equals("ALL")){
+				if(whereflag==0){
+					condition+=" where code='"+code+"'";
+					whereflag=1;
+				}
+				else{
+					condition+=" and code='"+code+"'";
+				}
+			}
+			if(!area.equals("ALL")){
+				if(whereflag==0){
+					condition+=" where area='"+area+"'";
+				}
+				else{
+					condition+=" and area='"+area+"'";
+				}
+			}
+			if(!begin.equals("") && !end.equals("")){
+				if(whereflag==0){
+					condition+=" where date > date_format('"+begin+"','%y-%m-%d') and date < date_format('"+end+"','%y-%m-%d')";
+				}
+				else{
+					condition+=" and date > date_format('"+begin+"','%y-%m-%d') and date < date_format('"+end+"','%y-%m-%d')";
+				}
+			}
+			sql+=condition;
+			System.out.println(sql);
+			try {
+				connect();
+			rs = stmt.executeQuery(sql);
+			GblBeans gb = new GblBeans();
+			
+			while(rs.next()){
+				list.add(gb);
+				String tempCode=rs.getString("code");
+				gblno = rs.getString("bl_no");
+				gb.setPud(rs.getString("pud"));
+				gb.setRdd(rs.getString("rdd"));
+				gb.setScac(rs.getString("scac"));
+				gb.setCode(tempCode);
+				gb.setGblno(rs.getString("bl_no"));
+				gb.setName(rs.getString("customer_name"));
+				gb.setUsno(rs.getString("us_no"));
+				String sql2 = "select * from weight_certificate_list where seq='"+rs.getString("seq")+"'";
+				ResultSet rs2 = stmt.executeQuery(sql2);
+				double density = 0;
+				while(rs2.next()){//웨이서티피 참조
+					int gross = Integer.parseInt(rs2.getString("all_gross"));
+					int net = Integer.parseInt(rs2.getString("all_net"));
+					int cuft = Integer.parseInt(rs2.getString("all_cuft"));
+					gb.setPcs(rs2.getString("all_pcs"));
+					gb.setGross(rs2.getString("all_gross"));
+					gb.setNet(rs2.getString("all_net"));
+					gb.setCuft(rs2.getString("all_cuft"));
+					if(tempCode.equals("3")||tempCode.equals("4")||tempCode.equals("5")||tempCode.equals("t")||tempCode.equals("T")){
+						java.text.DecimalFormat df = new java.text.DecimalFormat(",##0.00");
+						density = net/cuft;
+						String den = df.format(density);
+						System.out.println("DEN : "+den);
+						gb.setDensity(den);
+					}
+					else{
+						java.text.DecimalFormat df = new java.text.DecimalFormat(",##0.00");
+						density = gross/cuft;
+						String den = df.format(density);
+						System.out.println("DEN : "+den);
+						gb.setDensity(den);
+					}
+				gb.setPcs(rs2.getString("all_pcs"));
+				}
+				list.add(gb);
+			}//while end
+			disconnect();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return list;
+	}
+	
 	public userBean userAccessValidateCheck(String id,String pw){
 		ub = new userBean();
 		int flag=0;

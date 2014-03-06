@@ -546,49 +546,50 @@ public class CL_DAO_DB_Mysql implements IT_DAO{
 			System.out.println(sql);
 			try {
 				connect();
-			rs = stmt.executeQuery(sql);
-			GblBeans gb = new GblBeans();
+				rs = stmt.executeQuery(sql);
+				GblBeans gb = new GblBeans();
 			
-			while(rs.next()){
-				list.add(gb);
-				String tempCode=rs.getString("code");
-				gblno = rs.getString("bl_no");
-				gb.setPud(rs.getString("pud"));
-				gb.setRdd(rs.getString("rdd"));
-				gb.setScac(rs.getString("scac"));
-				gb.setCode(tempCode);
-				gb.setGblno(rs.getString("bl_no"));
-				gb.setName(rs.getString("customer_name"));
-				gb.setUsno(rs.getString("us_no"));
-				String sql2 = "select * from weight_certificate_list where seq='"+rs.getString("seq")+"'";
-				ResultSet rs2 = stmt.executeQuery(sql2);
-				double density = 0;
-				while(rs2.next()){//웨이서티피 참조
-					int gross = Integer.parseInt(rs2.getString("all_gross"));
-					int net = Integer.parseInt(rs2.getString("all_net"));
-					int cuft = Integer.parseInt(rs2.getString("all_cuft"));
-					gb.setPcs(rs2.getString("all_pcs"));
-					gb.setGross(rs2.getString("all_gross"));
-					gb.setNet(rs2.getString("all_net"));
-					gb.setCuft(rs2.getString("all_cuft"));
-					if(tempCode.equals("3")||tempCode.equals("4")||tempCode.equals("5")||tempCode.equals("t")||tempCode.equals("T")){
-						java.text.DecimalFormat df = new java.text.DecimalFormat(",##0.00");
-						density = net/cuft;
-						String den = df.format(density);
-						System.out.println("DEN : "+den);
-						gb.setDensity(den);
-					}
-					else{
-						java.text.DecimalFormat df = new java.text.DecimalFormat(",##0.00");
-						density = gross/cuft;
-						String den = df.format(density);
-						System.out.println("DEN : "+den);
-						gb.setDensity(den);
-					}
-				gb.setPcs(rs2.getString("all_pcs"));
-				}
-				list.add(gb);
-			}//while end
+				while(rs.next()){
+					list.add(gb);
+					String tempCode=rs.getString("code");
+					gblno = rs.getString("bl_no");
+					gb.setPud(rs.getString("pud"));
+					gb.setRdd(rs.getString("rdd"));
+					gb.setScac(rs.getString("scac"));
+					gb.setCode(tempCode);
+					gb.setGblno(rs.getString("bl_no"));
+					gb.setName(rs.getString("customer_name"));
+					gb.setUsno(rs.getString("us_no"));
+					String sql2 = "select * from weight_certificate_list where seq='"+rs.getString("seq")+"'";
+	//				ResultSet rs2 = stmt.executeQuery(sql2);
+					double density = 0;
+	//				while(rs2.next()){//웨이서티피 참조
+	//					int gross = Integer.parseInt(rs2.getString("all_gross"));
+	//					int net = Integer.parseInt(rs2.getString("all_net"));
+	//					int cuft = Integer.parseInt(rs2.getString("all_cuft"));
+	//					gb.setPcs(rs2.getString("all_pcs"));
+	//					gb.setGross(rs2.getString("all_gross"));
+	//					gb.setNet(rs2.getString("all_net"));
+	//					gb.setCuft(rs2.getString("all_cuft"));
+	//					if(tempCode.equals("3")||tempCode.equals("4")||tempCode.equals("5")||tempCode.equals("t")||tempCode.equals("T")){
+	//						java.text.DecimalFormat df = new java.text.DecimalFormat(",##0.00");
+	//						density = net/cuft;
+	//						String den = df.format(density);
+	//						System.out.println("DEN : "+den);
+	//						gb.setDensity(den);
+	//					}
+	//					else{
+	//						java.text.DecimalFormat df = new java.text.DecimalFormat(",##0.00");
+	//						density = gross/cuft;
+	//						String den = df.format(density);
+	//						System.out.println("DEN : "+den);
+	//						gb.setDensity(den);
+	//					}
+	//					gb.setPcs(rs2.getString("all_pcs"));
+	//				}
+					list.add(gb);
+				}//while end
+			System.out.println("??");
 			disconnect();
 		} catch (Exception e) {
 			e.printStackTrace();

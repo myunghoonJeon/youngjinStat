@@ -13,6 +13,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.Statement;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 
 
@@ -26,7 +27,7 @@ public class CL_DAO_DB_Mysql implements IT_DAO{
 	private String sql2="";
 	private userBean ub = null;
 	private ResultSet rs = null; 
-	
+
 	public void connect() throws Exception{
 		try {
 			Class.forName(jdbc_driver);
@@ -504,89 +505,84 @@ public class CL_DAO_DB_Mysql implements IT_DAO{
 		String gblno="";
 			int whereflag=0;
 			String sql="";
+			String joinstr="";
 			String condition="";
-			String table="";
 //			System.out.println(scac);
-			sql="select * from gbl";
+			sql="select * from gbl,weight_certificate_list ";
 			if(!scac.equals("ALL")){
 				if(whereflag==0){
-					condition+=" where scac='"+scac+"'";
+					condition+=" where gbl.scac='"+scac+"'";
 					whereflag=1;
 				}
 				else{
-					condition+=" and scac='"+scac+"'";
+					condition+=" and gbl.scac='"+scac+"'";
 				}
 			}
 			if(!code.equals("ALL")){
 				if(whereflag==0){
-					condition+=" where code='"+code+"'";
+					condition+=" where gbl.code='"+code+"'";
 					whereflag=1;
 				}
 				else{
-					condition+=" and code='"+code+"'";
+					condition+=" and gbl.code='"+code+"'";
 				}
 			}
 			if(!area.equals("ALL")){
 				if(whereflag==0){
-					condition+=" where area='"+area+"'";
+					condition+=" where gbl.area='"+area+"'";
 				}
 				else{
-					condition+=" and area='"+area+"'";
+					condition+=" and gbl.area='"+area+"'";
 				}
 			}
 			if(!begin.equals("") && !end.equals("")){
 				if(whereflag==0){
-					condition+=" where date > date_format('"+begin+"','%y-%m-%d') and date < date_format('"+end+"','%y-%m-%d')";
+					condition+=" where gbl.date > date_format('"+begin+"','%y-%m-%d') and gbl.date < date_format('"+end+"','%y-%m-%d')";
 				}
 				else{
-					condition+=" and date > date_format('"+begin+"','%y-%m-%d') and date < date_format('"+end+"','%y-%m-%d')";
+					condition+=" and gbl.date > date_format('"+begin+"','%y-%m-%d') and gbl.date < date_format('"+end+"','%y-%m-%d')";
 				}
 			}
-			sql+=condition;
-			System.out.println(sql);
+			if(whereflag==0){
+				joinstr = " where gbl.seq = weight_certificate_list.gbl_seq";
+			}
+			else{
+				joinstr = " and gbl.seq = weight_certificate_list.gbl_seq";
+			}
+			sql+=condition+joinstr;
+			System.out.println("work volume outbound : "+sql);
 			try {
 				connect();
 				rs = stmt.executeQuery(sql);
-				GblBeans gb = new GblBeans();
-			
 				while(rs.next()){
-					list.add(gb);
+					GblBeans gb = new GblBeans();
 					String tempCode=rs.getString("code");
-					gblno = rs.getString("bl_no");
+					gblno = rs.getString("no");
+					System.out.println("work volume outbound : "+gblno);
 					gb.setPud(rs.getString("pud"));
 					gb.setRdd(rs.getString("rdd"));
 					gb.setScac(rs.getString("scac"));
 					gb.setCode(tempCode);
-					gb.setGblno(rs.getString("bl_no"));
+					gb.setGblno(gblno);
 					gb.setName(rs.getString("customer_name"));
 					gb.setUsno(rs.getString("us_no"));
-					String sql2 = "select * from weight_certificate_list where seq='"+rs.getString("seq")+"'";
-	//				ResultSet rs2 = stmt.executeQuery(sql2);
+					gb.setPcs(rs.getString("all_pcs"));
+					gb.setGross(rs.getString("all_gross"));
+					gb.setNet(rs.getString("all_net"));
+					gb.setCuft(rs.getString("all_cuft"));
 					double density = 0;
-	//				while(rs2.next()){//웨이서티피 참조
-	//					int gross = Integer.parseInt(rs2.getString("all_gross"));
-	//					int net = Integer.parseInt(rs2.getString("all_net"));
-	//					int cuft = Integer.parseInt(rs2.getString("all_cuft"));
-	//					gb.setPcs(rs2.getString("all_pcs"));
-	//					gb.setGross(rs2.getString("all_gross"));
-	//					gb.setNet(rs2.getString("all_net"));
-	//					gb.setCuft(rs2.getString("all_cuft"));
-	//					if(tempCode.equals("3")||tempCode.equals("4")||tempCode.equals("5")||tempCode.equals("t")||tempCode.equals("T")){
-	//						java.text.DecimalFormat df = new java.text.DecimalFormat(",##0.00");
-	//						density = net/cuft;
-	//						String den = df.format(density);
-	//						System.out.println("DEN : "+den);
-	//						gb.setDensity(den);
-	//					}
-	//					else{
-	//						java.text.DecimalFormat df = new java.text.DecimalFormat(",##0.00");
-	//						density = gross/cuft;
-	//						String den = df.format(density);
-	//						System.out.println("DEN : "+den);
-	//						gb.setDensity(den);
-	//					}
-	//					gb.setPcs(rs2.getString("all_pcs"));
-	//				}
+					if(gb.getCode().equals("3")||gb.getCode().equals("4")||gb.getCode().equals("5")||gb.getCode().equals("T")||gb.getCode().equals("t")){
+						density = Double.parseDouble(gb.getGross())/Double.parseDouble(gb.getCuft());
+						DecimalFormat df = new DecimalFormat("######0.00");
+						gb.setDensity(df.format(density));
+						System.out.println(gb.getDensity());
+					}
+					else if(gb.getCode().equals("7")||gb.getCode().equals("8")||gb.getCode().equals("j")||gb.getCode().equals("J")){
+						density = Double.parseDouble(gb.getNet())/Double.parseDouble(gb.getCuft());
+						DecimalFormat df = new DecimalFormat("######0.00");
+						gb.setDensity(df.format(density));
+						System.out.println(gb.getDensity());
+					}
 					list.add(gb);
 				}//while end
 			System.out.println("??");

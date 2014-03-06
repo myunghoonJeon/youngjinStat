@@ -150,14 +150,31 @@ public class WorkVolumeFilteringPage extends JFrame implements ActionListener{
 				TableColumnModel tcm = table.getColumnModel();
 				table.setRowSorter(new TableRowSorter(model));
 				JScrollPane scrollpane = new JScrollPane(table);
+				scrollpane.setPreferredSize(new Dimension(840,500));
 				for(int i=0;i<colName.length;i++){
 					tcm.getColumn(i).setCellRenderer(dtcr);
 				}
 				list = dao.getOutboundGblList(scac, inout, code, area, begin, end);
+				int totalCount=0;
+				int totalPcs=0;
+				int totalGross=0;
+				int totalNet=0;
+				int totalCuft=0;
 				for(int i=0;i<list.size();i++){
-					System.out.println("list : "+list.get(i).getGblno());
+					String[] insertRow = {list.get(i).getPud(),list.get(i).getRdd(),list.get(i).getScac(),list.get(i).getCode(),list.get(i).getGblno(),list.get(i).getName()
+							, list.get(i).getUsno(),list.get(i).getArea(),list.get(i).getPcs(),list.get(i).getGross(),list.get(i).getNet(),list.get(i).getCuft(), list.get(i).getDensity()};
+					totalCount++;
+					totalPcs+=Integer.parseInt(list.get(i).getPcs());
+					totalGross+=Integer.parseInt(list.get(i).getGross());
+					totalNet+=Integer.parseInt(list.get(i).getNet());
+					totalCuft+=Integer.parseInt(list.get(i).getCuft());
+					model.addRow(insertRow);
 				}
-			}
+				String[] totalRow = {"TOTAL","","","",totalCount+"건","","","",totalPcs+"",totalGross+"",totalNet+"",totalCuft+"",""};
+				model.addRow(totalRow);
+				center.add(scrollpane);
+				validate();
+			}//if
 			else if(inout.equals("IN")){
 				
 			}

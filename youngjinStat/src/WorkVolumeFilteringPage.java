@@ -3,6 +3,7 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.awt.GridLayout;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -30,7 +31,11 @@ public class WorkVolumeFilteringPage extends JFrame implements ActionListener{
 	JComboBox scacCombo = new JComboBox(dao.getScacListWork().toArray());
 	JComboBox inoutCombo = new JComboBox(dao.getInOutList().toArray());
 	JComboBox codeCombo = new JComboBox(dao.getCodeList().toArray());
-	JButton searchBtn = new JButton("SEARCH");
+	JButton outboundSearchBtn = new JButton("SEARCH");
+	JButton inboundSearchBtn = new JButton("SEARCH");
+	
+	JButton outboundBtn = new JButton("OUTBOUND");
+	JButton inboundBtn = new JButton("INBOUND");
 	
 	JLabel itemsLabel = new JLabel("Items :");
 	JLabel areaLabel = new JLabel("　　AREA :");
@@ -38,11 +43,13 @@ public class WorkVolumeFilteringPage extends JFrame implements ActionListener{
 	JLabel between = new JLabel("~");
 	JLabel bigCenterItems = new JLabel("");
 	JLabel bigCenterArea = new JLabel("");
-	
+
 	JTextField startPeriod =  new JTextField("",8);
 	JTextField endPeriod = new JTextField("",8);
 	
 	JPanel center;
+	
+	JPanel mainCenter = new JPanel();
 	
 	public WorkVolumeFilteringPage() {
 		super("");
@@ -60,8 +67,11 @@ public class WorkVolumeFilteringPage extends JFrame implements ActionListener{
 	}
 	
 	public void addActionListner(){
-		searchBtn.addActionListener(this);
+		outboundSearchBtn.addActionListener(this);
+		outboundBtn.addActionListener(this);
+		inboundBtn.addActionListener(this);
 	}
+	
 	public void autoCreateBorderLayout(JPanel a,int wx, int ex, int ny, int sy){
 		a.setLayout(new BorderLayout());
 		JPanel[] j =  new JPanel[4];
@@ -89,11 +99,21 @@ public class WorkVolumeFilteringPage extends JFrame implements ActionListener{
 		a.add("South",j[3]);
 		validate();
 	}
+	
 	public void initLayout(){
 		JPanel jp = new JPanel();
+		JPanel jpCenter = new JPanel();
 		autoCreateBorderLayout(jp, 20, 20, 10, 10);
-		JPanel mainCenter = new JPanel();
 		jp.add("Center",mainCenter);
+		autoCreateBorderLayout(mainCenter, 300, 300,200, 250);
+		mainCenter.add("Center",jpCenter);
+		jpCenter.setLayout(new GridLayout(2,1,20,30));
+		jpCenter.add(outboundBtn);
+		jpCenter.add(inboundBtn);
+		super.add(jp);
+	}
+	
+	public void outboundLayout(JPanel mainCenter){
 		mainCenter.setLayout(new BorderLayout());
 		JPanel north = new JPanel();
 		center = new JPanel();
@@ -119,7 +139,7 @@ public class WorkVolumeFilteringPage extends JFrame implements ActionListener{
 			north.add(between);
 			north.add(endPeriod);
 			north.add(new JLabel("　　"));
-			north.add(searchBtn);
+			north.add(outboundSearchBtn);
 		mainCenter.add("Center",bigCenter);
 			bigCenter.setLayout(new BorderLayout());
 			bigCenter.add("North",bcn);
@@ -128,13 +148,21 @@ public class WorkVolumeFilteringPage extends JFrame implements ActionListener{
 				bcn.add(bigCenterItems);
 				bcn.add(bigCenterArea);
 			center.setBorder(BorderFactory.createLineBorder(Color.DARK_GRAY));
-			super.add(jp);
+			validate();
 	}
-
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		ArrayList<GblBeans> list = new ArrayList<>();
-		if(e.getSource() == searchBtn){
+		
+		if(e.getSource() == outboundBtn){
+			
+		}
+		
+		if(e.getSource() == inboundBtn){
+			
+		}
+		
+		if(e.getSource() == outboundSearchBtn){
 			String scac = scacCombo.getSelectedItem().toString();
 			String inout = inoutCombo.getSelectedItem().toString();
 			String code = codeCombo.getSelectedItem().toString();
@@ -172,13 +200,25 @@ public class WorkVolumeFilteringPage extends JFrame implements ActionListener{
 				}
 				String[] totalRow = {"TOTAL","","","",totalCount+"건","","","",totalPcs+"",totalGross+"",totalNet+"",totalCuft+"",""};
 				model.addRow(totalRow);
+				setTableColumnSize(table, 2,-15);
+				setTableColumnSize(table, 3,-25);
+				setTableColumnSize(table, 4,30);
+				setTableColumnSize(table, 5,65);
+				setTableColumnSize(table, 6,-25);
+				setTableColumnSize(table, 7,-15);
+				setTableColumnSize(table, 8,-35);
+				setTableColumnSize(table, 9,-15);
+				setTableColumnSize(table, 10,-25);
+				setTableColumnSize(table, 11,-25);
+				setTableColumnSize(table, 12,-15);
 				center.add(scrollpane);
 				validate();
-			}//if
-			else if(inout.equals("IN")){
-				
 			}
 		}
 		
+	}
+	public void setTableColumnSize(JTable table,int colNum, int size){
+		int prefer = table.getColumnModel().getColumn(colNum).getPreferredWidth();
+		table.getColumnModel().getColumn(colNum).setPreferredWidth(prefer+size);
 	}
 }

@@ -3,7 +3,7 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
-import java.awt.GridLayout;
+import java.awt.Font;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -31,8 +31,8 @@ public class WorkVolumeFilteringPage extends JFrame implements ActionListener{
 	JComboBox scacCombo = new JComboBox(dao.getScacListWork().toArray());
 	JComboBox inoutCombo = new JComboBox(dao.getInOutList().toArray());
 	JComboBox codeCombo = new JComboBox(dao.getCodeList().toArray());
-	JButton outboundSearchBtn = new JButton("SEARCH");
-	JButton inboundSearchBtn = new JButton("SEARCH");
+	JButton searchBtn = new JButton("SEARCH");
+	
 	
 	JButton outboundBtn = new JButton("OUTBOUND");
 	JButton inboundBtn = new JButton("INBOUND");
@@ -40,22 +40,30 @@ public class WorkVolumeFilteringPage extends JFrame implements ActionListener{
 	JLabel itemsLabel = new JLabel("Items :");
 	JLabel areaLabel = new JLabel("　　AREA :");
 	JLabel periodLabel = new JLabel("　　PUD Period(YYYYMMDD) :");
-	JLabel between = new JLabel("~");
 	JLabel bigCenterItems = new JLabel("");
 	JLabel bigCenterArea = new JLabel("");
 
-	JTextField startPeriod =  new JTextField("",8);
-	JTextField endPeriod = new JTextField("",8);
+	JTextField pudStartPeriod =  new JTextField("",8);
+	JTextField pudEndPeriod = new JTextField("",8);
+	JTextField rddStartPeriod = new JTextField("",8);
+	JTextField rddEndPeriod = new JTextField("",8);
+	JTextField onhandStartPeriod = new JTextField("",8);
+	JTextField onhandEndPeriod = new JTextField("",8);
 	
 	JPanel center;
-	
+	////////////////////////////////////////////////////////////////	
 	JPanel mainCenter = new JPanel();
-	
+	JPanel north = new JPanel();
+	JPanel jp = new JPanel();
+	JPanel jpCenter = new JPanel();
+	JPanel bigCenter = new JPanel();
+	JPanel bcn = new JPanel();
+	////////////////////////////////////////////////////////////////
 	public WorkVolumeFilteringPage() {
 		super("");
 		super.setVisible(true);
 		super.setResizable(false);
-		super.setSize(900,650);
+		super.setSize(1000,650);
 		Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
 		Dimension frm = super.getSize();
 		int y = (int)(screen.height/2 - frm.height/2);
@@ -67,9 +75,10 @@ public class WorkVolumeFilteringPage extends JFrame implements ActionListener{
 	}
 	
 	public void addActionListner(){
-		outboundSearchBtn.addActionListener(this);
+		searchBtn.addActionListener(this);
 		outboundBtn.addActionListener(this);
 		inboundBtn.addActionListener(this);
+		inoutCombo.addActionListener(this);
 	}
 	
 	public void autoCreateBorderLayout(JPanel a,int wx, int ex, int ny, int sy){
@@ -101,24 +110,11 @@ public class WorkVolumeFilteringPage extends JFrame implements ActionListener{
 	}
 	
 	public void initLayout(){
-		JPanel jp = new JPanel();
-		JPanel jpCenter = new JPanel();
+		
 		autoCreateBorderLayout(jp, 20, 20, 10, 10);
 		jp.add("Center",mainCenter);
-		autoCreateBorderLayout(mainCenter, 300, 300,200, 250);
-		mainCenter.add("Center",jpCenter);
-		jpCenter.setLayout(new GridLayout(2,1,20,30));
-		jpCenter.add(outboundBtn);
-		jpCenter.add(inboundBtn);
-		super.add(jp);
-	}
-	
-	public void outboundLayout(JPanel mainCenter){
 		mainCenter.setLayout(new BorderLayout());
-		JPanel north = new JPanel();
 		center = new JPanel();
-		JPanel bigCenter = new JPanel();
-		JPanel bcn = new JPanel();
 		bcn.setPreferredSize(new Dimension(0,25));
 		bcn.setBackground(Color.white);
 		mainCenter.add("North",north);
@@ -134,12 +130,12 @@ public class WorkVolumeFilteringPage extends JFrame implements ActionListener{
 			north.add(new JLabel("AREA : "));
 			north.add(areaCombo);
 			areaCombo.setMaximumRowCount(15);
-			north.add(new JLabel("PUD PERIOD : "));
-			north.add(startPeriod);
-			north.add(between);
-			north.add(endPeriod);
+			north.add(new JLabel("PUD : "));
+			north.add(pudStartPeriod);
+			north.add(new JLabel("~"));
+			north.add(pudEndPeriod);
 			north.add(new JLabel("　　"));
-			north.add(outboundSearchBtn);
+			north.add(searchBtn);
 		mainCenter.add("Center",bigCenter);
 			bigCenter.setLayout(new BorderLayout());
 			bigCenter.add("North",bcn);
@@ -148,28 +144,83 @@ public class WorkVolumeFilteringPage extends JFrame implements ActionListener{
 				bcn.add(bigCenterItems);
 				bcn.add(bigCenterArea);
 			center.setBorder(BorderFactory.createLineBorder(Color.DARK_GRAY));
-			validate();
+		super.add(jp);
 	}
+	
+	
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		ArrayList<GblBeans> list = new ArrayList<>();
-		
-		if(e.getSource() == outboundBtn){
-			
+		if(e.getSource() == inoutCombo){
+			if(inoutCombo.getSelectedItem().equals("OUT")){
+				north.removeAll();
+				center.removeAll();
+				center.setBorder(BorderFactory.createLineBorder(Color.DARK_GRAY));
+				north.setPreferredSize(new Dimension(0,40));
+				north.setLayout(new FlowLayout(FlowLayout.LEFT));
+				north.add(new JLabel("SCAC : "));
+				north.add(scacCombo);
+				scacCombo.setMaximumRowCount(20);
+				north.add(new JLabel("IN/OUT : "));
+				north.add(inoutCombo);
+				north.add(new JLabel("CODE : "));
+				north.add(codeCombo);
+				north.add(new JLabel("AREA : "));
+				north.add(areaCombo);
+				areaCombo.setMaximumRowCount(15);
+				north.add(new JLabel("PUD : "));
+				north.add(pudStartPeriod);
+				north.add(new JLabel("~"));
+				north.add(pudEndPeriod);
+				north.add(new JLabel("　　"));
+				north.add(searchBtn);
+				validate();
+			}
+			else{
+				JPanel term = new JPanel();
+				north.removeAll();
+				center.removeAll();
+				center.setBorder(BorderFactory.createLineBorder(Color.DARK_GRAY));
+				north.setPreferredSize(new Dimension(0,70));
+				north.setLayout(new FlowLayout(FlowLayout.LEFT));
+				north.add(new JLabel("SCAC : "));
+				north.add(scacCombo);
+				scacCombo.setMaximumRowCount(20);
+				north.add(new JLabel("IN/OUT : "));
+				north.add(inoutCombo);
+				north.add(new JLabel("CODE : "));
+				north.add(codeCombo);
+				north.add(new JLabel("AREA : "));
+				north.add(areaCombo);
+				areaCombo.setMaximumRowCount(15);
+				north.add(new JLabel("PUD : "));
+				north.add(pudStartPeriod);
+				north.add(new JLabel("~"));
+				north.add(pudEndPeriod);
+				north.add(term);
+//				term.setPreferredSize(new Dimension(200,30));
+				north.add(new JLabel("RDD : "));
+				north.add(rddStartPeriod);
+				north.add(new JLabel("~"));
+				north.add(rddEndPeriod);
+				north.add(new JLabel("ON HAND : "));
+				north.add(onhandStartPeriod);
+				north.add(new JLabel("~"));
+				north.add(onhandEndPeriod);
+				north.add(searchBtn);
+				validate();
+			}
 		}
-		
-		if(e.getSource() == inboundBtn){
-			
-		}
-		
-		if(e.getSource() == outboundSearchBtn){
-			String scac = scacCombo.getSelectedItem().toString();
-			String inout = inoutCombo.getSelectedItem().toString();
-			String code = codeCombo.getSelectedItem().toString();
-			String area = areaCombo.getSelectedItem().toString();
-			String begin = startPeriod.getText();
-			String end = endPeriod.getText();
-			if(inout.equals("OUT")){
+		if(e.getSource() == searchBtn){
+			if(inoutCombo.getSelectedItem().equals("OUT")){
+				center.removeAll();
+				center.setBorder(null);
+				String scac = scacCombo.getSelectedItem().toString();
+				String inout = inoutCombo.getSelectedItem().toString();
+				String code = codeCombo.getSelectedItem().toString();
+				String area = areaCombo.getSelectedItem().toString();
+				String begin = pudStartPeriod.getText();
+				String end = pudEndPeriod.getText();
 				String colName[] = {"PUD","RDD","SCAC","CODE","GBL NO","NAME","US NO","AREA","PCS","GROSS","NET","CUFT","DENSITY"};
 				DefaultTableCellRenderer dtcr = new DefaultTableCellRenderer();
 				DefaultTableModel model = new DefaultTableModel(colName,0);
@@ -177,8 +228,11 @@ public class WorkVolumeFilteringPage extends JFrame implements ActionListener{
 				dtcr.setHorizontalAlignment(SwingConstants.CENTER);
 				TableColumnModel tcm = table.getColumnModel();
 				table.setRowSorter(new TableRowSorter(model));
+				table.setFont(new Font( "" , Font.PLAIN, 11 ));
+		        table.getTableHeader().setFont( new Font( "" , Font.PLAIN, 11 ));
 				JScrollPane scrollpane = new JScrollPane(table);
-				scrollpane.setPreferredSize(new Dimension(840,500));
+				scrollpane.setPreferredSize(new Dimension(950,600));
+				scrollpane.setBorder(BorderFactory.createLineBorder(Color.DARK_GRAY));
 				for(int i=0;i<colName.length;i++){
 					tcm.getColumn(i).setCellRenderer(dtcr);
 				}
@@ -211,12 +265,77 @@ public class WorkVolumeFilteringPage extends JFrame implements ActionListener{
 				setTableColumnSize(table, 10,-25);
 				setTableColumnSize(table, 11,-25);
 				setTableColumnSize(table, 12,-15);
+				scrollpane.setPreferredSize(new Dimension(950,550));
 				center.add(scrollpane);
 				validate();
+			}//out if
+		else if(inoutCombo.getSelectedItem().equals("IN")){
+			center.removeAll();
+			center.setBorder(null);
+			String scac = scacCombo.getSelectedItem().toString();
+			String inout = inoutCombo.getSelectedItem().toString();
+			String code = codeCombo.getSelectedItem().toString();
+			String area = areaCombo.getSelectedItem().toString();
+			String pudBegin = pudStartPeriod.getText();
+			String pudEnd = pudEndPeriod.getText();
+			String rddBegin = rddStartPeriod.getText();
+			String rddEnd = rddEndPeriod.getText();
+			String onhandBegin = onhandStartPeriod.getText();
+			String onhandEnd = onhandEndPeriod.getText();
+			String colName[] = {"PUD","RDD","SCAC","CODE","GBL NO","NAME","US NO","AREA","PCS","GROSS","NET","CUFT","DENSITY","ON HAND","SIT IN","SIT OUT","SIT NO"};
+			DefaultTableCellRenderer dtcr = new DefaultTableCellRenderer();
+			DefaultTableModel model = new DefaultTableModel(colName,0);
+			JTable table = new JTable(model);
+			
+			dtcr.setHorizontalAlignment(SwingConstants.CENTER);
+			TableColumnModel tcm = table.getColumnModel();
+			table.setRowSorter(new TableRowSorter(model));
+            table.setFont(new Font( "" , Font.PLAIN, 11 ));
+            table.getTableHeader().setFont( new Font( "" , Font.PLAIN, 11 ));
+			JScrollPane scrollpane = new JScrollPane(table);
+			scrollpane.setPreferredSize(new Dimension(950,550));
+			scrollpane.setBorder(BorderFactory.createLineBorder(Color.DARK_GRAY));
+			for(int i=0;i<colName.length;i++){
+				tcm.getColumn(i).setCellRenderer(dtcr);
 			}
+			list = dao.getInboundGblList(scac, inout, code, area, pudBegin, pudEnd,rddBegin,rddEnd,onhandBegin,onhandEnd);
+			int totalCount=0;
+			int totalPcs=0;
+			int totalGross=0;
+			int totalNet=0;
+			int totalCuft=0;
+			for(int i=0;i<list.size();i++){
+				String[] insertRow = {list.get(i).getPud(),list.get(i).getRdd(),list.get(i).getScac(),list.get(i).getCode(),list.get(i).getGblno(),list.get(i).getName()
+						, list.get(i).getUsno(),list.get(i).getArea(),list.get(i).getPcs(),list.get(i).getGross(),list.get(i).getNet(),list.get(i).getCuft(), list.get(i).getDensity()
+						,list.get(i).getOnhand(),list.get(i).getSitIn(),list.get(i).getSitOut(),list.get(i).getSitNo()};
+				totalCount++;
+				totalPcs+=Integer.parseInt(list.get(i).getPcs());
+				totalGross+=Integer.parseInt(list.get(i).getGross());
+				totalNet+=Integer.parseInt(list.get(i).getNet());
+				totalCuft+=Integer.parseInt(list.get(i).getCuft());
+				model.addRow(insertRow);
+			}
+			String[] totalRow = {"TOTAL","","","",totalCount+"건","","","",totalPcs+"",totalGross+"",totalNet+"",totalCuft+""};
+			model.addRow(totalRow);
+			setTableColumnSize(table, 2,-15);
+			setTableColumnSize(table, 3,-25);
+			setTableColumnSize(table, 4,30);
+			setTableColumnSize(table, 5,65);
+			setTableColumnSize(table, 6,-25);
+			setTableColumnSize(table, 7,-15);
+			setTableColumnSize(table, 8,-35);
+			setTableColumnSize(table, 9,-15);
+			setTableColumnSize(table, 10,-25);
+			setTableColumnSize(table, 11,-25);
+			setTableColumnSize(table, 12,-15);
+			center.add(scrollpane);
+			validate();
 		}
+		}//if
 		
-	}
+	}//method
+	
+	
 	public void setTableColumnSize(JTable table,int colNum, int size){
 		int prefer = table.getColumnModel().getColumn(colNum).getPreferredWidth();
 		table.getColumnModel().getColumn(colNum).setPreferredWidth(prefer+size);

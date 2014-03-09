@@ -1,19 +1,54 @@
 
 public class GblBeans {
-	String pud;
-	String rdd;
-	String scac;
-	String code;
-	String gblno;
-	String name;
-	String usno;
-	String area;
-	String pcs;
-	String gross;
-	String net;
-	String cuft;
-	String density;
+	String pud="";
+	String rdd="";
+	String scac="";
+	String code="";
+	String gblno="";
+	String name="";
+	String usno="";
+	String area="";
+	String pcs="";
+	String gross="";
+	String net="";
+	String cuft="";
+	String density="";
+	String onhand="";
+	String sitIn="";
+	String sitOut="";
+	String sitNo="";
+	String seq="";
 	
+	public String getSeq() {
+		return seq;
+	}
+	public void setSeq(String seq) {
+		this.seq = seq;
+	}
+	public String getOnhand() {
+		return onhand;
+	}
+	public void setOnhand(String onhand) {
+		this.onhand = onhand;
+	}
+	public String getSitIn() {
+		return sitIn;
+	}
+	public void setSitIn(String sitIn) {
+		this.sitIn = sitIn;
+	}
+	public String getSitOut() {
+		return sitOut;
+	}
+	public void setSitOut(String sitOut) {
+		this.sitOut = sitOut;
+	}
+	public String getSitNo() {
+		return sitNo;
+	}
+	public void setSitNo(String sitNo) {
+		this.sitNo = sitNo;
+	}
 	public String getPud() {
 		return pud;
 	}

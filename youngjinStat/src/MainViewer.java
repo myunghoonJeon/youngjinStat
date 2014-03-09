@@ -451,6 +451,8 @@ public class MainViewer extends JFrame implements ActionListener{
 		inventoryFilteringBtn.addActionListener(this);
 		inventoryStatBtn.addActionListener(this);
 		workVolumeFilteringBtn.addActionListener(this);
+		workvolumeStat2Btn.addActionListener(this);
+		workVolumestat1Btn.addActionListener(this);
 	}
 	
 	public void inputOpen(String item, String type){
@@ -467,6 +469,10 @@ public class MainViewer extends JFrame implements ActionListener{
 	
 	public void workVolumeFilteringPage(){
 		WorkVolumeFilteringPage wvf = new WorkVolumeFilteringPage();
+	}
+	
+	public void workVolumeStat1(){
+		WorkVolumeStat1 ws1 = new WorkVolumeStat1();
 	}
 	
 	public void actionPerformed(ActionEvent e) {
@@ -548,6 +554,12 @@ public class MainViewer extends JFrame implements ActionListener{
 		/***********[work volume filtering Buttons]***********/
 		else if(e.getSource() == workVolumeFilteringBtn){
 			workVolumeFilteringPage();
+		}
+		else if(e.getSource() == workVolumestat1Btn){
+			workVolumeStat1();
+		}
+		else if(e.getSource() == workvolumeStat2Btn){
+			
 		}
 	}
 	

@@ -61,6 +61,15 @@ public class CL_DAO_DB_Mysql implements IT_DAO{
 		}
 		return bool;
 	}
+	
+	public ArrayList<String> getAllInOutList(){
+		ArrayList<String> list = new ArrayList<>();
+		list.add("ALL");
+		list.add("OUT");
+		list.add("IN");
+		return list;
+	}
+	
 	public ArrayList<String> getInOutList(){
 		ArrayList<String> list = new ArrayList<>();
 		list.add("OUT");
@@ -83,6 +92,13 @@ public class CL_DAO_DB_Mysql implements IT_DAO{
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		return list;
+	}
+	public ArrayList<String> getHhgUbList(){
+		ArrayList<String> list = new ArrayList<>();
+		list.add("ALL");
+		list.add("HHG");
+		list.add("UB");
 		return list;
 	}
 	public boolean insertSuppliedInput(String item,String date,String units,String area,String prise,String scac,String type){
@@ -234,7 +250,7 @@ public class CL_DAO_DB_Mysql implements IT_DAO{
 					list.add(isb);
 				}
 			}
-			System.out.println("????");
+			
 			System.out.println("sqlBeginPurchase : "+sqlBeginPurchase);
 			rs = stmt.executeQuery(sqlBeginPurchase);//begin section down amounts // up quantity
 			while(rs.next()){
@@ -570,6 +586,7 @@ public class CL_DAO_DB_Mysql implements IT_DAO{
 					gb.setGross(rs.getString("all_gross"));
 					gb.setNet(rs.getString("all_net"));
 					gb.setCuft(rs.getString("all_cuft"));
+					
 					double density = 0;
 					if(gb.getCode().equals("3")||gb.getCode().equals("4")||gb.getCode().equals("5")||gb.getCode().equals("T")||gb.getCode().equals("t")){
 						density = Double.parseDouble(gb.getGross())/Double.parseDouble(gb.getCuft());
@@ -585,14 +602,149 @@ public class CL_DAO_DB_Mysql implements IT_DAO{
 					}
 					list.add(gb);
 				}//while end
-			System.out.println("??");
+				
 			disconnect();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		return list;
 	}
-	
+	public ArrayList<GblBeans> getInboundGblList(String scac,String inout,String code, String area, String pudBegin,String pudEnd,String rddBegin,String rddEnd,String onhandBegin,String onhandEnd){
+		ArrayList<GblBeans> list = new ArrayList<>();
+		String gblno="";
+			int whereflag=0;
+			String sql="";
+			String joinstr="";
+			String condition="";
+//			System.out.println(scac);
+			sql="select * from gbl_ib ";
+			if(!scac.equals("ALL")){
+				if(whereflag==0){
+					condition+=" where tsp='"+scac+"'";
+					whereflag=1;
+				}
+				else{
+					condition+=" and tsp='"+scac+"'";
+				}
+			}
+			if(!code.equals("ALL")){
+				if(whereflag==0){
+					condition+=" where code='"+code+"'";
+					whereflag=1;
+				}
+				else{
+					condition+=" and code='"+code+"'";
+				}
+			}
+			if(!area.equals("ALL")){
+				if(whereflag==0){
+					condition+=" where area='"+area+"'";
+				}
+				else{
+					condition+=" and area='"+area+"'";
+				}
+			}
+			if(!pudBegin.equals("") && !pudEnd.equals("")){
+				if(whereflag==0){
+					condition+=" where pud > date_format('"+pudBegin+"','%y-%m-%d') and pud < date_format('"+pudEnd+"','%y-%m-%d')";
+				}
+				else{
+					condition+=" and pud > date_format('"+pudBegin+"','%y-%m-%d') and pud < date_format('"+pudEnd+"','%y-%m-%d')";
+				}
+			}
+			if(!rddBegin.equals("") && !rddEnd.equals("")){
+				if(whereflag==0){
+					condition+=" where rdd > date_format('"+pudBegin+"','%y-%m-%d') and rdd < date_format('"+pudEnd+"','%y-%m-%d')";
+				}
+				else{
+					condition+=" and rdd > date_format('"+pudBegin+"','%y-%m-%d') and rdd < date_format('"+pudEnd+"','%y-%m-%d')";
+				}
+			}
+			if(!onhandBegin.equals("") && !onhandEnd.equals("")){
+				if(whereflag==0){
+					condition+=" where onHandDate > date_format('"+pudBegin+"','%y-%m-%d') and onHandDate < date_format('"+pudEnd+"','%y-%m-%d')";
+				}
+				else{
+					condition+=" and onHandDate > date_format('"+pudBegin+"','%y-%m-%d') and onHandDate < date_format('"+pudEnd+"','%y-%m-%d')";
+				}
+			}
+			sql+=condition;
+			System.out.println("work volume inbound : "+sql);
+			try {
+				connect();
+				rs = stmt.executeQuery(sql);
+				while(rs.next()){
+					GblBeans gb = new GblBeans();
+					String tempCode=rs.getString("code");
+					gblno = rs.getString("gblNo");
+					System.out.println("work volume outbound : "+gblno);
+					gb.setPud(rs.getString("pud"));
+					gb.setRdd(rs.getString("rdd"));
+					gb.setScac(rs.getString("tsp"));
+					gb.setCode(tempCode);
+					gb.setGblno(gblno);
+					gb.setName(rs.getString("shipperName"));
+//					gb.setUsno(rs.getString("us_no"));
+					gb.setOnhand(rs.getString("onHandDate"));
+					gb.setSitIn(rs.getString("sitIn"));
+					gb.setSitOut(rs.getString("sitOut"));
+					gb.setSitNo(rs.getString("sitNo"));
+					gb.setSeq(rs.getString("seq"));
+					double density = 0;
+					
+					list.add(gb);
+				}//while end
+			System.out.println("??");
+			disconnect();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		for(int i=0;i<list.size();i++){
+			GblBeans gb = new GblBeans();
+			double density=0;
+			gb = list.get(i);
+			String seq = gb.getSeq();
+			String qry = "select * from weight_ib where gblSeq='"+seq+"'";
+			System.out.println(qry);
+			int totalPcs=0;
+			int totalGross=0;
+			int totalNet=0;
+			int totalCuft=0;
+			try{
+				connect();
+				rs = stmt.executeQuery(qry);
+				while(rs.next()){
+					totalGross += Integer.parseInt(rs.getString("gross"));
+					totalNet += Integer.parseInt(rs.getString("net"));
+					totalCuft += Integer.parseInt(rs.getString("cuft"));
+					totalPcs++;
+				}
+				gb.setGross(totalGross+"");
+				gb.setNet(totalNet+"");
+				gb.setCuft(totalCuft+"");
+				gb.setPcs(totalPcs+"");
+				disconnect();
+			}catch(Exception e){
+				e.printStackTrace();
+			}
+			if(gb.getCode().equals("3")||gb.getCode().equals("4")||gb.getCode().equals("5")||gb.getCode().equals("T")||gb.getCode().equals("t")){
+				density = Double.parseDouble(gb.getGross())/Double.parseDouble(gb.getCuft());
+				DecimalFormat df = new DecimalFormat("######0.00");
+				gb.setDensity(df.format(density));
+			}
+			else if(gb.getCode().equals("7")||gb.getCode().equals("8")||gb.getCode().equals("j")||gb.getCode().equals("J")){
+				density = Double.parseDouble(gb.getNet())/Double.parseDouble(gb.getCuft());
+				DecimalFormat df = new DecimalFormat("######0.00");
+				gb.setDensity(df.format(density));
+			}
+			System.out.println("inbound seq : "+seq);
+			System.out.println("inbound pcs : "+gb.getPcs());
+			System.out.println("inbound totalGross : "+gb.getGross());
+			System.out.println("inbound totalNet : "+gb.getNet());
+			System.out.println("density : "+gb.getDensity());
+		}			
+		return list;
+	}
 	public userBean userAccessValidateCheck(String id,String pw){
 		ub = new userBean();
 		int flag=0;

@@ -677,21 +677,10 @@ public class CL_DAO_DB_Mysql implements IT_DAO{
 					GblBeans gb = new GblBeans();
 					String tempCode=rs.getString("code");
 					gblno = rs.getString("gblNo");
-					System.out.println("work volume outbound : "+gblno);
-					gb.setPud(rs.getString("pud"));
-					gb.setRdd(rs.getString("rdd"));
 					gb.setScac(rs.getString("tsp"));
 					gb.setCode(tempCode);
 					gb.setGblno(gblno);
-					gb.setName(rs.getString("shipperName"));
-//					gb.setUsno(rs.getString("us_no"));
-					gb.setOnhand(rs.getString("onHandDate"));
-					gb.setSitIn(rs.getString("sitIn"));
-					gb.setSitOut(rs.getString("sitOut"));
-					gb.setSitNo(rs.getString("sitNo"));
 					gb.setSeq(rs.getString("seq"));
-					double density = 0;
-					
 					list.add(gb);
 				}//while end
 			System.out.println("??");
@@ -774,6 +763,44 @@ public class CL_DAO_DB_Mysql implements IT_DAO{
 		}
 	}
 	
+	public String[][] getInWorkVolumeStat1(String scac,String area,String hhgUb,String code,String begin,String end){
+		String[][] str = new String[25][20];
+		String gblno="";
+//		int whereflag=0;
+		String sql="";
+		String joinstr="";
+		String condition="";
+//		System.out.println(scac);
+		//INBOUND
+		sql="select * from invoice_gbl,gbl_ib where invoice_gbl.gbl_seq = gbl_ib.seq";
+		if(!scac.equals("ALL")){
+			condition+=" and gbl_ib.tsp='"+scac+"'";
+		}
+		if(!code.equals("ALL")){
+				condition+=" and gbl_ib.code='"+code+"'";
+		}
+		if(!area.equals("ALL")){
+			condition+=" and gbl_ib.area='"+area+"'";
+		}
+		if(!begin.equals("") && !end.equals("")){
+				condition+=" and gbl_ib.pud > date_format('"+begin+"','%y-%m-%d') and gbl_ib.pud < date_format('"+end+"','%y-%m-%d')";
+		}
+		sql+=condition+" group by gbl_seq";
+		System.out.println("work volume inbound : "+sql);
+		try {
+			connect();
+			rs = stmt.executeQuery(sql);
+			while(rs.next()){
+				String tempCode = rs.getString("code");
+				String tempArea = rs.getString("area");
+			}
+			disconnect();
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return str;
+	}
 //	public Boolean inventoryInput(){
 //		
 //	}

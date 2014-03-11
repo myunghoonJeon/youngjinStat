@@ -131,19 +131,41 @@ public class WorkVolumeStat1 extends JFrame implements ActionListener{
 				bcn.setLayout(new FlowLayout(FlowLayout.LEFT));
 				bcn.setPreferredSize(new Dimension(0,25));
 			bigCenter.add("Center",center);
-			center.setBorder(BorderFactory.createLineBorder(Color.DARK_GRAY));
-			MultipleRowHeaderExample frame = new MultipleRowHeaderExample();
+			String[][] initStr = new String[23][20];
+			for(int i=0;i<23;i++){
+				for(int k=0;k<20;k++){
+					initStr[i][k] = new String();
+					initStr[i][k] = "";
+				}
+			}
+			MultipleRowHeaderExample frame = new MultipleRowHeaderExample(initStr);
 			JScrollPane js = frame.getWorkVolumeStat1Table();
-			js.setPreferredSize(new Dimension(950,500));
+			js.setPreferredSize(new Dimension(950,530));
 			center.add(js);
 		super.add(jp);
+	}
+	
+	public void getResult(){
+		center.removeAll();
+		String[][] initStr = new String[23][20];
+		for(int i=0;i<25;i++){
+			for(int k=0;k<20;k++){
+				initStr[i][k] = new String();
+				initStr[i][k] = k+"";
+			}
+		}
+		MultipleRowHeaderExample frame = new MultipleRowHeaderExample(initStr);
+		JScrollPane js = frame.getWorkVolumeStat1Table();
+		js.setPreferredSize(new Dimension(950,530));
+		center.add(js);
+		validate();
 	}
 	
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		ArrayList<GblBeans> list = new ArrayList<>();
 		if(e.getSource() == searchBtn){
-			
+			getResult();
 		}//if
 		
 	}//method

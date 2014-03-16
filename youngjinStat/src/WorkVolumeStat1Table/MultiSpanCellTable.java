@@ -3,7 +3,7 @@
  * 
  */
 
-package spanTable;
+package WorkVolumeStat1Table;
 
 import java.util.*;
 import java.awt.*;

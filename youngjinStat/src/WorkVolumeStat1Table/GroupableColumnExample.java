@@ -1,4 +1,4 @@
-package spanTable;
+package WorkVolumeStat1Table;
 
 import java.awt.Color;
 import java.awt.Component;
@@ -33,6 +33,7 @@ public class GroupableColumnExample extends JFrame {
 	
 	
     GroupableColumnExample(String [][]val) {
+    	System.out.println("val example : "+val[2][2]);
         String[] jobWeight = new String[20];
         for(int i=0;i<20;i++){
         	jobWeight[i] = new String();
@@ -47,7 +48,7 @@ public class GroupableColumnExample extends JFrame {
        test = val;
         DefaultTableModel dm = new DefaultTableModel();
         
-        dm.setDataVector(test,jobWeight);
+        dm.setDataVector(val,jobWeight);
             // Setup table
             table.setColumnModel(new GroupableTableColumnModel());
             table.setTableHeader(new GroupableTableHeader((GroupableTableColumnModel)table.getColumnModel()));

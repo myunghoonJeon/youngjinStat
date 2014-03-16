@@ -1,4 +1,4 @@
-package spanTable;
+package WorkVolumeStat1Table;
 
 
 /**

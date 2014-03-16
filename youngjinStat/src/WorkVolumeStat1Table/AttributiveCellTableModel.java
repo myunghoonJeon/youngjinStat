@@ -3,7 +3,7 @@
  * 
  */
 
-package spanTable;
+package WorkVolumeStat1Table;
 
 import java.awt.Dimension;
 import java.util.Enumeration;

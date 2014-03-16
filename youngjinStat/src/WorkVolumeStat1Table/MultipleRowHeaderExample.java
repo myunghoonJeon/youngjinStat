@@ -1,4 +1,4 @@
-package spanTable;
+package WorkVolumeStat1Table;
 /* (swing1.1) (swing#1356,#1454) */
 //package jp.gr.java_conf.tame.swing.examples;
 
@@ -50,6 +50,7 @@ public class MultipleRowHeaderExample extends JFrame {
   String[][] val = new String[23][20];
   public MultipleRowHeaderExample(String[][] resultStr) {
     val = resultStr;
+    System.out.println("result str test : "+resultStr[3][3]);
     data =  new Object[][]{
         {"IN","HHG","3,4"},
         {""  ,"","5"},
@@ -86,10 +87,12 @@ public class MultipleRowHeaderExample extends JFrame {
     
     CellSpan cellAtt =(CellSpan)fixedModel.getCellAttribute();
     
-    cellAtt.combine(new int[] {0,1,2,3,4,5,6,7,8,9,10,11}    ,new int[] {0});
+    cellAtt.combine(new int[] {0,1,2,3,4,5,6,7,8,9,10}    ,new int[] {0});
     cellAtt.combine(new int[] {0,1,2,3 }, new int[]{1});
     cellAtt.combine(new int[] {5,6,7,8 }, new int[]{1});
-    cellAtt.combine(new int[] {12,13,14,15,16,17,18,19,20,21}    ,new int[] {0});
+    cellAtt.combine(new int[] {11,12,13,14,15,16,17,18,19,20,21}    ,new int[] {0});
+    cellAtt.combine(new int[] {11,12,13,14 }, new int[]{1});
+    cellAtt.combine(new int[] {16,17,18,19 }, new int[]{1});
     cellAtt.combine(new int[] {22 }, new int[]{0,1,2});
     fixedTable = new MultiSpanCellTable( fixedModel );
 //    fixedTable.setBorder(BorderFactory.createLineBorder(Color.darkGray));2	2	

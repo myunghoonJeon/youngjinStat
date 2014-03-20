@@ -10,6 +10,7 @@ package mainpages;
 */
 
 
+import java.lang.reflect.Array;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -22,7 +23,7 @@ import java.util.ArrayList;
 public class CL_DAO_DB_Mysql implements IT_DAO{
 	/*-------------------system parameter---------------------------------*/
 	private String jdbc_driver = "com.mysql.jdbc.Driver";
-	private String jdbc_url = "jdbc:mysql://203.249.22.70:3306/youngjin";
+	private String jdbc_url = "jdbc:mysql://203.249.22.66:3306/youngjin";
 	private Connection conn;
 	private Statement stmt;
 	private String sql="";
@@ -40,7 +41,7 @@ public class CL_DAO_DB_Mysql implements IT_DAO{
 	public void connect() throws Exception{
 		try {
 			Class.forName(jdbc_driver);
-			conn = DriverManager.getConnection(jdbc_url, "root", "root");
+			conn = DriverManager.getConnection(jdbc_url, "root", "rtos8514");
 			stmt = conn.createStatement();
 		} catch (Exception e) {
 			throw new Exception("DB Error(connect) : "+e.toString());
@@ -79,6 +80,7 @@ public class CL_DAO_DB_Mysql implements IT_DAO{
 	}
 	public ArrayList<String> getStatusList(){
 		ArrayList<String> list = new ArrayList<>();
+		list.add("ALL");
 		list.add("UNCOLLECTED");
 		list.add("COLLECTED");
 		return list;
@@ -150,7 +152,7 @@ public class CL_DAO_DB_Mysql implements IT_DAO{
 			connect();
 			if(area.equals("ALL")){
 				if(!begin.equals("") && !begin.equals("")){//input all date
-					sql = "select * from stat_supplied where item='"+item+"' and date > date_format('"+begin+"','%y-%m-%d') and date < date_format('"+end+"','%y-%m-%d')";
+					sql = "select * from stat_supplied where item='"+item+"' and date >= date_format('"+begin+"','%y-%m-%d') and date <= date_format('"+end+"','%y-%m-%d')";
 					System.out.println("sql [correct input][all area]"+sql);
 				}
 				else{// no input date
@@ -160,7 +162,7 @@ public class CL_DAO_DB_Mysql implements IT_DAO{
 			}
 			else{
 				if(!begin.equals("") && !begin.equals("")){//input all date
-					sql = "select * from stat_supplied where item='"+item+"' and area='"+area+"' and date > date_format('"+begin+"','%y-%m-%d') and date < date_format('"+end+"','%y-%m-%d')";
+					sql = "select * from stat_supplied where item='"+item+"' and area='"+area+"' and date >= date_format('"+begin+"','%y-%m-%d') and date <= date_format('"+end+"','%y-%m-%d')";
 					System.out.println("[correct input][part area]"+sql);
 				}
 				else{// no input date
@@ -199,10 +201,10 @@ public class CL_DAO_DB_Mysql implements IT_DAO{
 					if(!begin.equals("") && !end.equals("")){//input all date
 						String beginDate = begin.substring(0, 4)+"0101";
 						System.out.println("beginDate : "+beginDate);
-						sqlBeginSupplied = "select * from stat_supplied where date > date_format('"+beginDate+"','%y-%m-%d') and date < date_format('"+begin+"','%y-%m-%d')";
-						sqlBeginPurchase = "select * from stat_purchase where date > date_format('"+beginDate+"','%y-%m-%d') and date < date_format('"+begin+"','%y-%m-%d')";
-						sqlSupplied = "select * from stat_supplied where date > date_format('"+begin+"','%y-%m-%d') and date < date_format('"+end+"','%y-%m-%d')";
-						sqlPurchase = "select * from stat_purchase where date > date_format('"+begin+"','%y-%m-%d') and date < date_format('"+end+"','%y-%m-%d')";
+						sqlBeginSupplied = "select * from stat_supplied where date >= date_format('"+beginDate+"','%y-%m-%d') and date <= date_format('"+begin+"','%y-%m-%d')";
+						sqlBeginPurchase = "select * from stat_purchase where date >= date_format('"+beginDate+"','%y-%m-%d') and date <= date_format('"+begin+"','%y-%m-%d')";
+						sqlSupplied = "select * from stat_supplied where date >= date_format('"+begin+"','%y-%m-%d') and date <= date_format('"+end+"','%y-%m-%d')";
+						sqlPurchase = "select * from stat_purchase where date >= date_format('"+begin+"','%y-%m-%d') and date <= date_format('"+end+"','%y-%m-%d')";
 						System.out.println("sql beginPruchase : "+sqlBeginPurchase);
 						System.out.println("sql purchase : "+sqlPurchase);
 						System.out.println("sql supplied : "+sqlSupplied);
@@ -212,10 +214,10 @@ public class CL_DAO_DB_Mysql implements IT_DAO{
 					if(!begin.equals("") && !begin.equals("")){//input all date
 						String beginDate = begin.substring(0, 4)+"0101";
 						System.out.println("beginDate : "+beginDate);
-						sqlBeginSupplied = "select * from stat_supplied where area='"+area+"' and date > date_format('"+beginDate+"','%y-%m-%d') and date < date_format('"+begin+"','%y-%m-%d')";
-						sqlBeginPurchase = "select * from stat_purchase where area='"+area+"' and date > date_format('"+beginDate+"','%y-%m-%d') and date < date_format('"+begin+"','%y-%m-%d')";
-						sqlSupplied = "select * from stat_supplied where area='"+area+"' and date > date_format('"+begin+"','%y-%m-%d') and date < date_format('"+end+"','%y-%m-%d')";
-						sqlPurchase = "select * from stat_purchase where area='"+area+"' and date > date_format('"+begin+"','%y-%m-%d') and date < date_format('"+end+"','%y-%m-%d')";		
+						sqlBeginSupplied = "select * from stat_supplied where area='"+area+"' and date >= date_format('"+beginDate+"','%y-%m-%d') and date <= date_format('"+begin+"','%y-%m-%d')";
+						sqlBeginPurchase = "select * from stat_purchase where area='"+area+"' and date >= date_format('"+beginDate+"','%y-%m-%d') and date <= date_format('"+begin+"','%y-%m-%d')";
+						sqlSupplied = "select * from stat_supplied where area='"+area+"' and date >= date_format('"+begin+"','%y-%m-%d') and date <= date_format('"+end+"','%y-%m-%d')";
+						sqlPurchase = "select * from stat_purchase where area='"+area+"' and date >= date_format('"+begin+"','%y-%m-%d') and date <= date_format('"+end+"','%y-%m-%d')";		
 					}
 					
 				}
@@ -225,10 +227,10 @@ public class CL_DAO_DB_Mysql implements IT_DAO{
 					if(!begin.equals("") && !end.equals("")){//input all date
 						String beginDate = begin.substring(0, 4)+"0101";
 						System.out.println("beginDate : "+beginDate);
-						sqlBeginSupplied = "select * from stat_supplied where item='"+item+"' and date > date_format('"+beginDate+"','%y-%m-%d') and date < date_format('"+begin+"','%y-%m-%d')";
-						sqlBeginPurchase = "select * from stat_purchase where item='"+item+"' and date > date_format('"+beginDate+"','%y-%m-%d') and date < date_format('"+begin+"','%y-%m-%d')";
-						sqlSupplied = "select * from stat_supplied where item='"+item+"' and date > date_format('"+begin+"','%y-%m-%d') and date < date_format('"+end+"','%y-%m-%d')";
-						sqlPurchase = "select * from stat_purchase where item='"+item+"' and date > date_format('"+begin+"','%y-%m-%d') and date < date_format('"+end+"','%y-%m-%d')";
+						sqlBeginSupplied = "select * from stat_supplied where item='"+item+"' and date >= date_format('"+beginDate+"','%y-%m-%d') and date <= date_format('"+begin+"','%y-%m-%d')";
+						sqlBeginPurchase = "select * from stat_purchase where item='"+item+"' and date >= date_format('"+beginDate+"','%y-%m-%d') and date <= date_format('"+begin+"','%y-%m-%d')";
+						sqlSupplied = "select * from stat_supplied where item='"+item+"' and date >= date_format('"+begin+"','%y-%m-%d') and date <= date_format('"+end+"','%y-%m-%d')";
+						sqlPurchase = "select * from stat_purchase where item='"+item+"' and date >= date_format('"+begin+"','%y-%m-%d') and date <= date_format('"+end+"','%y-%m-%d')";
 						System.out.println("sql beginPruchase : "+sqlBeginPurchase);
 						System.out.println("sql purchase : "+sqlPurchase);
 						System.out.println("sql supplied : "+sqlSupplied);
@@ -238,10 +240,10 @@ public class CL_DAO_DB_Mysql implements IT_DAO{
 					if(!begin.equals("") && !begin.equals("")){//input all date
 						String beginDate = begin.substring(0, 4)+"0101";
 						System.out.println("beginDate : "+beginDate);
-						sqlBeginSupplied = "select * from stat_supplied where item='"+item+"'and area='"+area+"' and date > date_format('"+beginDate+"','%y-%m-%d') and date < date_format('"+begin+"','%y-%m-%d')";
-						sqlBeginPurchase = "select * from stat_purchase where item='"+item+"' and area='"+area+"' and date > date_format('"+beginDate+"','%y-%m-%d') and date < date_format('"+begin+"','%y-%m-%d')";
-						sqlSupplied = "select * from stat_supplied where item='"+item+"'and area='"+area+"' and date > date_format('"+begin+"','%y-%m-%d') and date < date_format('"+end+"','%y-%m-%d')";
-						sqlPurchase = "select * from stat_purchase where item='"+item+"'and area='"+area+"' and date > date_format('"+begin+"','%y-%m-%d') and date < date_format('"+end+"','%y-%m-%d')";		
+						sqlBeginSupplied = "select * from stat_supplied where item='"+item+"'and area='"+area+"' and date >= date_format('"+beginDate+"','%y-%m-%d') and date <= date_format('"+begin+"','%y-%m-%d')";
+						sqlBeginPurchase = "select * from stat_purchase where item='"+item+"' and area='"+area+"' and date >= date_format('"+beginDate+"','%y-%m-%d') and date <= date_format('"+begin+"','%y-%m-%d')";
+						sqlSupplied = "select * from stat_supplied where item='"+item+"'and area='"+area+"' and date >= date_format('"+begin+"','%y-%m-%d') and date <= date_format('"+end+"','%y-%m-%d')";
+						sqlPurchase = "select * from stat_purchase where item='"+item+"'and area='"+area+"' and date >= date_format('"+begin+"','%y-%m-%d') and date <= date_format('"+end+"','%y-%m-%d')";		
 					}
 					
 				}
@@ -465,7 +467,7 @@ public class CL_DAO_DB_Mysql implements IT_DAO{
 					sql = "select * from stat_supplied";
 				}
 				else{
-					sql = "select * from stat_supplied where date > date_format('"+begin+"','%y-%m-%d') and date < date_format('"+end+"','%y-%m-%d')";
+					sql = "select * from stat_supplied where date >= date_format('"+begin+"','%y-%m-%d') and date <= date_format('"+end+"','%y-%m-%d')";
 				}
 			}
 			else{
@@ -473,7 +475,7 @@ public class CL_DAO_DB_Mysql implements IT_DAO{
 					sql = "select * from stat_supplied where area='"+area+"'";
 				}
 				else{
-					sql = "select * from stat_supplied where area='"+area+"'and date > date_format('"+begin+"','%y-%m-%d') and date < date_format('"+end+"','%y-%m-%d')";
+					sql = "select * from stat_supplied where area='"+area+"'and date >= date_format('"+begin+"','%y-%m-%d') and date <= date_format('"+end+"','%y-%m-%d')";
 				}
 				
 			}
@@ -528,7 +530,6 @@ public class CL_DAO_DB_Mysql implements IT_DAO{
 		try {
 			connect();
 			sql = "select * from stat_scac";
-			
 			rs = stmt.executeQuery(sql);
 			while(rs.next()){
 				scacList.add(rs.getString("name"));
@@ -539,12 +540,7 @@ public class CL_DAO_DB_Mysql implements IT_DAO{
 		}
 		return scacList;
 	}
-	public ArrayList<InvoiceFilteringBeans> getInvoiceCollectionFiltering(){
-		ArrayList<InvoiceFilteringBeans> list = new ArrayList<>();
-		InvoiceFilteringBeans ifb;
-		String sql="select * from";
-		return list;
-	}
+	
 	public ArrayList<GblBeans> getWorkVolumeFilteringOutboundGblList(String scac,String inout,String code, String area, String begin,String end){
 		ArrayList<GblBeans> list = new ArrayList<>();
 		GblBeans gb;
@@ -583,10 +579,10 @@ public class CL_DAO_DB_Mysql implements IT_DAO{
 			}
 			if(!begin.equals("") && !end.equals("")){
 				if(whereflag==0){
-					condition+=" where date(gbl.pud) > date_format('"+begin+"','%y%m%d') and date(gbl.pud) < date_format('"+end+"','%y%m%d')";
+					condition+=" where date(gbl.pud) >= date_format('"+begin+"','%y%m%d') and date(gbl.pud) <= date_format('"+end+"','%y%m%d')";
 				}
 				else{
-					condition+=" and date(gbl.pud) > date_format('"+begin+"','%y%m%d') and date(gbl.pud) < date_format('"+end+"','%y%m%d')";
+					condition+=" and date(gbl.pud) >= date_format('"+begin+"','%y%m%d') and date(gbl.pud) <= date_format('"+end+"','%y%m%d')";
 				}
 			}
 			sql+=condition;
@@ -688,26 +684,26 @@ public class CL_DAO_DB_Mysql implements IT_DAO{
 			}
 			if(!pudBegin.equals("") && !pudEnd.equals("")){
 				if(whereflag==0){
-					condition+=" where pud > date_format('"+pudBegin+"','%y-%m-%d') and pud < date_format('"+pudEnd+"','%y-%m-%d')";
+					condition+=" where pud >= date_format('"+pudBegin+"','%y-%m-%d') and pud <= date_format('"+pudEnd+"','%y-%m-%d')";
 				}
 				else{
-					condition+=" and pud > date_format('"+pudBegin+"','%y-%m-%d') and pud < date_format('"+pudEnd+"','%y-%m-%d')";
+					condition+=" and pud >= date_format('"+pudBegin+"','%y-%m-%d') and pud <= date_format('"+pudEnd+"','%y-%m-%d')";
 				}
 			}
 			if(!rddBegin.equals("") && !rddEnd.equals("")){
 				if(whereflag==0){
-					condition+=" where rdd > date_format('"+pudBegin+"','%y-%m-%d') and rdd < date_format('"+pudEnd+"','%y-%m-%d')";
+					condition+=" where rdd >= date_format('"+pudBegin+"','%y-%m-%d') and rdd <= date_format('"+pudEnd+"','%y-%m-%d')";
 				}
 				else{
-					condition+=" and rdd > date_format('"+pudBegin+"','%y-%m-%d') and rdd < date_format('"+pudEnd+"','%y-%m-%d')";
+					condition+=" and rdd >= date_format('"+pudBegin+"','%y-%m-%d') and rdd <= date_format('"+pudEnd+"','%y-%m-%d')";
 				}
 			}
 			if(!onhandBegin.equals("") && !onhandEnd.equals("")){
 				if(whereflag==0){
-					condition+=" where onHandDate > date_format('"+pudBegin+"','%y-%m-%d') and onHandDate < date_format('"+pudEnd+"','%y-%m-%d')";
+					condition+=" where onHandDate >= date_format('"+pudBegin+"','%y-%m-%d') and onHandDate <= date_format('"+pudEnd+"','%y-%m-%d')";
 				}
 				else{
-					condition+=" and onHandDate > date_format('"+pudBegin+"','%y-%m-%d') and onHandDate < date_format('"+pudEnd+"','%y-%m-%d')";
+					condition+=" and onHandDate >= date_format('"+pudBegin+"','%y-%m-%d') and onHandDate <= date_format('"+pudEnd+"','%y-%m-%d')";
 				}
 			}
 			sql+=condition;
@@ -811,6 +807,80 @@ public class CL_DAO_DB_Mysql implements IT_DAO{
 			return null;
 		}
 	}
+	public ArrayList<InvoiceFilteringBeans> getInvoiceCollectionFiltering(String scac,String inOut,String date,String begin,String end, String status){
+		ArrayList<InvoiceFilteringBeans> list = new ArrayList<>();
+		InvoiceFilteringBeans ifb;
+		String condition="";
+		String sql="select * from invoice_collection,invoice_list,invoice_gbl,invoice_gbl_collection,invoice_gbl_collection_flow where invoice_list.seq = invoice_collection.invoice_seq";
+		if(!scac.equals("ALL")){
+			condition += " and  invoice_list.tsp='"+scac+"'";
+		}
+		if(!inOut.equals("ALL")){// in or out
+			if(inOut.equals("IN")){
+				condition += " and invoice_list.process='inbound'";
+			}
+			else if(inOut.equals("OUT")){
+				condition += " and invoice_list.process='outbound'";
+			}
+		}
+		if(date.equals("INVOICED") && !begin.equals("") && !end.equals("")){
+			condition+=" and date(invoice_list.write_date) >= date('"+begin+"') and date(invoice_list.write_date) <= date('"+end+"')";
+		}
+		if(date.equals("COLLECTED")){//??
+			condition+=" and invoice_gbl.seq = invoice_gbl_collection.invoice_gbl_seq and invoice_gbl_collection_flow.invoice_gbl_collection_seq = invoice_gbl_collection.seq"
+					+ " and date(invoice_gbl_collection_flow.write_date) >= date('"+begin+"') and date(invoice_gbl_collection_flow.write_date) <= date('"+end+"') group by invoice_no;";
+		}
+		if(!status.equals("ALL")){
+			if(status.equals("COLLECTED")){
+				condition+=" and invoice_collection.state='COMPLETE'";
+			}
+			if(status.equals("UNCOLLECTED")){
+				condition+=" and invoice_collection.state='RESENT'";
+			}
+		}
+		sql+=condition;
+		System.out.println("============================================Invoice Collection Filtering querty============================================");
+		System.out.println(sql);
+		System.out.println("===========================================================================================================================");
+		try {
+			connect();
+			rs = stmt.executeQuery(sql);
+			while(rs.next()){
+				ifb = new InvoiceFilteringBeans();
+				System.out.println("===========================================================================================================================");
+				ifb.setInvoiceNo(rs.getString("invoice_no"));
+				ifb.setInvoicedDate(getInvoiceFilteringWriteDate(rs.getString("Write_date")));
+				ifb.setInvoicedAmounts(rs.getString("amount"));
+				ifb.setCollectedAmounts(rs.getString("net"));
+				ifb.setUnCollectedAmounts(calcUncollectedAmounts(ifb.getInvoicedAmounts(),ifb.getCollectedAmounts()));
+				System.out.println("invoice no          : "+ifb.getInvoiceNo());
+				System.out.println("invoice date        : "+ifb.getInvoicedDate());
+				System.out.println("invoice amounts     : "+ifb.getInvoicedAmounts());
+				System.out.println("collected amounts   : "+ifb.getCollectedAmounts());
+				System.out.println("uncollected amounts : "+ifb.getUnCollectedAmounts());
+				System.out.println("===========================================================================================================================");
+				list.add(ifb);
+			}
+			disconnect();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return list;
+	}
+	public String calcUncollectedAmounts(String total,String collected){
+		String result="";
+		double a = Double.parseDouble(total);
+		double b = Double.parseDouble(collected);
+		double c = a-b;
+		result = c+"";
+		return result;
+	}
+	public String getInvoiceFilteringWriteDate(String str){
+		String result="";
+		result = str.split(" ")[0];
+		return result;
+	}
 	public String[][] getOutboundWorkVolumeStat1(String scac,String area,String hhgUb,String code,String begin,String end,String type){
 		String[][] str = new String[23][20];
 		String sql="";
@@ -827,7 +897,7 @@ public class CL_DAO_DB_Mysql implements IT_DAO{
 			condition+=" and gbl.area='"+area+"'";
 		}
 		if(!begin.equals("") && !end.equals("")){
-				condition+=" and date(gbl.pud) > date_format('"+begin+"','%y-%m-%d') and date(gbl.pud) < date_format('"+end+"','%y-%m-%d')";
+				condition+=" and date(gbl.pud) >= date_format('"+begin+"','%y-%m-%d') and date(gbl.pud) <= date_format('"+end+"','%y-%m-%d')";
 		}
 		if(!hhgUb.equals("")){
 			if(hhgUb.equals("HHG")){
@@ -900,7 +970,7 @@ public class CL_DAO_DB_Mysql implements IT_DAO{
 			condition+=" and gbl_ib.area='"+area+"'";
 		}
 		if(!begin.equals("") && !end.equals("")){
-			condition+=" and date(gbl_ib.pud) > date_format('"+begin+"','%y-%m-%d') and date(gbl_ib.pud) < date_format('"+end+"','%y-%m-%d')";
+			condition+=" and date(gbl_ib.pud) >= date_format('"+begin+"','%y-%m-%d') and date(gbl_ib.pud) <= date_format('"+end+"','%y-%m-%d')";
 		}
 		if(!hhgUb.equals("")){
 			if(hhgUb.equals("HHG")){
@@ -974,7 +1044,7 @@ public class CL_DAO_DB_Mysql implements IT_DAO{
 			condition+=" and gbl.area='"+area+"'";
 		}
 		if(!begin.equals("") && !end.equals("")){
-				condition+=" and date(gbl.pud) > date_format('"+begin+"','%y-%m-%d') and date(gbl.pud) < date_format('"+end+"','%y-%m-%d')";
+				condition+=" and date(gbl.pud) >= date_format('"+begin+"','%y-%m-%d') and date(gbl.pud) <= date_format('"+end+"','%y-%m-%d')";
 		}
 		if(!hhgUb.equals("")){
 			if(hhgUb.equals("HHG")){
@@ -1050,7 +1120,7 @@ public class CL_DAO_DB_Mysql implements IT_DAO{
 			condition+=" and gbl_ib.area='"+area+"'";
 		}
 		if(!begin.equals("") && !end.equals("")){
-			condition+=" and date(gbl_ib.pud) > date_format('"+begin+"','%y-%m-%d') and date(gbl_ib.pud) < date_format('"+end+"','%y-%m-%d')";
+			condition+=" and date(gbl_ib.pud) >= date_format('"+begin+"','%y-%m-%d') and date(gbl_ib.pud) <= date_format('"+end+"','%y-%m-%d')";
 		}
 		if(!hhgUb.equals("")){
 			if(hhgUb.equals("HHG")){
@@ -1121,7 +1191,7 @@ public class CL_DAO_DB_Mysql implements IT_DAO{
 		}
 		return den;
 	}
-	
+
 //	public Boolean inventoryInput(){
 //		
 //	}

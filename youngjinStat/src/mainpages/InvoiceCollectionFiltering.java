@@ -33,7 +33,7 @@ import WorkVolumeStat1Table.MultipleRowHeaderExample;
 public class InvoiceCollectionFiltering extends JFrame implements ActionListener{
 
 	// //////////////////////////////////////////////////////////////
-	int superWide = 900;
+	int superWide = 970;
 	int superHeight = 650;
 
 	// //////////////////////////////////////////////////////////////
@@ -41,14 +41,14 @@ public class InvoiceCollectionFiltering extends JFrame implements ActionListener
 	JComboBox areaCombo = new JComboBox(dao.getAreaList2().toArray());
 	JComboBox scacCombo = new JComboBox(dao.getScacListWork().toArray());
 	JComboBox inoutCombo = new JComboBox(dao.getAllInOutList().toArray());
-	JComboBox codeCombo = new JComboBox(dao.getCodeList().toArray());
+//	JComboBox codeCombo = new JComboBox(dao.getCodeList().toArray());
 	JComboBox hhgUbCombo = new JComboBox(dao.getHhgUbList().toArray());
 	JComboBox dateCombo = new JComboBox(dao.getDateList().toArray());
 	JComboBox statusCombo = new JComboBox(dao.getStatusList().toArray());
 	JButton searchBtn = new JButton("SEARCH");
 
-	JTextField startPeriod = new JTextField("", 6);
-	JTextField endPeriod = new JTextField("", 6);
+	JTextField startPeriod = new JTextField("", 8);
+	JTextField endPeriod = new JTextField("", 8);
 
 	JPanel center;
 	// //////////////////////////////////////////////////////////////
@@ -124,8 +124,8 @@ public class InvoiceCollectionFiltering extends JFrame implements ActionListener
 		scacCombo.setMaximumRowCount(20);
 		northUp.add(new JLabel("IN/OUT:"));
 		northUp.add(inoutCombo);
-		northUp.add(new JLabel("CODE:"));
-		northUp.add(codeCombo);
+//		northUp.add(new JLabel("CODE:"));
+//		northUp.add(codeCombo);
 		northUp.add(new JLabel("DATE:"));
 		northUp.add(dateCombo);
 		northUp.add(new JLabel("Period:"));
@@ -148,19 +148,34 @@ public class InvoiceCollectionFiltering extends JFrame implements ActionListener
 	
 	public void beginLayout(JPanel jp){
 		autoCreateBorderLayout(jp, 10, 10, 30, 30);
-		JPanel main = new JPanel();
-		jp.add("Center",main);
 		JScrollPane js = new JScrollPane();
-		ArrayList<String[]> arr = new ArrayList<>();
-		js = getTable(arr);
-		main.add(js);
+		ArrayList<InvoiceFilteringBeans> ifb = new ArrayList<>();
+		js = getTable(ifb);
+		jp.add("Center",js);
 		validate();
 	}
 	
-	public JScrollPane getTable(ArrayList<String[]> in){
+	public JScrollPane getTable(ArrayList<InvoiceFilteringBeans> arr){
 		String colName[] = {"INVOICE NO","INVOICE DATE","INVOICED AMOUNTS","COLLECTED AMOUNTS","UNCOLLECTED AMOUNTS"};
 		DefaultTableCellRenderer dtcr = new DefaultTableCellRenderer();
-		DefaultTableModel model = new DefaultTableModel(colName,20);
+		DefaultTableModel model;
+		if(arr.size()==0){
+			model = new DefaultTableModel(colName,20);
+		}
+		else{
+			model = new DefaultTableModel(colName,0);
+			for(int i=0;i<arr.size();i++){
+				InvoiceFilteringBeans ifb = arr.get(i);
+				String[] row = {ifb.getInvoiceNo(),ifb.getInvoicedDate(),ifb.getInvoicedAmounts(),ifb.getCollectedAmounts(),ifb.getUnCollectedAmounts()};
+				System.out.println("invoice collectionFiltering java - row : "+ifb.getInvoiceNo());
+				model.addRow(row);
+			}
+			if(arr.size()<20){
+				for(int i=0;i<20-arr.size();i++){
+					model.addRow(new String[]{" "," "," "," "," "});
+				}
+			}
+		}
 		JTable table = new JTable(model);
 		dtcr.setHorizontalAlignment(SwingConstants.CENTER);
 		TableColumnModel tcm = table.getColumnModel();
@@ -174,24 +189,24 @@ public class InvoiceCollectionFiltering extends JFrame implements ActionListener
 		for(int i=0;i<colName.length;i++){
 			tcm.getColumn(i).setCellRenderer(dtcr);
 		}
-		for(int i=0;i<in.size();i++){
-			String[] str = in.get(i);
-			model.addRow(str);
-		}
-		
 		validate();
 		return scrollpane;
 	}
 	
 	public void setFilteringInformation(){
+		ArrayList<InvoiceFilteringBeans> arr = new ArrayList<>();
 		String scac = scacCombo.getSelectedItem().toString();
-		String inout = inoutCombo.getSelectedItem().toString();
-		String code = codeCombo.getSelectedItem().toString();
+		String inOut = inoutCombo.getSelectedItem().toString();
+//		String code = codeCombo.getSelectedItem().toString();
 		String date = dateCombo.getSelectedItem().toString();
 		String begin = startPeriod.getText();
 		String end = endPeriod.getText();
 		String status = statusCombo.getSelectedItem().toString();
-		
+		arr = dao.getInvoiceCollectionFiltering(scac, inOut,date, begin, end, status);
+		center.removeAll();
+		autoCreateBorderLayout(center, 10, 10, 30, 30);
+		center.add("Center",getTable(arr));
+		validate();
 	}
 	
 	@Override

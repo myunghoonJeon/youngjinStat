@@ -506,6 +506,9 @@ public class MainViewer extends JFrame implements ActionListener{
 	public void allScacTotalInvoiceCollection(){
 		AllScacTotalInvoiceCollection atic = new AllScacTotalInvoiceCollection();
 	}
+	public void eachScacInvoiceCollection(){
+		
+	}
 	public void actionPerformed(ActionEvent e) {
 		/***********[loginPage Buttons]***********/
 		if(e.getSource() == loginBtn){

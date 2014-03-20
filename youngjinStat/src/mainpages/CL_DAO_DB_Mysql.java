@@ -33,9 +33,11 @@ public class CL_DAO_DB_Mysql implements IT_DAO{
 	/*-------------------normal parameter---------------------------------*/
 	
 	////////////////////////////////////////////////////////////////
-	int ROW_LENGTH=0;
+	int ROW_LENGTH;
+	int COLUMN_LENGTH;
 	public CL_DAO_DB_Mysql() {
 		ROW_LENGTH = getScacList().size()+1;
+		COLUMN_LENGTH=6;
 	}
 	/*--------------------------------------------------------------------*/
 	public void connect() throws Exception{
@@ -1191,7 +1193,53 @@ public class CL_DAO_DB_Mysql implements IT_DAO{
 		}
 		return den;
 	}
-
+	public String[][] getAllScacTotalInvoice(String begin,String end){
+		String[][] list = new String[ROW_LENGTH][COLUMN_LENGTH];
+		AllScacTotalInvoiceBeans atib = new AllScacTotalInvoiceBeans();
+		String sql="select invoice_list.tsp, invoice_list.amount, invoice_collection.net, invoice_collection.difference from invoice_collection, invoice_list where invoice_list.seq = invoice_collection.invoice_seq";//1차
+		try {
+			connect();
+			rs = stmt.executeQuery(sql);
+			while(rs.next()){
+				String invoicedAmounts = rs.getString("invoice_list.amount");
+				String tsp = rs.getString("invoice_list.tsp");
+				String net = rs.getString("invoice_collection.net");
+				String diff = rs.getString("invoice_collection.difference");
+				atib.setValue(tsp, invoicedAmounts, net, diff, "0.0", "0.0", net);
+			}
+			disconnect();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		String sql2="select invoice_gbl_collection_flow.state,invoice_list.tsp,invoice_gbl_collection_flow.amount from invoice_list,invoice_gbl,invoice_gbl_collection,invoice_gbl_collection_flow where invoice_list.seq = invoice_gbl.invoice_list_seq and invoice_gbl.seq = invoice_gbl_collection.invoice_gbl_seq and invoice_gbl_collection.seq = invoice_gbl_collection_flow.invoice_gbl_collection_seq";
+		try {
+			connect();
+			rs = stmt.executeQuery(sql2);
+			while(rs.next()){
+				String tsp = rs.getString("tsp");
+				String state = rs.getString("state");
+				String stateAmount = rs.getString("amount");
+				System.out.println("state : "+state);
+				System.out.println("amount : "+stateAmount);
+				if(state.equals("ACCEPT")){
+					atib.setValue(tsp, "0.0", "0.0", "0.0", stateAmount, "0.0", "0.0");
+				}
+				else if(state.equals("CLAIM")){
+					atib.setValue(tsp, "0.0", "0.0", "0.0", "0.0", stateAmount, "0.0");
+				}
+			}
+			disconnect();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		for(int i=0;i<atib.getStr().length;i++){
+				for(int j=0;j<atib.getStr()[i].length;j++){
+					System.out.print(atib.getStr()[i][j]+" ");
+				}
+				System.out.println();
+		}
+		return atib.getStr();
+	}
 //	public Boolean inventoryInput(){
 //		
 //	}

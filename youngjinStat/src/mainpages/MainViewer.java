@@ -56,6 +56,9 @@ public class MainViewer extends JFrame implements ActionListener{
 	private JPanel level3P;
 	private JButton invoiceCollectionFilteringBtn = new JButton("[INVOICE & COLLECTION FILTERING]");
 	private JButton invoiceCollectionStatBtn = new JButton("[INVOICE & COLLECTION STAT]");
+	private JButton allScacTotalInvoiceCollectionStatusBtn = new JButton("[ALL SCAC TOTAL INVOICE & COLLECTIOIN STATUS]");
+	private JButton eachScacInvoiceCollectionStatusBtn = new JButton("[EACH SCAC INVOICE & COLLECTION STATUS]");
+//	private Jbutton 
 	/*************************[ INVENTORY INPUT ]*****************************/
 	private JPanel inventoryMainPanel;
 	String add = "[ INPUT ]";
@@ -277,13 +280,14 @@ public class MainViewer extends JFrame implements ActionListener{
 	}
 	public void level3PanelLayout(JPanel jp){
 		levelCenterPanel = new JPanel();
-		autoCreateBorderLayout(jp, 300, 300 , 100, 300);
+		autoCreateBorderLayout(jp, 300, 300 , 200, 200);
 		jp.add("Center",levelCenterPanel);
-		levelCenterPanel.setLayout(new GridLayout(3,0,10,10));
+		levelCenterPanel.setLayout(new GridLayout(6,0,10,10));
 		JLabel level1InformationLabel = new JLabel("[ SELECT MENU ]");
 		levelCenterPanel.add(level1InformationLabel);
 		levelCenterPanel.add(invoiceCollectionFilteringBtn);
-		levelCenterPanel.add(invoiceCollectionStatBtn);
+		levelCenterPanel.add(allScacTotalInvoiceCollectionStatusBtn);
+		levelCenterPanel.add(eachScacInvoiceCollectionStatusBtn);
 		validate();
 	}
 	public void setStateLevel(int i){
@@ -467,6 +471,8 @@ public class MainViewer extends JFrame implements ActionListener{
 		workVolumestat1Btn.addActionListener(this);
 		invoiceCollectionFilteringBtn.addActionListener(this);
 		invoiceCollectionStatBtn.addActionListener(this);
+		eachScacInvoiceCollectionStatusBtn.addActionListener(this);
+		allScacTotalInvoiceCollectionStatusBtn.addActionListener(this);
 	}
 	
 	public void inputOpen(String item, String type){
@@ -496,6 +502,9 @@ public class MainViewer extends JFrame implements ActionListener{
 	}
 	public void invoiceCollectionStat(){
 		InvoiceCollectionStat ics = new InvoiceCollectionStat();
+	}
+	public void allScacTotalInvoiceCollection(){
+		AllScacTotalInvoiceCollection atic = new AllScacTotalInvoiceCollection();
 	}
 	public void actionPerformed(ActionEvent e) {
 		/***********[loginPage Buttons]***********/
@@ -588,6 +597,12 @@ public class MainViewer extends JFrame implements ActionListener{
 		}
 		else if(e.getSource() == invoiceCollectionStatBtn){
 			invoiceCollectionStat();
+		}
+		else if(e.getSource() == allScacTotalInvoiceCollectionStatusBtn){
+			allScacTotalInvoiceCollection();
+		}
+		else if(e.getSource() == eachScacInvoiceCollectionStatusBtn){
+			
 		}
 	}
 	

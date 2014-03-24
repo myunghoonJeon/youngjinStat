@@ -3,7 +3,7 @@
  * 
  */
 
-package WorkVolumeStat1Table;
+package TableOption;
 
 import java.awt.Dimension;
 import java.util.Enumeration;

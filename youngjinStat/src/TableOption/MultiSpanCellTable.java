@@ -3,7 +3,7 @@
  * 
  */
 
-package WorkVolumeStat2Table;
+package TableOption;
 
 import java.util.*;
 import java.awt.*;

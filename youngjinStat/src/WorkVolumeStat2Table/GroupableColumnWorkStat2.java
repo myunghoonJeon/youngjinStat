@@ -1,6 +1,9 @@
 package WorkVolumeStat2Table;
 
 import java.awt.Color;
+
+import TableOption.*;
+
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.event.WindowAdapter;

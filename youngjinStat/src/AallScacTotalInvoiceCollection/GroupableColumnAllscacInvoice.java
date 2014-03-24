@@ -1,4 +1,4 @@
-package allScacTotalInvoiceCollectionStatus;
+package AallScacTotalInvoiceCollection;
 
 import java.awt.Color;
 import java.awt.Component;
@@ -12,7 +12,7 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
 import javax.tools.DiagnosticCollector;
 
-// Steve Webb 16/09/04 swebb99_uk@hotmail.com
+import TableOption.*;
 
 public class GroupableColumnAllscacInvoice extends JFrame {
 	JTable table = new JTable( /*dm, new GroupableTableColumnModel()*/);

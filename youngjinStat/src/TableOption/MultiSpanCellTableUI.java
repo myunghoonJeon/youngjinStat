@@ -1,4 +1,4 @@
-package allScacTotalInvoiceCollectionStatus;
+package TableOption;
 
 import java.util.*;
 import java.awt.*;

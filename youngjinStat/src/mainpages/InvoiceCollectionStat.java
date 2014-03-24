@@ -1,6 +1,7 @@
 package mainpages;
 
 import java.awt.BorderLayout;
+
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
@@ -27,7 +28,7 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumnModel;
 import javax.swing.table.TableRowSorter;
 
-import WorkVolumeStat1Table.MultipleRowHeaderExample;
+import WorkVolumeStat1.MultipleRowHeaderExample;
 
 public class InvoiceCollectionStat extends JFrame implements ActionListener{
 

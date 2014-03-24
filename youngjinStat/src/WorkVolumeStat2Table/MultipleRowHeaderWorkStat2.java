@@ -1,6 +1,7 @@
 package WorkVolumeStat2Table;
 /* (swing1.1) (swing#1356,#1454) */
 //package jp.gr.java_conf.tame.swing.examples;
+import TableOption.*;
 
 import java.awt.Color;
 import java.awt.Component;

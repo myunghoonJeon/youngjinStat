@@ -138,7 +138,6 @@ public class CL_DAO_DB_Mysql implements IT_DAO{
 		try {
 			connect();
 			sql = "insert into stat_supplied(item,date,units,area,prise,scac,type) values('"+item+"','"+date+"','"+units+"','"+area+"','"+prise+"','"+scac+"','"+type+"');";
-			 
 			stmt.executeUpdate(sql);
 			disconnect();
 		} catch (Exception e) {
@@ -809,39 +808,89 @@ public class CL_DAO_DB_Mysql implements IT_DAO{
 			return null;
 		}
 	}
+	public String getFlagCheckMassage(int flag,String filter){
+		String result="";
+		if(flag==0){
+			
+			
+		}
+		else{
+			
+		}
+		return result;
+	}
 	public ArrayList<InvoiceFilteringBeans> getInvoiceCollectionFiltering(String scac,String inOut,String date,String begin,String end, String status){
 		ArrayList<InvoiceFilteringBeans> list = new ArrayList<>();
 		InvoiceFilteringBeans ifb;
+		int whereFlag=0;
 		String condition="";
-		String sql="select * from invoice_collection,invoice_list,invoice_gbl,invoice_gbl_collection,invoice_gbl_collection_flow where invoice_list.seq = invoice_collection.invoice_seq";
+		String sql="select * from invoice_list left join invoice_collection on invoice_list.seq = invoice_collection.invoice_seq ";
 		if(!scac.equals("ALL")){
-			condition += " and  invoice_list.tsp='"+scac+"'";
+			if(whereFlag==0){
+				whereFlag=1;
+				condition +=" where invoice_list.tsp = '"+scac+"'";
+			}
+			else{
+				condition += " and  invoice_list.tsp='"+scac+"'";
+			}
+			
 		}
 		if(!inOut.equals("ALL")){// in or out
 			if(inOut.equals("IN")){
-				condition += " and invoice_list.process='inbound'";
+				if(whereFlag==0){
+					whereFlag=1;
+					condition += " where invoice_list.process='inbound'";
+				}
+				else{
+					condition += " and invoice_list.process='inbound'";
+				}
 			}
 			else if(inOut.equals("OUT")){
-				condition += " and invoice_list.process='outbound'";
+				if(whereFlag==0){
+					whereFlag=1;
+					condition += " where invoice_list.process='outbound'";
+				}
+				else{
+					condition += " and invoice_list.process='outbound'";
+				}
 			}
 		}
-		if(date.equals("INVOICED") && !begin.equals("") && !end.equals("")){
-			condition+=" and date(invoice_list.write_date) >= date('"+begin+"') and date(invoice_list.write_date) <= date('"+end+"')";
+		if(date.equals("INVOICED")){
+			if( !begin.equals("") && !end.equals("")){
+				if(whereFlag==0){
+					whereFlag=1;
+					condition+=" where date(invoice_list.write_date) >= date('"+begin+"') and date(invoice_list.write_date) <= date('"+end+"')";
+				}
+				else{
+					condition+=" and date(invoice_list.write_date) >= date('"+begin+"') and date(invoice_list.write_date) <= date('"+end+"')";
+				}
+			}
 		}
+		
 		if(date.equals("COLLECTED")){//??
-			condition+=" and invoice_gbl.seq = invoice_gbl_collection.invoice_gbl_seq and invoice_gbl_collection_flow.invoice_gbl_collection_seq = invoice_gbl_collection.seq"
-					+ " and date(invoice_gbl_collection_flow.write_date) >= date('"+begin+"') and date(invoice_gbl_collection_flow.write_date) <= date('"+end+"') group by invoice_no;";
-		}
-		if(!status.equals("ALL")){
-			if(status.equals("COLLECTED")){
-				condition+=" and invoice_collection.state='COMPLETE'";
+			if(!begin.equals("") && !end.equals("")){
+				if(whereFlag==0){
+					whereFlag=1;
+					condition+=" where date(invoice_list.write_date) >= date('"+begin+"') and date(invoice_list.write_date) <= date('"+end+"') and invoice_collection.state='COMPLETE'";
+				}
+				else{
+					condition+=" and date(write_date) >= date('"+begin+"') and date(write_date) <= date('"+end+"') and invoice_collection.state='COMPLETE'";
+				}
 			}
-			if(status.equals("UNCOLLECTED")){
-				condition+=" and invoice_collection.state='RESENT'";
+			else{
+				if(whereFlag==0){
+					whereFlag=1;
+					condition+=" where invoice_collection.state='COMPLETE'";
+				}
+				else{
+					condition+=" and invoice_collection.state='COMPLETE'";
+				}
 			}
+			
 		}
+		
 		sql+=condition;
-		System.out.println("============================================Invoice Collection Filtering querty============================================");
+		System.out.println("============================================Invoice Collection Filtering querty 1st============================================");
 		System.out.println(sql);
 		System.out.println("===========================================================================================================================");
 		try {
@@ -853,13 +902,13 @@ public class CL_DAO_DB_Mysql implements IT_DAO{
 				ifb.setInvoiceNo(rs.getString("invoice_no"));
 				ifb.setInvoicedDate(getInvoiceFilteringWriteDate(rs.getString("Write_date")));
 				ifb.setInvoicedAmounts(rs.getString("amount"));
-				ifb.setCollectedAmounts(rs.getString("net"));
+//				ifb.setCollectedAmounts(rs.getString("net"));
+//				System.out.println("invoice no          : "+ifb.getInvoiceNo());
+//				System.out.println("invoice date        : "+ifb.getInvoicedDate());
+//				System.out.println("invoice amounts     : "+ifb.getInvoicedAmounts());
+//				System.out.println("collected amounts   : "+ifb.getCollectedAmounts());
+//				System.out.println("uncollected amounts : "+ifb.getUnCollectedAmounts());
 				ifb.setUnCollectedAmounts(calcUncollectedAmounts(ifb.getInvoicedAmounts(),ifb.getCollectedAmounts()));
-				System.out.println("invoice no          : "+ifb.getInvoiceNo());
-				System.out.println("invoice date        : "+ifb.getInvoicedDate());
-				System.out.println("invoice amounts     : "+ifb.getInvoicedAmounts());
-				System.out.println("collected amounts   : "+ifb.getCollectedAmounts());
-				System.out.println("uncollected amounts : "+ifb.getUnCollectedAmounts());
 				System.out.println("===========================================================================================================================");
 				list.add(ifb);
 			}
@@ -867,11 +916,54 @@ public class CL_DAO_DB_Mysql implements IT_DAO{
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		sql="select * from invoice_list,invoice_collection";
+		
+		if(!status.equals("ALL")){
+			if(status.equals("COLLECTED")){
+				condition+=" and invoice_collection.state='COMPLETE'";
+			}
+			if(status.equals("UNCOLLECTED")){
+				condition+=" and invoice_collection.state='RESENT'";
+			}
+		}
+		
+		System.out.println("============================================Invoice Collection Filtering querty 2st============================================");
+		System.out.println(sql);
+		System.out.println("===========================================================================================================================");
+//		try {
+//			connect();
+//			rs = stmt.executeQuery(sql);
+//			while(rs.next()){
+//				ifb = new InvoiceFilteringBeans();
+//				System.out.println("===========================================================================================================================");
+//				ifb.setInvoiceNo(rs.getString("invoice_no"));
+//				ifb.setInvoicedDate(getInvoiceFilteringWriteDate(rs.getString("Write_date")));
+//				ifb.setInvoicedAmounts(rs.getString("amount"));
+//				ifb.setCollectedAmounts(rs.getString("net"));
+////				System.out.println("invoice no          : "+ifb.getInvoiceNo());
+////				System.out.println("invoice date        : "+ifb.getInvoicedDate());
+////				System.out.println("invoice amounts     : "+ifb.getInvoicedAmounts());
+////				System.out.println("collected amounts   : "+ifb.getCollectedAmounts());
+////				System.out.println("uncollected amounts : "+ifb.getUnCollectedAmounts());
+//				ifb.setUnCollectedAmounts(calcUncollectedAmounts(ifb.getInvoicedAmounts(),ifb.getCollectedAmounts()));
+//				System.out.println("===========================================================================================================================");
+//				list.add(ifb);
+//			}
+//			disconnect();
+//		} catch (Exception e) {
+//			e.printStackTrace();
+//		}
 		
 		return list;
 	}
 	public String calcUncollectedAmounts(String total,String collected){
 		String result="";
+		if(total.equals("")){
+			total="0.0";
+		}
+		if(collected.equals("")){
+			collected="0.0";
+		}
 		double a = Double.parseDouble(total);
 		double b = Double.parseDouble(collected);
 		double c = a-b;
@@ -922,7 +1014,9 @@ public class CL_DAO_DB_Mysql implements IT_DAO{
 					System.out.println("code : "+tempCode);
 					System.out.println("area : "+tempArea);
 					System.out.println("weight : "+tempWeight);
-					wvs1.setWeightData(tempArea, tempCode, 1+"",tempWeight );
+					if(tempCode!=null && tempArea!=null && tempWeight!=null){
+						wvs1.setWeightData(tempArea, tempCode, 1+"",tempWeight );
+					}
 				}
 				disconnect();
 			} catch (Exception e) {

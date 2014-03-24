@@ -20,7 +20,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 
-import allScacTotalInvoiceCollectionStatus.MultipleRowHeaderAllscacInvoice;
+import AallScacTotalInvoiceCollection.MultipleRowHeaderAllscacInvoice;
 import WorkVolumeStat2Table.MultipleRowHeaderWorkStat2;
 
 public class AllScacTotalInvoiceCollection extends JFrame implements ActionListener{

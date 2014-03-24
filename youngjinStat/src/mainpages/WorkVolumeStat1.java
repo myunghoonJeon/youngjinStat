@@ -1,5 +1,6 @@
 package mainpages;
 import java.awt.BorderLayout;
+
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
@@ -25,7 +26,7 @@ import javax.swing.ListCellRenderer;
 import javax.swing.UIManager;
 import javax.swing.table.JTableHeader;
 
-import WorkVolumeStat1Table.*;
+import WorkVolumeStat1.*;
 
 
 public class WorkVolumeStat1 extends JFrame implements ActionListener{

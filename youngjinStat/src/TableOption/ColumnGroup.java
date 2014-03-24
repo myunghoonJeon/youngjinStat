@@ -1,4 +1,4 @@
-package WorkVolumeStat2Table;
+package TableOption;
 
 import java.awt.Component;
 import java.awt.Dimension;

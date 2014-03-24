@@ -507,7 +507,7 @@ public class MainViewer extends JFrame implements ActionListener{
 		AllScacTotalInvoiceCollection atic = new AllScacTotalInvoiceCollection();
 	}
 	public void eachScacInvoiceCollection(){
-		
+		EachScacInvoiceCollection eic = new EachScacInvoiceCollection();
 	}
 	public void actionPerformed(ActionEvent e) {
 		/***********[loginPage Buttons]***********/

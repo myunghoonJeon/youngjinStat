@@ -1,4 +1,4 @@
-package allScacTotalInvoiceCollectionStatus;
+package TableOption;
 
 import java.util.Iterator;
 import java.util.Vector;

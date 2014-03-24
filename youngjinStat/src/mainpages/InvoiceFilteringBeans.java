@@ -4,7 +4,7 @@ public class InvoiceFilteringBeans {
 	String invoiceNo="";
 	String invoicedDate="";
 	String invoicedAmounts="";
-	String collectedAmounts="";
+	String collectedAmounts="0.0";
 	String unCollectedAmounts="";
 	public String getInvoiceNo() {
 		return invoiceNo;
@@ -23,6 +23,7 @@ public class InvoiceFilteringBeans {
 	}
 	public void setInvoicedAmounts(String invoicedAmounts) {
 		this.invoicedAmounts = invoicedAmounts;
+		this.unCollectedAmounts = invoicedAmounts;
 	}
 	public String getCollectedAmounts() {
 		return collectedAmounts;

@@ -509,6 +509,7 @@ public class MainViewer extends JFrame implements ActionListener{
 	public void eachScacInvoiceCollection(){
 		EachScacInvoiceCollection eic = new EachScacInvoiceCollection();
 	}
+	
 	public void actionPerformed(ActionEvent e) {
 		/***********[loginPage Buttons]***********/
 		if(e.getSource() == loginBtn){
@@ -605,7 +606,7 @@ public class MainViewer extends JFrame implements ActionListener{
 			allScacTotalInvoiceCollection();
 		}
 		else if(e.getSource() == eachScacInvoiceCollectionStatusBtn){
-			
+			eachScacInvoiceCollection();
 		}
 	}
 	

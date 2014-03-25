@@ -167,8 +167,7 @@ public class InvoiceCollectionFiltering extends JFrame implements ActionListener
 			model = new DefaultTableModel(colName,0);
 			for(int i=0;i<arr.size();i++){
 				InvoiceFilteringBeans ifb = arr.get(i);
-				String[] row = {ifb.getInvoiceNo(),ifb.getInvoicedDate(),ifb.getInvoicedAmounts(),ifb.getCollectedAmounts(),ifb.getUnCollectedAmounts()};
-				System.out.println("invoice collectionFiltering java - row : "+ifb.getInvoiceNo());
+				String[] row = {ifb.getInvoiceNo(),ifb.getInvoicedDate(),ifb.getInvoicedAmounts(),ifb.getNet(),ifb.getUnCollectedAmounts()};
 				model.addRow(row);
 			}
 			if(arr.size()<20){

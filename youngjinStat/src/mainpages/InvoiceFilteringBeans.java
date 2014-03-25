@@ -1,11 +1,27 @@
 package mainpages;
 
+/**
+ * @author jmh
+ *
+ */
+/**
+ * @author jmh
+ *
+ */
 public class InvoiceFilteringBeans {
 	String invoiceNo="";
 	String invoicedDate="";
 	String invoicedAmounts="";
 	String collectedAmounts="0.0";
 	String unCollectedAmounts="";
+	String net="0.0";
+	
+	public String getNet() {
+		return net;
+	}
+	public void setNet(String net) {
+		this.net = net;
+	}
 	public String getInvoiceNo() {
 		return invoiceNo;
 	}

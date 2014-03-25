@@ -1,4 +1,5 @@
 package mainpages;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -101,12 +102,14 @@ public class AllScacTotalInvoiceBeans {
 	
 	public void calcuration(String[][]s ,double[] d,int row){
 		double temp;
+		DecimalFormat df = new DecimalFormat("####0.00");
 		for(int i=0;i<6;i++){
 			if(s[row][i].equals("-")){
 				s[row][i] = "0.0";
 			}
 			temp = Double.parseDouble(s[row][i])+d[i];
-			s[row][i] = temp+"";
+			s[row][i] = df.format(temp)+"";
+			
 		}
 	}
 	

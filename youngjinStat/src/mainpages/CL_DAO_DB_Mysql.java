@@ -253,7 +253,8 @@ public class CL_DAO_DB_Mysql implements IT_DAO{
 				
 			}
 			
-//			 
+//			
+			System.out.println(sqlBeginSupplied+"````````````````````````````````````");
 			rs = stmt.executeQuery(sqlBeginSupplied); //begin section up amounts //down quantity
 			InventoryStatBeans isb=null;
 			while(rs.next()){
@@ -588,7 +589,7 @@ public class CL_DAO_DB_Mysql implements IT_DAO{
 				}
 			}
 			sql+=condition;
-			System.out.println("work volume outbound : "+sql);
+			System.out.println("work volume outbound SQL : "+sql);
 			try {
 				connect();
 				rs = stmt.executeQuery(sql);
@@ -596,7 +597,6 @@ public class CL_DAO_DB_Mysql implements IT_DAO{
 					gb = new GblBeans();
 					String tempCode=rs.getString("code");
 					gblno = rs.getString("no");
-					System.out.println("work volume outbound : "+gblno);
 					gb.setPud(rs.getString("pud"));
 					gb.setRdd(rs.getString("rdd"));
 					gb.setScac(rs.getString("scac"));
@@ -605,7 +605,6 @@ public class CL_DAO_DB_Mysql implements IT_DAO{
 					gb.setGblno(gblno);
 					gb.setName(rs.getString("customer_name"));
 					gb.setUsno(rs.getString("us_no"));
-					
 					list.add(gb);
 				}//while end
 			disconnect();
@@ -624,23 +623,29 @@ public class CL_DAO_DB_Mysql implements IT_DAO{
 					String net = rs.getString("sum(net)");
 					String cuft = rs.getString("sum(cuft)");
 					String pcs = rs.getString("count(gbl_seq)");
+					String gblNo = list.get(i).getGblno();
 					list.get(i).setGross(gross);
 					list.get(i).setCuft(cuft);
 					list.get(i).setNet(net);
 					list.get(i).setPcs(pcs);
-					System.out.println(list.get(i).getGblno() +" - "+gross+" - "+net+" - "+cuft+" - "+pcs);
 					double density = 0;
-					if(gb1.getCode().equals("3")||gb1.getCode().equals("4")||gb1.getCode().equals("5")||gb1.getCode().equals("T")||gb1.getCode().equals("t")){
-						density = Double.parseDouble(gb1.getGross())/Double.parseDouble(gb1.getCuft());
-						DecimalFormat df = new DecimalFormat("######0.00");
-						list.get(i).setDensity(df.format(density));
-//						System.out.println(gb1.getDensity());
+					if(gblNo==null || gross == null || net== null || cuft==null || pcs == null){
+						System.out.println(" DETECTED NULL");
 					}
-					else if(gb1.getCode().equals("7")||gb1.getCode().equals("8")||gb1.getCode().equals("j")||gb1.getCode().equals("J")){
-						density = Double.parseDouble(gb1.getNet())/Double.parseDouble(gb1.getCuft());
-						DecimalFormat df = new DecimalFormat("######0.00");
-						list.get(i).setDensity(df.format(density));
-//						System.out.println(gb1.getDensity());
+//					System.out.println(list.get(i).getGblno() +" - "+gross+" - "+net+" - "+cuft+" - "+pcs);
+					else{
+						if(gb1.getCode().equals("3")||gb1.getCode().equals("4")||gb1.getCode().equals("5")||gb1.getCode().equals("T")||gb1.getCode().equals("t")){
+							density = Double.parseDouble(gb1.getGross())/Double.parseDouble(gb1.getCuft());
+							DecimalFormat df = new DecimalFormat("######0.00");
+							list.get(i).setDensity(df.format(density));
+	//						System.out.println(gb1.getDensity());
+						}
+						else if(gb1.getCode().equals("7")||gb1.getCode().equals("8")||gb1.getCode().equals("j")||gb1.getCode().equals("J")){
+							density = Double.parseDouble(gb1.getNet())/Double.parseDouble(gb1.getCuft());
+							DecimalFormat df = new DecimalFormat("######0.00");
+							list.get(i).setDensity(df.format(density));
+	//						System.out.println(gb1.getDensity());
+						}
 					}
 				}
 			}catch(Exception e){
@@ -719,6 +724,9 @@ public class CL_DAO_DB_Mysql implements IT_DAO{
 					gblno = rs.getString("gblNo");
 					gb.setName(rs.getString("shipperName"));
 					gb.setSitIn(rs.getString("sitIn"));
+					gb.setPud(rs.getString("pud"));//
+					gb.setRdd(rs.getString("rdd"));//
+					gb.setArea(rs.getString("area"));//
 					gb.setSitOut(rs.getString("sitOut"));
 					gb.setSitNo(rs.getString("sitNo"));
 					gb.setOnhand(rs.getString("onHandDate"));
@@ -820,7 +828,7 @@ public class CL_DAO_DB_Mysql implements IT_DAO{
 		}
 		return result;
 	}
-	public ArrayList<EachScacUncollectedBeans> getEachScacUncollected(String scac,String inOut,String code,String begin,String end,String criteria){
+	public ArrayList<EachScacUncollectedBeans> getEachScacUncollected(String scac,String inOut,String code,String begin,String end){
 		ArrayList<EachScacUncollectedBeans> list = new ArrayList<>();
 		EachScacUncollectedBeans esub = new EachScacUncollectedBeans();		
 		int whereFlag=0;
@@ -859,10 +867,10 @@ public class CL_DAO_DB_Mysql implements IT_DAO{
 		if(!begin.equals("") && !end.equals("")){
 			if(whereFlag==0){
 				whereFlag =1;
-				condition+=" where invoice_list.invoice_date >= date_format('"+begin+"','%y-%m-%d') and invoice_list.invoice_date <= date_format('"+end+"','%y-%m-%d')";
+				condition+=" where date(invoice_list.invoice_date) >= date_format('"+begin+"','%y-%m-%d') and date(invoice_list.invoice_date) <= date_format('"+end+"','%y-%m-%d')";
 			}
 			else{
-				condition +=" and invoice_list.invoice_date >= date_format('"+begin+"','%y-%m-%d') and invoice_list.invoice_date <= date_format('"+end+"','%y-%m-%d')";
+				condition +=" and date(invoice_list.invoice_date) >= date_format('"+begin+"','%y-%m-%d') and date(invoice_list.invoice_date) <= date_format('"+end+"','%y-%m-%d')";
 			}
 		}
 		sql+=condition;
@@ -878,13 +886,15 @@ public class CL_DAO_DB_Mysql implements IT_DAO{
 				esub.setCollectedAmounts(rs.getString("net"));
 				esub.setInvoiceListSeq(rs.getString("invoiceSeq"));
 				esub.setProcess(rs.getString("process"));
+				esub.setDatediff(rs.getString("datediff"));
 				System.out.println("========[Basic Information]=======");
 				System.out.println("no : "+rs.getString("invoice_no"));
 				System.out.println("amount : "+rs.getString("amount"));
 				System.out.println("date : "+rs.getString("invoice_date"));
 				System.out.println("collected : "+rs.getString("net"));
 				System.out.println("invoiceSeq : "+rs.getString("invoiceSeq"));
-				System.out.println("=======================");
+				System.out.println("date diff : "+rs.getString("datediff"));
+				System.out.println("==================================");
 				list.add(esub);
 			}
 			try {
@@ -1078,7 +1088,10 @@ public class CL_DAO_DB_Mysql implements IT_DAO{
 				esic.setCollectedAmounts(rs.getString("net"));
 				esic.setInvoiceListSeq(rs.getString("invoiceSeq"));
 				esic.setProcess(rs.getString("process"));
-				if(rs.getString("state").equals("COMPLETE")){
+				if(rs.getString("state")==null){
+					esic.setStatus("PENDING");
+				}
+				else if(rs.getString("state").equals("COMPLETE")){
 					esic.setStatus("OK");
 				}
 				else{

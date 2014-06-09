@@ -59,7 +59,6 @@ public class MainViewer extends JFrame implements ActionListener{
 	private JButton allScacTotalInvoiceCollectionStatusBtn = new JButton("[ALL SCAC TOTAL INVOICE & COLLECTIOIN STATUS]");
 	private JButton eachScacInvoiceCollectionStatusBtn = new JButton("[EACH SCAC INVOICE & COLLECTION STATUS]");
 	private JButton eachScacUncollectedStatusBtn = new JButton("[ EACH SCAC UNCOLLECTED STATUS ]");
-//	private Jbutton 
 	/*************************[ INVENTORY INPUT ]*****************************/
 	private JPanel inventoryMainPanel;
 	String add = "[ INPUT ]";
@@ -289,7 +288,7 @@ public class MainViewer extends JFrame implements ActionListener{
 		levelCenterPanel.add(invoiceCollectionFilteringBtn);
 		levelCenterPanel.add(allScacTotalInvoiceCollectionStatusBtn);
 		levelCenterPanel.add(eachScacInvoiceCollectionStatusBtn);
-		levelCenterPanel.add(eachScacInvoiceCollectionStatusBtn);
+		levelCenterPanel.add(eachScacUncollectedStatusBtn);
 		validate();
 	}
 	public void setStateLevel(int i){

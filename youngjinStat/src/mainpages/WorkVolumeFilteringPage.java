@@ -64,7 +64,7 @@ public class WorkVolumeFilteringPage extends JFrame implements ActionListener{
 		super("");
 		super.setVisible(true);
 		super.setResizable(false);
-		super.setSize(1000,650);
+		super.setSize(1000,750);
 		Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
 		Dimension frm = super.getSize();
 		int y = (int)(screen.height/2 - frm.height/2);
@@ -153,7 +153,7 @@ public class WorkVolumeFilteringPage extends JFrame implements ActionListener{
 	public void actionPerformed(ActionEvent e) {
 		ArrayList<GblBeans> list = new ArrayList<>();
 		if(e.getSource() == inoutCombo){
-			if(inoutCombo.getSelectedItem().equals("OUT")){
+			if(inoutCombo.getSelectedItem().equals("OUT")){//outbound
 				north.removeAll();
 				center.removeAll();
 				center.setBorder(BorderFactory.createLineBorder(Color.DARK_GRAY));
@@ -177,7 +177,7 @@ public class WorkVolumeFilteringPage extends JFrame implements ActionListener{
 				north.add(searchBtn);
 				validate();
 			}
-			else{
+			else{//inbound
 				JPanel term = new JPanel();
 				north.removeAll();
 				center.removeAll();
@@ -229,14 +229,17 @@ public class WorkVolumeFilteringPage extends JFrame implements ActionListener{
 				dtcr.setHorizontalAlignment(SwingConstants.CENTER);
 				TableColumnModel tcm = table.getColumnModel();
 				table.setRowSorter(new TableRowSorter(model));
-				table.setFont(new Font( "" , Font.PLAIN, 11 ));
-		        table.getTableHeader().setFont( new Font( "" , Font.PLAIN, 11 ));
+				table.setPreferredScrollableViewportSize(new Dimension(940,500));
+//				table.setFont(new Font( "" , Font.PLAIN, 11 ));
+//		        table.getTableHeader().setFont( new Font( "" , Font.PLAIN, 11 ));
 				JScrollPane scrollpane = new JScrollPane(table);
-				scrollpane.setPreferredSize(new Dimension(950,600));
+				scrollpane.setPreferredSize(new Dimension(950,550));
 				scrollpane.setBorder(BorderFactory.createLineBorder(Color.DARK_GRAY));
+				
 				for(int i=0;i<colName.length;i++){
 					tcm.getColumn(i).setCellRenderer(dtcr);
 				}
+				
 				list = dao.getWorkVolumeFilteringOutboundGblList(scac, inout, code, area, begin, end);
 				int totalCount=0;
 				int totalPcs=0;
@@ -247,10 +250,23 @@ public class WorkVolumeFilteringPage extends JFrame implements ActionListener{
 					String[] insertRow = {list.get(i).getPud(),list.get(i).getRdd(),list.get(i).getScac(),list.get(i).getCode(),list.get(i).getGblno(),list.get(i).getName()
 							, list.get(i).getUsno(),list.get(i).getArea(),list.get(i).getPcs(),list.get(i).getGross(),list.get(i).getNet(),list.get(i).getCuft(), list.get(i).getDensity()};
 					totalCount++;
-					totalPcs+=Integer.parseInt(list.get(i).getPcs());
-					totalGross+=Integer.parseInt(list.get(i).getGross());
-					totalNet+=Integer.parseInt(list.get(i).getNet());
-					totalCuft+=Integer.parseInt(list.get(i).getCuft());
+					try{
+						if(list.get(i).getPcs()!=null || !list.get(i).getPcs().equals("")){
+							totalPcs+=Integer.parseInt(list.get(i).getPcs());
+						}
+						
+						if(list.get(i).getGross()!=null || !list.get(i).getGross().equals("")){
+							totalGross+=Integer.parseInt(list.get(i).getGross());
+						}
+						if(list.get(i).getNet()!=null || !list.get(i).getNet().equals("")){
+							totalNet+=Integer.parseInt(list.get(i).getNet());
+						}
+						if(list.get(i).getCuft()!=null || !list.get(i).getCuft().equals("")){
+							totalCuft+=Integer.parseInt(list.get(i).getCuft());
+						}
+					}catch(Exception ee){
+						
+					}
 					model.addRow(insertRow);
 				}
 				String[] totalRow = {"TOTAL","","","",totalCount+"건","","","",totalPcs+"",totalGross+"",totalNet+"",totalCuft+"",""};
@@ -283,7 +299,7 @@ public class WorkVolumeFilteringPage extends JFrame implements ActionListener{
 			String rddEnd = rddEndPeriod.getText();
 			String onhandBegin = onhandStartPeriod.getText();
 			String onhandEnd = onhandEndPeriod.getText();
-			String colName[] = {"PUD","RDD","SCAC","CODE","GBL NO","NAME","US NO","AREA","PCS","GROSS","NET","CUFT","DENSITY","ON HAND","SIT IN","SIT OUT","SIT NO"};
+			String colName[] = {"PUD","RDD","SCAC","CODE","GBL NO","NAME","AREA","PCS","GROSS","NET","CUFT","DENSITY","ON HAND","SIT IN","SIT OUT","SIT NO"};
 			DefaultTableCellRenderer dtcr = new DefaultTableCellRenderer();
 			DefaultTableModel model = new DefaultTableModel(colName,0);
 			JTable table = new JTable(model);
@@ -300,6 +316,22 @@ public class WorkVolumeFilteringPage extends JFrame implements ActionListener{
 				tcm.getColumn(i).setCellRenderer(dtcr);
 			}
 			list = dao.getInboundGblList(scac, inout, code, area, pudBegin, pudEnd,rddBegin,rddEnd,onhandBegin,onhandEnd);
+//			int totalCount=0;
+//			int totalPcs=0;
+//			int totalGross=0;
+//			int totalNet=0;
+//			int totalCuft=0;
+//			for(int i=0;i<list.size();i++){
+//				String[] insertRow = {list.get(i).getPud(),list.get(i).getRdd(),list.get(i).getScac(),list.get(i).getCode(),list.get(i).getGblno(),list.get(i).getName()
+//						,list.get(i).getArea(),list.get(i).getPcs(),list.get(i).getGross(),list.get(i).getNet(),list.get(i).getCuft(), list.get(i).getDensity()
+//						,list.get(i).getOnhand(),list.get(i).getSitIn(),list.get(i).getSitOut(),list.get(i).getSitNo()};
+//				totalCount++;
+//				totalPcs+=Integer.parseInt(list.get(i).getPcs());
+//				totalGross+=Integer.parseInt(list.get(i).getGross());
+//				totalNet+=Integer.parseInt(list.get(i).getNet());
+//				totalCuft+=Integer.parseInt(list.get(i).getCuft());
+//				model.addRow(insertRow);
+//		}
 			int totalCount=0;
 			int totalPcs=0;
 			int totalGross=0;
@@ -307,15 +339,28 @@ public class WorkVolumeFilteringPage extends JFrame implements ActionListener{
 			int totalCuft=0;
 			for(int i=0;i<list.size();i++){
 				String[] insertRow = {list.get(i).getPud(),list.get(i).getRdd(),list.get(i).getScac(),list.get(i).getCode(),list.get(i).getGblno(),list.get(i).getName()
-						, list.get(i).getUsno(),list.get(i).getArea(),list.get(i).getPcs(),list.get(i).getGross(),list.get(i).getNet(),list.get(i).getCuft(), list.get(i).getDensity()
-						,list.get(i).getOnhand(),list.get(i).getSitIn(),list.get(i).getSitOut(),list.get(i).getSitNo()};
+						, list.get(i).getUsno(),list.get(i).getArea(),list.get(i).getPcs(),list.get(i).getGross(),list.get(i).getNet(),list.get(i).getCuft(), list.get(i).getDensity()};
 				totalCount++;
-				totalPcs+=Integer.parseInt(list.get(i).getPcs());
-				totalGross+=Integer.parseInt(list.get(i).getGross());
-				totalNet+=Integer.parseInt(list.get(i).getNet());
-				totalCuft+=Integer.parseInt(list.get(i).getCuft());
+				try{
+					if(list.get(i).getPcs()!=null || !list.get(i).getPcs().equals("")){
+						totalPcs+=Integer.parseInt(list.get(i).getPcs());
+					}
+					
+					if(list.get(i).getGross()!=null || !list.get(i).getGross().equals("")){
+						totalGross+=Integer.parseInt(list.get(i).getGross());
+					}
+					if(list.get(i).getNet()!=null || !list.get(i).getNet().equals("")){
+						totalNet+=Integer.parseInt(list.get(i).getNet());
+					}
+					if(list.get(i).getCuft()!=null || !list.get(i).getCuft().equals("")){
+						totalCuft+=Integer.parseInt(list.get(i).getCuft());
+					}
+				}catch(Exception ee){
+					
+				}
 				model.addRow(insertRow);
 			}
+			
 			String[] totalRow = {"TOTAL","","","",totalCount+"건","","","",totalPcs+"",totalGross+"",totalNet+"",totalCuft+""};
 			model.addRow(totalRow);
 			setTableColumnSize(table, 2,-15);

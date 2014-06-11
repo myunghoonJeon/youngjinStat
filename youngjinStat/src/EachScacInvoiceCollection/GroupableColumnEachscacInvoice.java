@@ -35,7 +35,7 @@ public class GroupableColumnEachscacInvoice extends JFrame {
        jobWeight[7] = "Accepted";
        jobWeight[8] = "claimed";
        jobWeight[9] = "net unCollected";
-        
+       
        DefaultTableModel dm = new DefaultTableModel();
        dm.setDataVector(obj, jobWeight);
             // Setup table

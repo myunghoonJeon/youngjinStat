@@ -867,19 +867,21 @@ public class CL_DAO_DB_Mysql implements IT_DAO{
 		if(!begin.equals("") && !end.equals("")){
 			if(whereFlag==0){
 				whereFlag =1;
-				condition+=" where date(invoice_list.invoice_date) >= date_format('"+begin+"','%y-%m-%d') and date(invoice_list.invoice_date) <= date_format('"+end+"','%y-%m-%d')";
+				condition+=" where date(invoice_list.invoice_date) >= date_format('"+begin+"','%y%m%d') and date(invoice_list.invoice_date) <= date_format('"+end+"','%y%m%d')";
 			}
 			else{
-				condition +=" and date(invoice_list.invoice_date) >= date_format('"+begin+"','%y-%m-%d') and date(invoice_list.invoice_date) <= date_format('"+end+"','%y-%m-%d')";
+				condition +=" and date(invoice_list.invoice_date) >= date_format('"+begin+"','%y%m%d') and date(invoice_list.invoice_date) <= date_format('"+end+"','%y%m%d')";
 			}
 		}
 		sql+=condition;
-		System.out.println("sql : "+sql);
+		System.out.println("[[[[[[[[[[[[[[[[[[[[[ FINAL CALL sql : "+sql+" ]]]]]]]]]]]]]]]]]]]]]]]]]]]]");
 		rs = getResultSet(sql);
 		int index=0;
 		try {
 			while(rs.next()){
 				hm.put(rs.getString("invoiceSeq"),index++);
+				esub = new EachScacUncollectedBeans();
+				System.out.println("[[ HM HASMAP PUT : "+rs.getString("invoiceSeq")+" index : "+(index-1)+" ]]");
 				esub.setInvoiceNo(rs.getString("invoice_no"));
 				esub.setInvoicedAmounts(rs.getString("amount"));
 				esub.setInvoiceDate(rs.getString("invoice_date"));
@@ -943,11 +945,17 @@ public class CL_DAO_DB_Mysql implements IT_DAO{
 		System.out.println("2st sql : "+sql);
 		rs = getResultSet(sql);
 		index=0;
+		System.out.println("==== WORMING UP ====");
+		for(int i=0;i<list.size();i++){
+			System.out.println(i+"st : "+list.get(i).getInvoiceNo());
+		}
+		System.out.println("====================");
 		try {
 			while(rs.next()){
 				if(hm.get(rs.getString("list_seq"))!=null){
-//					System.out.println("[ 2st SQL execution result is not null ]");
+					System.out.println("[ 2st SQL execution result is not null ]");
 					index = hm.get(rs.getString("list_seq"));
+					System.out.println("[ GET INDEX FOR LIST_SEQ : "+rs.getString("list_seq")+" - INDEX : "+index);
 					double ip = Double.parseDouble(checkAmountsNull(rs.getString("net")));
 					double diff = Double.parseDouble(checkAmountsNull(rs.getString("diff")));
 					diff *= -1;
@@ -1027,10 +1035,10 @@ public class CL_DAO_DB_Mysql implements IT_DAO{
 	}
 	
 	public ResultSet getResultSet(String sql){
-		System.out.println("[ get ResultSet started ]");
 		ResultSet rs2 = null;
 		try {
 			connect();
+			System.out.println("[ get ResultSet started ]");
 			rs2 = stmt.executeQuery(sql);
 		} catch (Exception e) {
 			e.printStackTrace();

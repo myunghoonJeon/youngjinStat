@@ -22,7 +22,7 @@ public class GroupableColumnEachscacUncollectedStatus extends JFrame {
 	int COLUM_LENGTH = 10;
 	Object[][] obj = new Object[1][1];
 	String[] jobWeight = new String[COLUM_LENGTH];
-    public GroupableColumnEachscacUncollectedStatus(ArrayList<EachScacUncollectedBeans> esic,String end,String begin) {
+    public GroupableColumnEachscacUncollectedStatus(ArrayList<EachScacUncollectedBeans> esic,String criteria) {
         
         for(int i=0;i<COLUM_LENGTH;i++){
         	jobWeight[i] = new String();
@@ -40,8 +40,8 @@ public class GroupableColumnEachscacUncollectedStatus extends JFrame {
        jobWeight[8] = "Claimed";
        jobWeight[9] = "Net uncollected";
        
-        
        DefaultTableModel dm = new DefaultTableModel();
+       dm.setDataVector(obj, jobWeight);
        
        for(int i=0;i<esic.size();i++){
     	    String date ="";
@@ -65,15 +65,32 @@ public class GroupableColumnEachscacUncollectedStatus extends JFrame {
 			net = getDoubleValue(invoiceAmounts)-getDoubleValue(collectedAmounts)-getDoubleValue(accepted)+"";
 			quantity = esic.get(i).getGblQuantity()+"";
     	   int diff = Integer.parseInt(esic.get(i).getDatediff());
-    	   int b = Integer.parseInt(begin);
-    	   int e = Integer.parseInt(end);
-    	   if(b<diff && diff<e){
-    		   dm.addRow(new String[]{date,invoiceNo,quantity,invoiceAmounts,collectedAmounts,uncollectedAmounts,shortPaid,accepted,claimed,net});
+    	   if(criteria.equals("15")){
+    		   if(diff<=15){
+    			   System.out.println("[[[[ CRITERIA  : "+criteria+" DETECTED -- INVOICE NO : : "+invoiceNo+" ]]]]]");
+        		   dm.addRow(new String[]{date,invoiceNo,quantity,invoiceAmounts,collectedAmounts,uncollectedAmounts,shortPaid,accepted,claimed,net});
+        	   }
     	   }
+    	   else if(criteria.equals("1530")){
+    		   if(diff>15 && diff <= 30){
+        		   dm.addRow(new String[]{date,invoiceNo,quantity,invoiceAmounts,collectedAmounts,uncollectedAmounts,shortPaid,accepted,claimed,net});
+        	   }
+    	   }
+    	   else if(criteria.equals("3045")){
+    		   if(diff>30 && diff<=45){
+        		   dm.addRow(new String[]{date,invoiceNo,quantity,invoiceAmounts,collectedAmounts,uncollectedAmounts,shortPaid,accepted,claimed,net});
+        	   }
+    	   }
+    	   else if(criteria.equals("45")){
+    		   if(diff>45){
+        		   dm.addRow(new String[]{date,invoiceNo,quantity,invoiceAmounts,collectedAmounts,uncollectedAmounts,shortPaid,accepted,claimed,net});
+        	   }
+    	   }
+    	   
        }
        
        
-       dm.setDataVector(obj, jobWeight);
+       
             // Setup table
             table.setColumnModel(new GroupableTableColumnModel());
             table.setTableHeader(new GroupableTableHeader((GroupableTableColumnModel)table.getColumnModel()));
@@ -131,10 +148,15 @@ public class GroupableColumnEachscacUncollectedStatus extends JFrame {
     }
     public double getDoubleValue(String str){
 		double d=0.0;
-		d = Double.parseDouble(str);
+		if(str==null || str.equals("")){
+			d=0.0;
+		}
+		else{
+			d = Double.parseDouble(str);
+		}
 		return d;
 	}
-    public JTable getWorkvolumeTableColumnHeader(){
+    public JTable getTable(){
     	return this.table;
     }
     public String[] getJobWeight(){

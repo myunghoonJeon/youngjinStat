@@ -1,8 +1,6 @@
-package WorkVolumeStat1;
+package AllScacTotalInvoiceCollectionStatusGBL;
 /* (swing1.1) (swing#1356,#1454) */
 //package jp.gr.java_conf.tame.swing.examples;
-import TableOption.*;
-
 import java.awt.Color;
 import java.awt.Component;
 
@@ -20,6 +18,10 @@ import javax.swing.border.Border;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.JTableHeader;
 import javax.swing.table.TableCellRenderer;
+
+import TableOption.AttributiveCellTableModel;
+import TableOption.CellSpan;
+import TableOption.MultiSpanCellTable;
 
   
 /*   ----------------------------------------------
@@ -40,7 +42,7 @@ import javax.swing.table.TableCellRenderer;
 /**
  * @version 1.0 03/06/99
  */
-public class MultipleRowHeaderExample extends JFrame {
+public class AllScacTotalInvoiceMultipleRowHeader extends JFrame {
   Object[][] data;
   Object[] column;
   JTable table;
@@ -48,8 +50,8 @@ public class MultipleRowHeaderExample extends JFrame {
   JPanel test = new JPanel();
   JPanel north = new JPanel();
   JScrollPane scroll = null;
-  String[][] val = new String[23][8];
-  public MultipleRowHeaderExample(String[][] resultStr) {
+  String[][] val = new String[23][10];
+  public AllScacTotalInvoiceMultipleRowHeader(String[][] resultStr) {
     val = resultStr;
     data =  new Object[][]{
         {"IN","HHG","3,4"},
@@ -96,13 +98,13 @@ public class MultipleRowHeaderExample extends JFrame {
     cellAtt.combine(new int[] {22 }, new int[]{0,1,2});
     fixedTable = new MultiSpanCellTable( fixedModel );
 //    fixedTable.setBorder(BorderFactory.createLineBorder(Color.darkGray));2	2	
-    GroupableColumnExample ge = new GroupableColumnExample(val);
+    AllScacTotalInvoiceGroupableColumn ge = new AllScacTotalInvoiceGroupableColumn(val);
     table = ge.getWorkvolumeTableColumnHeader();
 //    table.setBorder(BorderFactory.createLineBorder(Color.darkGray));
     fixedTable.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
     DefaultTableCellRenderer dtcr = new DefaultTableCellRenderer();
     dtcr.setHorizontalAlignment(SwingConstants.CENTER);
-    for(int i=0;i<7;i++){
+    for(int i=0;i<8;i++){
     	table.getColumnModel().getColumn(i).setCellRenderer(dtcr);
     }
     table.setRowHeight(18);

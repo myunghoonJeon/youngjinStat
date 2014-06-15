@@ -1,4 +1,4 @@
-package WorkVolumeStat1;
+package AllScacTotalInvoiceCollectionStatusGBL;
 import TableOption.*;
 
 import java.awt.Color;
@@ -14,10 +14,10 @@ import javax.tools.DiagnosticCollector;
 
 // Steve Webb 16/09/04 swebb99_uk@hotmail.com
 
-public class GroupableColumnExample extends JFrame {
+public class AllScacTotalInvoiceGroupableColumn extends JFrame {
 	JTable table = new JTable( /*dm, new GroupableTableColumnModel()*/);
 
-    GroupableColumnExample(String [][]val) {
+    AllScacTotalInvoiceGroupableColumn(String [][]val) {
         String[] jobWeight = {"Quantity","invoiced Amount","Collected","Uncollected","Short Paid","Accepted","Claimed","Net"};
         DefaultTableModel dm = new DefaultTableModel();
         
@@ -26,28 +26,28 @@ public class GroupableColumnExample extends JFrame {
             table.setColumnModel(new GroupableTableColumnModel());
             table.setTableHeader(new GroupableTableHeader((GroupableTableColumnModel)table.getColumnModel()));
             table.setModel(dm);
-            GroupableTableColumnModel cm = (GroupableTableColumnModel)table.getColumnModel();
-            ColumnGroup ys = new ColumnGroup("YS");
-            ColumnGroup os = new ColumnGroup("OS");
-            ColumnGroup pyt = new ColumnGroup("PYT");
-            ColumnGroup tdc = new ColumnGroup("TDC");
-            ColumnGroup ujb = new ColumnGroup("UJB");
-            ColumnGroup tg = new ColumnGroup("TG");
-            ColumnGroup bs = new ColumnGroup("BS");
-            ColumnGroup ks = new ColumnGroup("KS");
-            ColumnGroup other = new ColumnGroup("OTHER");
-            ColumnGroup total = new ColumnGroup("TOTAL");
-            GroupableTableHeader header = (GroupableTableHeader)table.getTableHeader();
-            cm.addColumnGroup(ys);
-            cm.addColumnGroup(os);
-            cm.addColumnGroup(pyt);
-            cm.addColumnGroup(tdc);
-            cm.addColumnGroup(ujb);
-            cm.addColumnGroup(tg);
-            cm.addColumnGroup(bs);
-            cm.addColumnGroup(ks);
-            cm.addColumnGroup(other);
-            cm.addColumnGroup(total);
+//            GroupableTableColumnModel cm = (GroupableTableColumnModel)table.getColumnModel();
+//            ColumnGroup ys = new ColumnGroup("YS");
+//            ColumnGroup os = new ColumnGroup("OS");
+//            ColumnGroup pyt = new ColumnGroup("PYT");
+//            ColumnGroup tdc = new ColumnGroup("TDC");
+//            ColumnGroup ujb = new ColumnGroup("UJB");
+//            ColumnGroup tg = new ColumnGroup("TG");
+//            ColumnGroup bs = new ColumnGroup("BS");
+//            ColumnGroup ks = new ColumnGroup("KS");
+//            ColumnGroup other = new ColumnGroup("OTHER");
+//            ColumnGroup total = new ColumnGroup("TOTAL");
+//            GroupableTableHeader header = (GroupableTableHeader)table.getTableHeader();
+//            cm.addColumnGroup(ys);
+//            cm.addColumnGroup(os);
+//            cm.addColumnGroup(pyt);
+//            cm.addColumnGroup(tdc);
+//            cm.addColumnGroup(ujb);
+//            cm.addColumnGroup(tg);
+//            cm.addColumnGroup(bs);
+//            cm.addColumnGroup(ks);
+//            cm.addColumnGroup(other);
+//            cm.addColumnGroup(total);
             // Finish off gui
     }
     

@@ -4,7 +4,7 @@ import java.util.HashMap;
 
 public class WorkVolumeStat1Beans {
 	/******************[define parameter]************************/
-	String[][] input = new String[23][20];
+	String[][] input = new String[23][7];
 	HashMap<String,String> hashMapColumn = new HashMap<String,String>();
 	HashMap<String,String> hashMapRow = new HashMap<String,String>();
 	String type="";

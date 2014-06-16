@@ -83,7 +83,7 @@ public class GroupableColumnWorkStat2 extends JFrame {
             ColumnGroup ubTotal = new ColumnGroup("UB TOTAL");
             ubTotal.add(cm.getColumn(18));
             ubTotal.add(cm.getColumn(19));
-            ColumnGroup inTotal = new ColumnGroup("IN TOTAL");
+            ColumnGroup inTotal = new ColumnGroup("TOTAL");
             inTotal.add(cm.getColumn(20));
             inTotal.add(cm.getColumn(21));
             GroupableTableHeader header = (GroupableTableHeader)table.getTableHeader();

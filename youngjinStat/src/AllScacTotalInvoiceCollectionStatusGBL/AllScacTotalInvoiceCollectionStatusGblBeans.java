@@ -18,7 +18,16 @@ public class AllScacTotalInvoiceCollectionStatusGblBeans {
 	private String uncollectedAmount;
 	private String process;
 	private String shortPaid;
-	
+	private String dateDiff;
+	private String invoiceDate;
+	public String getInvoiceDate() {
+		return invoiceDate;
+	}
+
+	public void setInvoiceDate(String invoiceDate) {
+		this.invoiceDate = invoiceDate;
+	}
+
 	public AllScacTotalInvoiceCollectionStatusGblBeans(){
 		gblNo="";
 		amount="0.0";
@@ -36,6 +45,14 @@ public class AllScacTotalInvoiceCollectionStatusGblBeans {
 		shortPaid="0.0";
 	}
 	
+	public String getDateDiff() {
+		return dateDiff;
+	}
+
+	public void setDateDiff(String dateDiff) {
+		this.dateDiff = dateDiff;
+	}
+
 	public String getShortPaid() {
 		return shortPaid;
 	}

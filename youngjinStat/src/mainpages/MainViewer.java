@@ -29,7 +29,7 @@ public class MainViewer extends JFrame implements ActionListener{
 	
 	private JButton loginBtn = new JButton("LOGIN");
 	private JButton logoutBtn = new JButton("LOGOUT");
-		
+	private JButton backBtn = new JButton("HOME");
 	private CL_DAO_DB_Mysql dao = new CL_DAO_DB_Mysql(); 
 	private userBean ub;
 	
@@ -59,9 +59,11 @@ public class MainViewer extends JFrame implements ActionListener{
 	private JButton invoiceCollectionFilteringBtn = new JButton("[INVOICE & COLLECTION FILTERING]");
 	private JButton invoiceCollectionStatBtn = new JButton("[INVOICE & COLLECTION STAT]");
 	private JButton allScacTotalInvoiceCollectionStatusBtn = new JButton("[ALL SCAC TOTAL INVOICE & COLLECTIOIN STATUS]");
-	private JButton eachScacInvoiceCollectionStatusBtn = new JButton("[EACH SCAC INVOICE & COLLECTION STATUS]");
-	private JButton eachScacUncollectedStatusBtn = new JButton("[ EACH SCAC UNCOLLECTED STATUS ]");
+	private JButton eachScacInvoiceCollectionStatusBtn = new JButton("[EACH SCAC INVOICE & COLLECTION STATUS] (INVOICE BASE)");
+	private JButton eachScacUncollectedStatusBtn = new JButton("[ SCAC UNCOLLECTED STATUS (INVOICE BASE) ]");
 	private JButton allScacTotalInvoiceCollectionStatusGblBtn =  new JButton("[ ALL SCAC INVOICE& COLLECTION STATUS (GBL BASE) ]");
+	private JButton eachScacUncollectedStatusGblBtn = new JButton("[ SCAC UNCOLLECTED STATUS (GBL BASE) ]");
+	private JButton eachScacAcceptedAmountStatusGblBtn = new JButton("[ EACH SCAC ACCEPTED AMOUNT STATUS (GBL BASE) ]");
 	/*************************[ INVENTORY INPUT ]*****************************/
 	private JPanel inventoryMainPanel;
 	String add = "[ INPUT ]";
@@ -137,7 +139,10 @@ public class MainViewer extends JFrame implements ActionListener{
 		jCenter.removeAll();
 		jNorth.setVisible(true);
 		jNorth.setLayout(new FlowLayout(FlowLayout.RIGHT));
+		
+		jNorth.add(backBtn);
 		jNorth.add(logoutBtn);
+		
 		logoutBtn.setVisible(false);
 		jNorth.setPreferredSize(new Dimension(0,40));
 		jCenter.setVisible(true);
@@ -242,7 +247,11 @@ public class MainViewer extends JFrame implements ActionListener{
 			loginInformation.setText("Wrong Input");
 		}
 	}
-	
+	public void back(){
+		System.out.println("HOME BTN CLICK");
+		level1Page();
+		validate();
+	}
 	public void logOut(){
 //		invisibleButtonControl(getStateLevel());
 		
@@ -285,14 +294,16 @@ public class MainViewer extends JFrame implements ActionListener{
 		levelCenterPanel = new JPanel();
 		autoCreateBorderLayout(jp, 300, 300 , 200, 200);
 		jp.add("Center",levelCenterPanel);
-		levelCenterPanel.setLayout(new GridLayout(7,0,10,10));
+		levelCenterPanel.setLayout(new GridLayout(8,0,10,10));
 		JLabel level1InformationLabel = new JLabel("[ SELECT MENU ]");
 		levelCenterPanel.add(level1InformationLabel);
 		levelCenterPanel.add(invoiceCollectionFilteringBtn);
 		levelCenterPanel.add(allScacTotalInvoiceCollectionStatusBtn);
 		levelCenterPanel.add(eachScacInvoiceCollectionStatusBtn);
-		levelCenterPanel.add(eachScacUncollectedStatusBtn);
 		levelCenterPanel.add(allScacTotalInvoiceCollectionStatusGblBtn);
+		levelCenterPanel.add(eachScacUncollectedStatusBtn);
+		levelCenterPanel.add(eachScacUncollectedStatusGblBtn);		
+		levelCenterPanel.add(eachScacAcceptedAmountStatusGblBtn);
 		validate();
 	}
 	public void setStateLevel(int i){
@@ -455,6 +466,7 @@ public class MainViewer extends JFrame implements ActionListener{
 	public void addActionListner(){
 		loginBtn.addActionListener(this);
 		logoutBtn.addActionListener(this);
+		backBtn.addActionListener(this);
 		inventoryInputBtn.addActionListener(this);
 		typeIINewBtn.addActionListener(this);
 		typeIIUsedBtn.addActionListener(this);
@@ -480,6 +492,8 @@ public class MainViewer extends JFrame implements ActionListener{
 		allScacTotalInvoiceCollectionStatusBtn.addActionListener(this);
 		eachScacUncollectedStatusBtn.addActionListener(this);
 		allScacTotalInvoiceCollectionStatusGblBtn.addActionListener(this);
+		eachScacUncollectedStatusGblBtn.addActionListener(this);
+		eachScacAcceptedAmountStatusGblBtn.addActionListener(this);
 	}
 	
 	public void inputOpen(String item, String type){
@@ -519,8 +533,14 @@ public class MainViewer extends JFrame implements ActionListener{
 	public void eachScacUncollectedStatus(){
 		EachScacUncollectedStatus esu = new EachScacUncollectedStatus();
 	}
+	public void eachScacUncollectedGblStatus(){
+		EachScacUncollectedStatusGbl esu = new EachScacUncollectedStatusGbl();
+	}
 	public void allScacTotalInvoiceCollectionStatusGblB(){
 		AllScacTotalInvoiceCollectionStatusGbl atics = new AllScacTotalInvoiceCollectionStatusGbl();
+	}
+	public void eachScacAcceptedAmountStatusGblBtn(){
+		EachScacAcceptedAmountStatusGbl ee = new EachScacAcceptedAmountStatusGbl();
 	}
 	public void actionPerformed(ActionEvent e) {
 		/***********[loginPage Buttons]***********/
@@ -529,6 +549,9 @@ public class MainViewer extends JFrame implements ActionListener{
 		}
 		else if(e.getSource() == logoutBtn){
 			logOut();
+		}
+		else if(e.getSource() == backBtn){
+			back();
 		}
 		/***********[inventory INPUT Buttons]***********/
 		else if(e.getSource() == inventoryInputBtn){
@@ -626,6 +649,14 @@ public class MainViewer extends JFrame implements ActionListener{
 		else if(e.getSource() == allScacTotalInvoiceCollectionStatusGblBtn){
 			allScacTotalInvoiceCollectionStatusGblB();
 		}
+		else if(e.getSource() == eachScacUncollectedStatusGblBtn){
+			eachScacUncollectedGblStatus();
+		}
+		else if(e.getSource() == eachScacAcceptedAmountStatusGblBtn){
+			eachScacAcceptedAmountStatusGblBtn();
+		}
+		
+		
 	}
 	
 }

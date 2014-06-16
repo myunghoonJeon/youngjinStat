@@ -830,6 +830,158 @@ public class CL_DAO_DB_Mysql implements IT_DAO{
 		}
 		return result;
 	}
+	public ArrayList<AllScacTotalInvoiceCollectionStatusGblBeans> getOutboundEachScacUncollectedGbl(String scac,String code,String begin,String end){
+		ArrayList<AllScacTotalInvoiceCollectionStatusGblBeans> list = new ArrayList<>();
+		AllScacTotalInvoiceCollectionStatusGblBeans bean = new AllScacTotalInvoiceCollectionStatusGblBeans();
+		String sql="select	invoice_gbl.gbl_no as gblNo, invoice_gbl.amount as amount, invoice_list.start_date as start, invoice_list.end_date as end,"+
+				   "invoice_gbl.name as name,gbl.code as code,gbl.scac as scac, invoice_gbl_collection.difference as difference,"+
+				   "invoice_gbl_collection.state as state, invoice_gbl_collection_flow.state as collectionState, invoice_gbl_collection_flow.amount collectionAmount,"+
+				   "invoice_list.invoice_date as invoiceDate, DATEDIFF(DATE_FORMAT(SYSDATE(), '%Y%m%d'), DATE_FORMAT(CONVERT(invoice_list.invoice_date, DATE), '%Y%m%d')) as datediff"
+				   + " from	invoice_list left join invoice_gbl on invoice_list.seq = invoice_gbl.invoice_list_seq"
+				   + "	left join gbl on invoice_gbl.gbl_seq = gbl.seq"
+				   + "	left join invoice_gbl_collection on invoice_gbl_collection.invoice_gbl_seq = invoice_gbl.seq"
+				   + "	left join invoice_gbl_collection_flow on invoice_gbl_collection.seq = invoice_gbl_collection_flow.invoice_gbl_collection_seq"
+				   + " where invoice_list.process = 'outbound'";
+		if(!scac.equals("ALL")){
+			sql+=" and gbl.scac='"+scac+"'";
+		}
+		if(!code.equals("ALL")){
+			sql+=" and gbl.code='"+code+"'";
+		}
+		if(!begin.equals("") && !end.equals("")){
+			sql+=" and date(invoice_list.invoice_date) >= date('"+begin+"') and date(invoice_list.invoice_date) <= date('"+end+"')";
+		}
+		System.out.println("SQL : "+sql);
+		try {
+			System.out.println("[[SQL QUERRY EXECUTE]]");
+			connect();
+			rs = stmt.executeQuery(sql);
+			while(rs.next()){
+				String scac1 = rs.getString("scac");
+				String gblNo = rs.getString("gblNo");
+				String amount = rs.getString("amount");
+				String name = rs.getString("name");
+				String code1 = rs.getString("code");
+				String difference = rs.getString("difference");
+				String state1 = rs.getString("state");
+				String collectionState = rs.getString("collectionState");
+				String collectionAmount = rs.getString("collectionAmount");
+				String dateDiff = rs.getString("datediff");
+				String invoiceDate = rs.getString("invoiceDate");
+				bean = new AllScacTotalInvoiceCollectionStatusGblBeans();
+				bean.setGblNo(gblNo);
+				bean.setScac(scac1);
+				bean.setAmount(amount);
+				bean.setName(name);
+				bean.setInvoiceDate(invoiceDate);
+				bean.setCode(code1);
+				bean.setDifference(difference);
+				bean.setState(state1);
+				bean.setDateDiff(dateDiff);
+				bean.setProcess("outbound");
+				if(collectionState==null || collectionState.equals("")){
+					System.out.println("STATE NULL ADD uncollectedAmount : "+amount);
+					bean.setUncollectedAmount(amount);
+				}
+				else if(collectionState.equals("ACCEPT")){
+					System.out.println("ACCEPT AMOUNT : "+collectionAmount);
+					bean.setAcceptAmount(collectionAmount);
+				}
+				else if(collectionState.equals("CLAIM")){
+					System.out.println("CLAIM AMOUNT : "+collectionAmount);
+					bean.setClaimeAmount(collectionAmount);
+				}
+				else if(collectionState.equals("DEPOSIT")){
+					System.out.println("COLLECTED AMOUNT : "+collectionAmount);
+					bean.setCollectionAmount(collectionAmount);
+				}
+				list.add(bean);
+			}
+			disconnect();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return list;
+	}
+	public ArrayList<AllScacTotalInvoiceCollectionStatusGblBeans> getInboundEachScacUncollectedGbl(String scac,String code,String begin,String end){
+		ArrayList<AllScacTotalInvoiceCollectionStatusGblBeans> list = new ArrayList<>();
+		AllScacTotalInvoiceCollectionStatusGblBeans bean = new AllScacTotalInvoiceCollectionStatusGblBeans();
+		String sql="select	invoice_gbl.gbl_no as gblNo, invoice_gbl.amount as amount, invoice_list.start_date as start, invoice_list.end_date as end,"+
+				   "invoice_gbl.name as name,gbl_ib.code as code,gbl_ib.tsp as scac, invoice_gbl_collection.difference as difference,"+
+				   "invoice_gbl_collection.state as state, invoice_gbl_collection_flow.state as collectionState, invoice_gbl_collection_flow.amount collectionAmount,"+
+				   "invoice_list.invoice_date as invoiceDate,DATEDIFF(DATE_FORMAT(SYSDATE(), '%Y%m%d'), DATE_FORMAT(CONVERT(invoice_list.invoice_date, DATE), '%Y%m%d')) as datediff "
+				   + " from	invoice_list left join invoice_gbl on invoice_list.seq = invoice_gbl.invoice_list_seq"
+				   + "	left join gbl_ib on invoice_gbl.gbl_seq = gbl_ib.seq"
+				   + "	left join invoice_gbl_collection on invoice_gbl_collection.invoice_gbl_seq = invoice_gbl.seq"
+				   + "	left join invoice_gbl_collection_flow on invoice_gbl_collection.seq = invoice_gbl_collection_flow.invoice_gbl_collection_seq"
+				   + " where invoice_list.process = 'inbound'";
+		if(!scac.equals("ALL")){
+			sql+=" and gbl_ib.tsp='"+scac+"'";
+		}
+		if(!code.equals("ALL")){
+			sql+=" and gbl_ib.code='"+code+"'";
+		}
+		if(!begin.equals("") && !end.equals("")){
+			sql+=" and date(invoice_list.invoice_date) >= date('"+begin+"') and date(invoice_list.invoice_date) <= date('"+end+"')";
+		}
+		System.out.println("SQL : "+sql);
+		try {
+			connect();
+			rs = stmt.executeQuery(sql);
+			while(rs.next()){
+				String scac1 = rs.getString("scac");
+				String gblNo = rs.getString("gblNo");
+				String amount = rs.getString("amount");
+				String name = rs.getString("name");
+				String code1 = rs.getString("code");
+				String difference = rs.getString("difference");
+				String state1 = rs.getString("state");
+				String collectionState = rs.getString("collectionState");
+				String collectionAmount = rs.getString("collectionAmount");
+				String dateDiff = rs.getString("datediff");
+				String invoiceDate = rs.getString("invoiceDate");
+//				System.out.println("SCAC : "+scac1+" GBL NO : "+gblNo+" AMOUNT : "+amount+" NAME : "+name+" COLLECTION STATE : "+collectionState);
+				bean = new AllScacTotalInvoiceCollectionStatusGblBeans();
+				bean.setScac(scac1);
+				bean.setGblNo(gblNo);
+				bean.setAmount(amount);
+				bean.setName(name);
+				bean.setCode(code1);
+				bean.setInvoiceDate(invoiceDate);
+				double tempDiff = getDoubleValue(difference);
+				if(tempDiff <0){
+					tempDiff *= -1;
+				}
+				bean.setDateDiff(dateDiff);
+				bean.setDifference(tempDiff+"");
+				bean.setState(state1);
+				bean.setProcess("inbound");
+				if(collectionState==null || collectionState.equals("")){
+					System.out.println("STATE NULL ADD uncollectedAmount : "+amount);
+					
+					bean.setUncollectedAmount(amount);
+				}
+				else if(collectionState.equals("ACCEPT")){
+					System.out.println("ACCEPT AMOUNT : "+collectionAmount);
+					bean.setAcceptAmount(collectionAmount);
+				}
+				else if(collectionState.equals("CLAIM")){
+					System.out.println("CLAIM AMOUNT : "+collectionAmount);
+					bean.setClaimeAmount(collectionAmount);
+				}
+				else if(collectionState.equals("DEPOSIT")){
+					System.out.println("COLLECTED AMOUNT : "+collectionAmount);
+					bean.setCollectionAmount(collectionAmount);
+				}
+				list.add(bean);
+			}
+			disconnect();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return list;
+	}
+	
 	public ArrayList<EachScacUncollectedBeans> getEachScacUncollected(String scac,String inOut,String code,String begin,String end){
 		ArrayList<EachScacUncollectedBeans> list = new ArrayList<>();
 		EachScacUncollectedBeans esub = new EachScacUncollectedBeans();		
@@ -1853,7 +2005,6 @@ public class CL_DAO_DB_Mysql implements IT_DAO{
 		System.out.println("SQL : "+sql);
 		try {
 			connect();
-			
 			rs = stmt.executeQuery(sql);
 			while(rs.next()){
 				String scac1 = rs.getString("scac");
@@ -1916,24 +2067,118 @@ public class CL_DAO_DB_Mysql implements IT_DAO{
 		}
 		return d;
 	}
-	
-	public ArrayList<AllScacTotalInvoiceCollectionStatusGblBeans> getOutboundAllScacTotalInvoiceCollcetionStatusGbl(String scac,String code,String begin,String end){
-		ArrayList<AllScacTotalInvoiceCollectionStatusGblBeans> list = new ArrayList<>();
-		AllScacTotalInvoiceCollectionStatusGblBeans bean = new AllScacTotalInvoiceCollectionStatusGblBeans();
-		String sql="select	invoice_gbl.gbl_no as gblNo, invoice_gbl.amount as amount, invoice_list.start_date as start, invoice_list.end_date as end,"+
-				   "invoice_gbl.name as name,gbl_ib.code as code,gbl_ib.tsp as scac, invoice_gbl_collection.difference as difference,"+
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	public ArrayList<EachScacAcceptedAmountStatusGblBean> getInboundAcceptedGbl(String scac, String begin, String end){
+		ArrayList<EachScacAcceptedAmountStatusGblBean> list = new ArrayList<>();
+		EachScacAcceptedAmountStatusGblBean bean = new EachScacAcceptedAmountStatusGblBean();
+		String sql="select	invoice_gbl.gbl_no as gblNo, invoice_gbl.amount as amount,"+
+				   "gbl_ib.code as code,gbl_ib.tsp as scac, invoice_gbl_collection.difference as difference,"+
 				   "invoice_gbl_collection.state as state, invoice_gbl_collection_flow.state as collectionState, invoice_gbl_collection_flow.amount collectionAmount,"+
-				   "invoice_list.invoice_date as invoiceDate "
+				   "invoice_list.invoice_date as invoiceDate,invoice_gbl_collection_flow.remark as reason "
 				   + "from	invoice_list left join invoice_gbl on invoice_list.seq = invoice_gbl.invoice_list_seq"
 				   + "	left join gbl_ib on invoice_gbl.gbl_seq = gbl_ib.seq"
 				   + "	left join invoice_gbl_collection on invoice_gbl_collection.invoice_gbl_seq = invoice_gbl.seq"
 				   + "	left join invoice_gbl_collection_flow on invoice_gbl_collection.seq = invoice_gbl_collection_flow.invoice_gbl_collection_seq"
-				   + " where invoice_list.process = 'outbound'";
+				   + " where invoice_list.process = 'inbound'"
+				   + " and invoice_gbl_collection_flow.state='ACCEPT'";
 		if(!scac.equals("ALL")){
 			sql+=" and gbl_ib.tsp='"+scac+"'";
 		}
+		if(!begin.equals("") && !end.equals("")){
+			sql+=" and date(invoice_list.invoice_date) >= date('"+begin+"') and date(invoice_list.invoice_date) <= date('"+end+"')";
+		}
+		System.out.println("SQL IN : "+sql);
+		try {
+			connect();
+			rs = stmt.executeQuery(sql);
+			while(rs.next()){
+				bean = new EachScacAcceptedAmountStatusGblBean();
+				String gblNo = rs.getString("gblNo");
+				String invoiceAmounts = rs.getString("amount");
+				String acceptedAmounts = rs.getString("collectionAmount");
+				String invoiceDate = rs.getString("invoiceDate");
+				String reason = rs.getString("reason");
+				String code = rs.getString("code");
+				System.out.println("GBL : "+gblNo+" ACCEPTEAMOUNT : "+acceptedAmounts);
+				bean.setInvoiceDate(invoiceDate);
+				bean.setGblNo(gblNo);
+				bean.setInvoiceAmounts(invoiceAmounts);
+				bean.setAcceptedAmounts(acceptedAmounts);
+				bean.setReason(reason);
+				bean.setCode(code);
+				list.add(bean);
+			}
+			disconnect();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return list;
+	}
+	////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	public ArrayList<EachScacAcceptedAmountStatusGblBean> getOutboundAcceptedGbl(String scac, String begin, String end){
+		ArrayList<EachScacAcceptedAmountStatusGblBean> list = new ArrayList<>();
+		EachScacAcceptedAmountStatusGblBean bean = new EachScacAcceptedAmountStatusGblBean();
+		String sql="select	invoice_gbl.gbl_no as gblNo, invoice_gbl.amount as amount, invoice_list.start_date as start, invoice_list.end_date as end,"+
+				   "invoice_gbl.name as name,gbl.code as code,gbl.scac as scac, invoice_gbl_collection.difference as difference,"+
+				   "invoice_gbl_collection.state as state, invoice_gbl_collection_flow.state as collectionState, invoice_gbl_collection_flow.amount collectionAmount,"+
+				   "invoice_list.invoice_date as invoiceDate,invoice_gbl_collection_flow.remark as reason "
+				   + "from	invoice_list left join invoice_gbl on invoice_list.seq = invoice_gbl.invoice_list_seq"
+				   + "	left join gbl on invoice_gbl.gbl_seq = gbl.seq"
+				   + "	left join invoice_gbl_collection on invoice_gbl_collection.invoice_gbl_seq = invoice_gbl.seq"
+				   + "	left join invoice_gbl_collection_flow on invoice_gbl_collection.seq = invoice_gbl_collection_flow.invoice_gbl_collection_seq"
+				   + " where invoice_list.process = 'outbound'"
+				   + " and invoice_gbl_collection_flow.state='ACCEPT'";
+		if(!scac.equals("ALL")){
+			sql+=" and gbl.scac='"+scac+"'";
+		}
+		if(!begin.equals("") && !end.equals("")){
+			sql+=" and date(invoice_list.invoice_date) >= date('"+begin+"') and date(invoice_list.invoice_date) <= date('"+end+"')";
+		}
+		System.out.println("SQL OUT : "+sql);
+		try {
+			connect();
+			rs = stmt.executeQuery(sql);
+			while(rs.next()){
+				bean = new EachScacAcceptedAmountStatusGblBean();
+				String gblNo = rs.getString("gblNo");
+				String invoiceAmounts = rs.getString("amount");
+				String acceptedAmounts = rs.getString("collectionAmount");
+				String invoiceDate = rs.getString("invoiceDate");
+				String reason = rs.getString("reason");
+				String code = rs.getString("code");
+				System.out.println("GBL : "+gblNo+" ACCEPTEAMOUNT : "+acceptedAmounts);
+				bean.setInvoiceDate(invoiceDate);
+				bean.setGblNo(gblNo);
+				bean.setInvoiceAmounts(invoiceAmounts);
+				bean.setAcceptedAmounts(acceptedAmounts);
+				bean.setReason(reason);
+				bean.setCode(code);
+				list.add(bean);
+			}
+			disconnect();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return list;
+	}
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	public ArrayList<AllScacTotalInvoiceCollectionStatusGblBeans> getOutboundAllScacTotalInvoiceCollcetionStatusGbl(String scac,String code,String begin,String end){
+		ArrayList<AllScacTotalInvoiceCollectionStatusGblBeans> list = new ArrayList<>();
+		AllScacTotalInvoiceCollectionStatusGblBeans bean = new AllScacTotalInvoiceCollectionStatusGblBeans();
+		String sql="select	invoice_gbl.gbl_no as gblNo, invoice_gbl.amount as amount, invoice_list.start_date as start, invoice_list.end_date as end,"+
+				   "invoice_gbl.name as name,gbl.code as code,gbl.scac as scac, invoice_gbl_collection.difference as difference,"+
+				   "invoice_gbl_collection.state as state, invoice_gbl_collection_flow.state as collectionState, invoice_gbl_collection_flow.amount collectionAmount,"+
+				   "invoice_list.invoice_date as invoiceDate "
+				   + "from	invoice_list left join invoice_gbl on invoice_list.seq = invoice_gbl.invoice_list_seq"
+				   + "	left join gbl on invoice_gbl.gbl_seq = gbl.seq"
+				   + "	left join invoice_gbl_collection on invoice_gbl_collection.invoice_gbl_seq = invoice_gbl.seq"
+				   + "	left join invoice_gbl_collection_flow on invoice_gbl_collection.seq = invoice_gbl_collection_flow.invoice_gbl_collection_seq"
+				   + " where invoice_list.process = 'outbound'";
+		if(!scac.equals("ALL")){
+			sql+=" and gbl.scac='"+scac+"'";
+		}
 		if(!code.equals("ALL")){
-			sql+=" and gbl_ib.code='"+code+"'";
+			sql+=" and gbl.code='"+code+"'";
 		}
 		if(!begin.equals("") && !end.equals("")){
 			sql+=" and date(invoice_list.invoice_date) >= date('"+begin+"') and date(invoice_list.invoice_date) <= date('"+end+"')";

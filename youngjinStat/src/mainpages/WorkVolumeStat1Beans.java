@@ -4,12 +4,12 @@ import java.util.HashMap;
 
 public class WorkVolumeStat1Beans {
 	/******************[define parameter]************************/
-	String[][] input = new String[23][7];
+	String[][] input = new String[23][20];
 	HashMap<String,String> hashMapColumn = new HashMap<String,String>();
 	HashMap<String,String> hashMapRow = new HashMap<String,String>();
 	String type="";
 	/***************************************************/
-	public WorkVolumeStat1Beans() {
+	public WorkVolumeStat1Beans(){
 		initArr(input);
 		initHashmap(hashMapColumn,"column");
 		initHashmap(hashMapRow,"");

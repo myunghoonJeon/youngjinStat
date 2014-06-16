@@ -1,7 +1,6 @@
 package mainpages;
 
 import java.awt.BorderLayout;
-
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
@@ -59,7 +58,9 @@ public class InvoiceCollectionFiltering extends JFrame implements ActionListener
 	JPanel jpCenter = new JPanel();
 	JPanel bigCenter = new JPanel();
 	JPanel bcn = new JPanel();
-
+	
+	JLabel informationLabel = new JLabel("[ INVOICE & COLLECTION FILTERING ]                     cut offdate : ");
+	JLabel cutoffLabel = new JLabel();
 	// //////////////////////////////////////////////////////////////
 	public InvoiceCollectionFiltering() {
 		super("");
@@ -141,6 +142,8 @@ public class InvoiceCollectionFiltering extends JFrame implements ActionListener
 		bigCenter.setLayout(new BorderLayout());
 		bigCenter.add("North", bcn);
 		bcn.setLayout(new FlowLayout(FlowLayout.LEFT));
+		bcn.add(informationLabel);
+		bcn.add(cutoffLabel);
 		bcn.setPreferredSize(new Dimension(0, 25));
 		bigCenter.add("Center",center);
 		beginLayout(center);
@@ -155,8 +158,25 @@ public class InvoiceCollectionFiltering extends JFrame implements ActionListener
 		jp.add("Center",js);
 		validate();
 	}
-	
+	public double getDoubleValue(String str){
+		double d=0.0;
+		if(str==null || str.equals("")){
+			d=0.0;
+		}
+		else{
+			d = Double.parseDouble(str);
+		}
+		return d;
+	}
+   	public String getRoundValue(double d){
+   		String result ="";
+   		result = new DecimalFormat("#,##0.00").format(d);
+   		return result;
+   	}
 	public JScrollPane getTable(ArrayList<InvoiceFilteringBeans> arr){
+		double ta=0;
+		double tc=0;
+		double tuc=0;
 		String colName[] = {"INVOICE NO","INVOICE DATE","INVOICED AMOUNTS","COLLECTED AMOUNTS","UNCOLLECTED AMOUNTS"};
 		DefaultTableCellRenderer dtcr = new DefaultTableCellRenderer();
 		DefaultTableModel model;
@@ -169,12 +189,11 @@ public class InvoiceCollectionFiltering extends JFrame implements ActionListener
 				InvoiceFilteringBeans ifb = arr.get(i);
 				String[] row = {ifb.getInvoiceNo(),ifb.getInvoicedDate(),ifb.getInvoicedAmounts(),ifb.getNet(),ifb.getUnCollectedAmounts()};
 				model.addRow(row);
+				ta+=getDoubleValue(ifb.getInvoicedAmounts());
+				tc+=getDoubleValue(ifb.getCollectedAmounts());
+				tuc+=getDoubleValue(ifb.getUnCollectedAmounts());
 			}
-			if(arr.size()<20){
-				for(int i=0;i<20-arr.size();i++){
-					model.addRow(new String[]{" "," "," "," "," "});
-				}
-			}
+			model.addRow(new String[]{"TOTAL","",getRoundValue(ta),getRoundValue(tc),getRoundValue(tuc)});
 		}
 		JTable table = new JTable(model);
 		dtcr.setHorizontalAlignment(SwingConstants.CENTER);
@@ -212,6 +231,7 @@ public class InvoiceCollectionFiltering extends JFrame implements ActionListener
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		if(e.getSource()==searchBtn){
+			cutoffLabel.setText(endPeriod.getText());
 			setFilteringInformation();
 		}
 		

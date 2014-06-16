@@ -33,8 +33,8 @@ public class AllScacTotalInvoiceCollection extends JFrame implements ActionListe
 ////////////////////////////////////////////////////////////////
 	JComboBox hhgUbCombo = new JComboBox(dao.getHhgUbList().toArray());
 	JComboBox typeCombo = new JComboBox(dao.getWorkStat1TypeList().toArray());
-	JTextField beginPeriod = new JTextField("20140201",8);
-	JTextField endPeriod = new JTextField("20140831",8);
+	JTextField beginPeriod = new JTextField("",8);
+	JTextField endPeriod = new JTextField("",8);
 	JButton searchBtn = new JButton("SEARCH");
 ////////////////////////////////////////////////////////////////
 	JPanel center;
@@ -150,46 +150,22 @@ public class AllScacTotalInvoiceCollection extends JFrame implements ActionListe
 		return js;
 	}
 	
-	
-	
-	public String[][] combine(String[][] ib,String[][] ob,String type){
-		String[][] result = new String[ROW_LENGTH][COLUM_LENGTH];
-		if(type.equals("WEIGHT")){
-			for(int i=0;i<ROW_LENGTH;i++){
-				for(int j=0;j<COLUM_LENGTH;j++){
-					result[i][j] = new String();
-					result[i][j] = checkWeightValue(ib[i][j])+checkWeightValue(ob[i][j])+"";
-					if(result[i][j].equals("0")){
-						result[i][j]="-";
-					}
-				}
-			}
+
+	public double getDoubleValue(String str){
+		double d=0.0;
+		if(str==null || str.equals("")|| str.equals("-")){
+			d=0.0;
 		}
-		else if(type.equals("DENSITY")){
-			for(int i=0;i<ROW_LENGTH;i++){
-				for(int j=0;j<COLUM_LENGTH;j++){
-					if(j%2==0){
-						result[i][j] = new String();
-						result[i][j] = checkWeightValue(ib[i][j])+checkWeightValue(ob[i][j])+"";
-						if(result[i][j].equals("0")){
-							result[i][j]="-";
-						}
-					}
-					else{
-						result[i][j] = new String();
-						result[i][j] = checkDensityValue(ib[i][j])+checkDensityValue(ob[i][j])+"";
-						if(result[i][j].equals("0.0")){
-							result[i][j]="-";
-						}
-					}
-					
-				}
-			}
+		else{
+			d = Double.parseDouble(str);
 		}
-		
-		return result;
+		return d;
 	}
-	
+   	public String getRoundValue(double d){
+   		String result ="";
+   		result = new DecimalFormat("#,##0.00").format(d);
+   		return result;
+   	}
 	public void getResult(){
 		center.removeAll();
 		String[][] finalStr = new String[ROW_LENGTH][COLUM_LENGTH];
@@ -218,6 +194,22 @@ public class AllScacTotalInvoiceCollection extends JFrame implements ActionListe
 //		JScrollPane js = frame.getWorkVolumeStat1Table();
 //		js.setPreferredSize(new Dimension(950,530));
 		finalStr = dao.getAllScacTotalInvoice(begin, end);
+		
+		for(int i=0;i<ROW_LENGTH;i++){
+			for(int k=0;k<COLUM_LENGTH;k++){
+				if(i!=ROW_LENGTH-1){
+					finalStr[(ROW_LENGTH-1)][k] = getDoubleValue(finalStr[i][k])+getDoubleValue(finalStr[(ROW_LENGTH-1)][k])+""; 
+				}
+			}
+		}
+		for(int i=0;i<ROW_LENGTH;i++){
+			for(int k=0;k<COLUM_LENGTH;k++){
+				finalStr[i][k] = getRoundValue(getDoubleValue(finalStr[i][k]));
+				if(finalStr[i][k].equals("0.00")){
+					finalStr[i][k] = "-";
+				}
+			}
+		}
 		JScrollPane js = tableLayout(finalStr);
 		center.add(js);
 		validate();
@@ -282,7 +274,7 @@ public class AllScacTotalInvoiceCollection extends JFrame implements ActionListe
 		String[][] total = new String[ROW_LENGTH][COLUM_LENGTH];
 		if(type.equals("WEIGHT")){
 			for(int i=0;i<ROW_LENGTH;i++){
-				int totalJob=0;
+				int totalJob = 0;
 				int totalWeight = 0;
 				for(int j=0;j<COLUM_LENGTH;j++){
 					total[i][j] = new String();
@@ -311,7 +303,7 @@ public class AllScacTotalInvoiceCollection extends JFrame implements ActionListe
 		
 		else if(type.equals("DENSITY")){
 			for(int i=0;i<ROW_LENGTH;i++){
-				int totalJob=0;
+				int totalJob = 0;
 				double totalWeight = 0.0;
 				for(int j=0;j<COLUM_LENGTH;j++){
 					total[i][j] = new String();

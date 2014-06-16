@@ -41,10 +41,10 @@ public class EachScacUncollectedStatus extends JFrame implements ActionListener 
 ////////////////////////////////////////////////////////////////
 	JComboBox hhgUbCombo = new JComboBox(dao.getHhgUbList().toArray());
 	JComboBox typeCombo = new JComboBox(dao.getWorkStat1TypeList().toArray());
-	JTextField beginPeriod = new JTextField("20140201",8);
-	JTextField endPeriod = new JTextField("20140831",8);
+	JTextField beginPeriod = new JTextField("",8);
+	JTextField endPeriod = new JTextField("",8);
 	JButton searchBtn = new JButton("SEARCH");
-	JComboBox scacCombo = new JComboBox(dao.getScacList().toArray());
+	JComboBox scacCombo = new JComboBox(dao.getScacListWork().toArray());
 	JComboBox inoutCombo = new JComboBox(dao.getAllInOutList().toArray());
 	JComboBox codeCombo = new JComboBox(dao.getCodeList().toArray());
 ////////////////////////////////////////////////////////////////
@@ -78,7 +78,7 @@ public class EachScacUncollectedStatus extends JFrame implements ActionListener 
 	JPanel p45Total = new JPanel();
 	JPanel ptotal=new JPanel();
 	JPanel information = new JPanel();
-		JLabel informationLabel = new JLabel("　　ALL SCAC TOTAL INVOICE & COLLECTION STATUS (invoice base) 　　　　cut off date : ");
+		JLabel informationLabel = new JLabel("EACH SCAC TOTAL UNCOLLECTION STATUS (invoice base) 　　　　cut off date : ");
 		JLabel cutOffDate = new JLabel("");
 	JPanel mainCenter = new JPanel();
 	JPanel north = new JPanel();
@@ -286,6 +286,7 @@ public class EachScacUncollectedStatus extends JFrame implements ActionListener 
 //	}
 //////////////////////////////////////////[ table column layout ]//////////////////////////////////////////////////////////////			
 	public void initTotalValue(){
+		System.out.println("INIT TOTAL VALUE");
 		 tQ=0.0;
 		 tIa=0.0;
 		 tC=0.0;
@@ -294,6 +295,24 @@ public class EachScacUncollectedStatus extends JFrame implements ActionListener 
 		 tA=0.0;
 		 tCl=0.0;
 		 tNu=0.0;
+//		 gtQ=0.0;
+//		 gtIa=0.0;
+//		 gtC=0.0;
+//		 gtUc=0.0;
+//		 gtS=0.0;
+//		 gtA=0.0;
+//		 gtCl=0.0;
+//		 gtNu=0.0;
+	}
+	public void initGtotalValue(){
+		 gtQ=0.0;
+		 gtIa=0.0;
+		 gtC=0.0;
+		 gtUc=0.0;
+		 gtS=0.0;
+		 gtA=0.0;
+		 gtCl=0.0;
+		 gtNu=0.0;
 	}
 	public JScrollPane getJscrollPane(ArrayList<EachScacUncollectedBeans> esic,String criteria){
 		JScrollPane jsp = new JScrollPane();
@@ -307,6 +326,7 @@ public class EachScacUncollectedStatus extends JFrame implements ActionListener 
 //		table.setFont(new Font( "" , Font.PLAIN, 11 ));
 //        table.getTableHeader().setFont( new Font( "" , Font.PLAIN, 11 ));
 		JScrollPane scrollpane = new JScrollPane(table);
+		
 		if(criteria.equals("total")){
 			table.setPreferredScrollableViewportSize(new Dimension(940,45));
 			scrollpane.setPreferredSize(new Dimension(900,45));
@@ -352,6 +372,7 @@ public class EachScacUncollectedStatus extends JFrame implements ActionListener 
     	   }
     	   else if(criteria.equals("1530")){
     		   if(diff>15 && diff <= 30){
+    			   System.out.println("[[[[ CRITERIA  : "+criteria+" DETECTED -- INVOICE NO : : "+invoiceNo+" ]]]]]");
     			   flag ++;
     			   model.addRow(new String[]{date,invoiceNo,quantity,getRoundValue(getDoubleValue(invoiceAmounts)),
     					   getRoundValue(getDoubleValue(collectedAmounts)),getRoundValue(getDoubleValue(uncollectedAmounts)),getRoundValue(getDoubleValue(shortPaid)),getRoundValue(getDoubleValue(accepted)),getRoundValue(getDoubleValue(claimed)),getRoundValue(getDoubleValue(net))});
@@ -359,7 +380,9 @@ public class EachScacUncollectedStatus extends JFrame implements ActionListener 
     		   }
     	   }
     	   else if(criteria.equals("3045")){
+    		   
     		   if(diff>30 && diff<=45){
+    			   System.out.println("[[[[ CRITERIA  : "+criteria+" DETECTED -- INVOICE NO : : "+invoiceNo+" ]]]]]");
     			   flag ++;
     			   model.addRow(new String[]{date,invoiceNo,quantity,getRoundValue(getDoubleValue(invoiceAmounts)),
     					   getRoundValue(getDoubleValue(collectedAmounts)),getRoundValue(getDoubleValue(uncollectedAmounts)),getRoundValue(getDoubleValue(shortPaid)),getRoundValue(getDoubleValue(accepted)),getRoundValue(getDoubleValue(claimed)),getRoundValue(getDoubleValue(net))});
@@ -368,6 +391,7 @@ public class EachScacUncollectedStatus extends JFrame implements ActionListener 
     	   }
     	   else if(criteria.equals("45")){
     		   if(diff>45){
+    			   System.out.println("[[[[ CRITERIA  : "+criteria+" DETECTED -- INVOICE NO : : "+invoiceNo+" ]]]]]");
     			   flag ++;
     			   model.addRow(new String[]{date,invoiceNo,quantity,getRoundValue(getDoubleValue(invoiceAmounts)),
     					   getRoundValue(getDoubleValue(collectedAmounts)),getRoundValue(getDoubleValue(uncollectedAmounts)),getRoundValue(getDoubleValue(shortPaid)),getRoundValue(getDoubleValue(accepted)),getRoundValue(getDoubleValue(claimed)),getRoundValue(getDoubleValue(net))});
@@ -377,6 +401,7 @@ public class EachScacUncollectedStatus extends JFrame implements ActionListener 
     	   
        }
 		if(criteria.equals("total")){
+				System.out.println("[[[[ CRITERIA  : "+criteria+" DETECTED ]]]]]");
 				System.out.println("total Click");
 				System.out.println(gtQ+" "+gtIa);
 				model.addRow(new String[]{"","",getRoundValue(gtQ),getRoundValue(gtIa),
@@ -480,6 +505,8 @@ public class EachScacUncollectedStatus extends JFrame implements ActionListener 
 		validate();
 	}
 	public void getResult(){
+		initTotalValue();
+		initGtotalValue();
 		String scac = scacCombo.getSelectedItem().toString();
 		String code = codeCombo.getSelectedItem().toString();
 		String begin = beginPeriod.getText();
@@ -518,26 +545,19 @@ public class EachScacUncollectedStatus extends JFrame implements ActionListener 
 		ArrayList<GblBeans> list = new ArrayList<>();
 		if(e.getSource() == searchBtn){
 			cutOffDate.setText(endPeriod.getText());
+			if(inoutCombo.getSelectedItem().equals("IN")){
+				informationLabel.setText("EACH SCAC INBOUND UNCOLLECTION STATUS (invoice base) 　　　　cut off date : ");
+			}
+			else if(inoutCombo.getSelectedItem().equals("OUT")){
+				informationLabel.setText("EACH SCAC OUTBOUND UNCOLLECTION STATUS (invoice base) 　　　　cut off date : ");
+			}
+			else{
+				informationLabel.setText("EACH SCAC TOTAL UNCOLLECTION STATUS (invoice base) 　　　　cut off date : ");
+			}
 			validate();
 			getResult();
 			validate();
 		}//if
-		if(e.getSource() == b15){
-			cutOffDate.setText(endPeriod.getText());
-			validate();
-		}
-		if(e.getSource() == b1530){
-			cutOffDate.setText(endPeriod.getText());
-			validate();
-		}
-		if(e.getSource() == b3045){
-			cutOffDate.setText(endPeriod.getText());
-			validate();
-		}
-		if(e.getSource() == b45){
-			cutOffDate.setText(endPeriod.getText());
-			validate();
-		}
 		
 	}//method
 	

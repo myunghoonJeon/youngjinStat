@@ -229,10 +229,7 @@ public class WorkVolumeFilteringPage extends JFrame implements ActionListener{
 				JTable table = new JTable(model);
 				dtcr.setHorizontalAlignment(SwingConstants.CENTER);
 				TableColumnModel tcm = table.getColumnModel();
-				table.setRowSorter(new TableRowSorter(model));
 				table.setPreferredScrollableViewportSize(new Dimension(940,500));
-//				table.setFont(new Font( "" , Font.PLAIN, 11 ));
-//		        table.getTableHeader().setFont( new Font( "" , Font.PLAIN, 11 ));
 				JScrollPane scrollpane = new JScrollPane(table);
 				scrollpane.setPreferredSize(new Dimension(950,550));
 				scrollpane.setBorder(BorderFactory.createLineBorder(Color.DARK_GRAY));
@@ -255,7 +252,6 @@ public class WorkVolumeFilteringPage extends JFrame implements ActionListener{
 						if(list.get(i).getPcs()!=null || !list.get(i).getPcs().equals("")){
 							totalPcs+=Integer.parseInt(list.get(i).getPcs());
 						}
-						
 						if(list.get(i).getGross()!=null || !list.get(i).getGross().equals("")){
 							totalGross+=Integer.parseInt(list.get(i).getGross());
 						}

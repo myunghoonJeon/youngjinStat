@@ -32,14 +32,14 @@ public class EachScacInvoiceCollection extends JFrame implements ActionListener{
 	CL_DAO_DB_Mysql dao = new CL_DAO_DB_Mysql();
 	////////////////////////////////////////////////////////////////
 	int superWide = 1000;
-	int superHeight = 550;
+	int superHeight = 700;
 	int ROW_LENGTH = dao.getScacList().size()+1;
 	int COLUM_LENGTH = 6;
 ////////////////////////////////////////////////////////////////
 	JComboBox hhgUbCombo = new JComboBox(dao.getHhgUbList().toArray());
 	JComboBox typeCombo = new JComboBox(dao.getWorkStat1TypeList().toArray());
-	JTextField beginPeriod = new JTextField("20140201",8);
-	JTextField endPeriod = new JTextField("20140831",8);
+	JTextField beginPeriod = new JTextField("",8);
+	JTextField endPeriod = new JTextField("",8);
 	JButton searchBtn = new JButton("SEARCH");
 	JComboBox scacCombo = new JComboBox(dao.getScacList().toArray());
 	JComboBox inoutCombo = new JComboBox(dao.getAllInOutList().toArray());
@@ -113,33 +113,34 @@ public class EachScacInvoiceCollection extends JFrame implements ActionListener{
 		center = new JPanel();
 		bcn.setBackground(Color.white);
 		mainCenter.add("North",north);
-			north.setPreferredSize(new Dimension(0,40));
-			north.setLayout(new GridLayout(1,0));
+			north.setPreferredSize(new Dimension(0,50));
+			north.setLayout(new BorderLayout());
 			JPanel northUp = new JPanel();
-			north.add(northUp);
-			northUp.setLayout(new FlowLayout(FlowLayout.LEFT));
-			northUp.add(new JLabel("SCAC:"));
-			northUp.add(scacCombo);
-			northUp.add(new JLabel("IN/OUT"));
-			northUp.add(inoutCombo);
-			northUp.add(new JLabel("CODE"));
-			northUp.add(codeCombo);
-			northUp.add(new JLabel("PERIOD:"));
-			northUp.add(beginPeriod);
-			northUp.add(new JLabel("~"));
-			northUp.add(endPeriod);
-			northUp.add(searchBtn);
-			northUp.add(information);
+			north.add("North",northUp);
+				northUp.setLayout(new FlowLayout(FlowLayout.LEFT));
+				northUp.add(new JLabel("SCAC:"));
+				northUp.add(scacCombo);
+				northUp.add(new JLabel("IN/OUT"));
+				northUp.add(inoutCombo);
+				northUp.add(new JLabel("CODE"));
+				northUp.add(codeCombo);
+				northUp.add(new JLabel("PERIOD:"));
+				northUp.add(beginPeriod);
+				northUp.add(new JLabel("~"));
+				northUp.add(endPeriod);
+				northUp.add(searchBtn);
 			searchBtn.setPreferredSize(new Dimension(90,30));
-				information.setLayout(new FlowLayout(FlowLayout.LEFT));
-				information.add(informationLabel);
-				information.add(cutOffDate);
+				
 		///////////////////////////////////////////////////////
 		mainCenter.add("Center",bigCenter);
 			bigCenter.setLayout(new BorderLayout());
 			bigCenter.add("North",bcn);
 				bcn.setLayout(new FlowLayout(FlowLayout.LEFT));
 				bcn.setPreferredSize(new Dimension(0,25));
+				bcn.add(information);
+				information.setLayout(new FlowLayout(FlowLayout.LEFT));
+				information.add(informationLabel);
+				information.add(cutOffDate);
 			bigCenter.add("Center",center);
 			js = tableLayout(js,esic);
 			center.add(js);
@@ -174,6 +175,14 @@ public class EachScacInvoiceCollection extends JFrame implements ActionListener{
 		String claimed="";
 		String net="";
 		String status="";
+		int tq=0;
+		double ta=0;
+		double tc=0;
+		double tu=0;
+		double ts=0;
+		double tac=0;
+		double tcl=0;
+		double tnu=0;
 		center.removeAll();
 		for(int i=0;i<esic.size();i++){
 			code =codeCombo.getSelectedItem().toString();
@@ -190,17 +199,29 @@ public class EachScacInvoiceCollection extends JFrame implements ActionListener{
 			status=esic.get(i).getStatus();
 			if(code.equals("ALL")){
 				System.out.println("[NET : "+net+"]");
-				String[] input = {date,invoiceNo,quantity,invoiceAmounts,collectedAmounts,uncollectedAmounts,shortPaid,accepted,claimed,net,status};
+				String[] input = {date,invoiceNo,quantity,getRoundValue(getDoubleValue(invoiceAmounts)),getRoundValue(getDoubleValue(collectedAmounts)),
+						getRoundValue(getDoubleValue(uncollectedAmounts)),getRoundValue(getDoubleValue(shortPaid)),getRoundValue(getDoubleValue(accepted)),getRoundValue(getDoubleValue(claimed)),getRoundValue(getDoubleValue(net)),status};
 				model.addRow(input);
 			}
 			else{
 				if(esic.get(i).getCode().equals(code)){// to operation when discover same code
 					System.out.println("[NET : "+net+"]");
-					String[] input = {date,invoiceNo,quantity,invoiceAmounts,collectedAmounts,uncollectedAmounts,shortPaid,accepted,claimed,net,status};
+					String[] input = {date,invoiceNo,quantity,getRoundValue(getDoubleValue(invoiceAmounts)),getRoundValue(getDoubleValue(collectedAmounts)),
+							getRoundValue(getDoubleValue(uncollectedAmounts)),getRoundValue(getDoubleValue(shortPaid)),getRoundValue(getDoubleValue(accepted)),
+							getRoundValue(getDoubleValue(claimed)),getRoundValue(getDoubleValue(net)),status};
 					model.addRow(input);
 				}
 			}
+			tq+=Integer.parseInt(quantity);
+			ta+=getDoubleValue(invoiceAmounts);
+			tc+=getDoubleValue(collectedAmounts);
+			tu+=getDoubleValue(uncollectedAmounts);
+			ts+=getDoubleValue(shortPaid);
+			tac+=getDoubleValue(accepted);
+			tcl+=getDoubleValue(claimed);
+			tnu+=getDoubleValue(net);
 		}
+		model.addRow(new String[]{"TOTAL","",tq+"",getRoundValue(ta),getRoundValue(tc),getRoundValue(tu),getRoundValue(ts),getRoundValue(tac),getRoundValue(tcl),getRoundValue(tnu)});
 		JTable table = new JTable(model);
 		dtcr.setHorizontalAlignment(SwingConstants.CENTER);
 		TableColumnModel tcm = table.getColumnModel();
@@ -211,12 +232,16 @@ public class EachScacInvoiceCollection extends JFrame implements ActionListener{
 			tcm.getColumn(i).setCellRenderer(dtcr);
 		}
 		setTableColumnWidth(tcm);
-		js.setPreferredSize(new Dimension(950,400));
+		js.setPreferredSize(new Dimension(950,550));
 		center.add(js);
 		validate();
 		return js;
 	}
-	
+	   	public String getRoundValue(double d){
+	   		String result ="";
+	   		result = new DecimalFormat("#,##0.00").format(d);
+	   		return result;
+	   	}
 	public double getDoubleValue(String str){
 		double d=0.0;
 		if(str==null){

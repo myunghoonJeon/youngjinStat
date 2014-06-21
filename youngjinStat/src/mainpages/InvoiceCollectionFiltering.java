@@ -128,14 +128,14 @@ public class InvoiceCollectionFiltering extends JFrame implements ActionListener
 		northUp.add(inoutCombo);
 //		northUp.add(new JLabel("CODE:"));
 //		northUp.add(codeCombo);
-		northUp.add(new JLabel("DATE:"));
-		northUp.add(dateCombo);
+//		northUp.add(new JLabel("DATE:"));
+//		northUp.add(dateCombo);
+		northUp.add(new JLabel("STATUS"));
+		northUp.add(statusCombo);
 		northUp.add(new JLabel("Period:"));
 		northUp.add(startPeriod);
 		northUp.add(new JLabel("~"));
 		northUp.add(endPeriod);
-		northUp.add(new JLabel("STATUS"));
-		northUp.add(statusCombo);
 		northUp.add(searchBtn);
 		searchBtn.setPreferredSize(new Dimension(90, 30));
 		mainCenter.add("Center", bigCenter);
@@ -187,7 +187,10 @@ public class InvoiceCollectionFiltering extends JFrame implements ActionListener
 			model = new DefaultTableModel(colName,0);
 			for(int i=0;i<arr.size();i++){
 				InvoiceFilteringBeans ifb = arr.get(i);
-				String[] row = {ifb.getInvoiceNo(),ifb.getInvoicedDate(),ifb.getInvoicedAmounts(),ifb.getNet(),ifb.getUnCollectedAmounts()};
+				String tempAmounts = getRoundValue(getDoubleValue(ifb.getInvoicedAmounts()+""));
+				String tempNet= getRoundValue(getDoubleValue(ifb.getNet()+""));
+				String tempUncollected = getRoundValue(getDoubleValue(ifb.getUnCollectedAmounts()+""));
+				String[] row = {ifb.getInvoiceNo(),ifb.getInvoicedDate(),tempAmounts,tempNet,tempUncollected};
 				model.addRow(row);
 				ta+=getDoubleValue(ifb.getInvoicedAmounts());
 				tc+=getDoubleValue(ifb.getCollectedAmounts());
@@ -217,11 +220,13 @@ public class InvoiceCollectionFiltering extends JFrame implements ActionListener
 		String scac = scacCombo.getSelectedItem().toString();
 		String inOut = inoutCombo.getSelectedItem().toString();
 //		String code = codeCombo.getSelectedItem().toString();
-		String date = dateCombo.getSelectedItem().toString();
+//		String date = dateCombo.getSelectedItem().toString();
+//		String date = "ALL";
 		String begin = startPeriod.getText();
 		String end = endPeriod.getText();
 		String status = statusCombo.getSelectedItem().toString();
-		arr = dao.getInvoiceCollectionFiltering(scac, inOut,date, begin, end, status);
+//		String status="ALL";
+		arr = dao.getInvoiceCollectionFiltering(scac, inOut, begin, end, status);
 		center.removeAll();
 		autoCreateBorderLayout(center, 10, 10, 30, 30);
 		center.add("Center",getTable(arr));

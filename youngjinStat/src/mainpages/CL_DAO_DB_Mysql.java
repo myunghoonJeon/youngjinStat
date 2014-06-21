@@ -26,7 +26,7 @@ import AllScacTotalInvoiceCollectionStatusGBL.AllScacTotalInvoiceCollectionStatu
 public class CL_DAO_DB_Mysql implements IT_DAO{
 	/*-------------------system parameter---------------------------------*/
 	private String jdbc_driver = "com.mysql.jdbc.Driver";
-	private String jdbc_url = "jdbc:mysql://203.249.22.66:3306/youngjin";
+	private String jdbc_url = "jdbc:mysql://119.192.215.138/youngjin";
 	private Connection conn;
 	private Statement stmt;
 	private String sql="";
@@ -46,7 +46,7 @@ public class CL_DAO_DB_Mysql implements IT_DAO{
 	public void connect() throws Exception{
 		try {
 			Class.forName(jdbc_driver);
-			conn = DriverManager.getConnection(jdbc_url, "root", "rtos8514");
+			conn = DriverManager.getConnection(jdbc_url, "root", "root");
 			stmt = conn.createStatement();
 		} catch (Exception e) {
 			throw new Exception("DB Error(connect) : "+e.toString());
@@ -795,6 +795,7 @@ public class CL_DAO_DB_Mysql implements IT_DAO{
 		try {
 			connect();
 			sql = "select * from stat_user where id='"+id+"' and pw = '"+pw+"'";
+			System.out.println("SQL : "+sql);
 			
 			rs = stmt.executeQuery(sql);
 			while(rs.next()){
@@ -1397,82 +1398,86 @@ public class CL_DAO_DB_Mysql implements IT_DAO{
 		}
 		return list;
 	}
+	public ArrayList<User> getUserList(){
+		ArrayList<User> userList = new ArrayList<>();
+		String sql="select * from stat_user";
+		System.out.println("SQL : "+sql);
+		try {
+			connect();
+			rs = stmt.executeQuery(sql);
+			while(rs.next()){
+				User userBean = new User();
+				String id = rs.getString("id");
+				String pw = rs.getString("pw");
+				String level = rs.getString("level");
+				userBean.setId(id);
+				userBean.setPassword(pw);
+				userBean.setLevel(level);
+				userList.add(userBean);
+				System.out.println("-----------------------------");
+				System.out.println("id : "+id);
+				System.out.println("pw : "+pw);
+				System.out.println("level : "+level);
+				System.out.println("-----------------------------");
+			}
+			disconnect();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return userList;
+	}
 	
-	
-	public ArrayList<InvoiceFilteringBeans> getInvoiceCollectionFiltering(String scac,String inOut,String date,String begin,String end, String status){
+	public ArrayList<InvoiceFilteringBeans> getInvoiceCollectionFiltering(String scac,String inOut,String begin,String end, String status){
 		ArrayList<InvoiceFilteringBeans> list = new ArrayList<>();
 		InvoiceFilteringBeans ifb;
 		int whereFlag=0;
 		String condition="";
-		String sql="select * from invoice_list left join invoice_collection on invoice_list.seq = invoice_collection.invoice_seq ";
+		String sql="select * from invoice_list left join invoice_collection on invoice_list.seq = invoice_collection.invoice_seq where 1=1";
 		if(!scac.equals("ALL")){
-			if(whereFlag==0){
-				whereFlag=1;
-				condition +=" where invoice_list.tsp = '"+scac+"'";
-			}
-			else{
 				condition += " and  invoice_list.tsp='"+scac+"'";
-			}
 		}
 		if(!inOut.equals("ALL")){// in or out
 			if(inOut.equals("IN")){
-				if(whereFlag==0){
-					whereFlag=1;
-					condition += " where invoice_list.process='inbound'";
-				}
-				else{
 					condition += " and invoice_list.process='inbound'";
-				}
 			}
 			else if(inOut.equals("OUT")){
-				if(whereFlag==0){
-					whereFlag=1;
-					condition += " where invoice_list.process='outbound'";
-				}
-				else{
 					condition += " and invoice_list.process='outbound'";
-				}
 			}
 		}
-		if(date.equals("INVOICED")){
+		if(!begin.equals("")&!end.equals("")){
 			if( !begin.equals("") && !end.equals("")){
-				if(whereFlag==0){
-					whereFlag=1;
-					condition+=" where date(invoice_list.write_date) >= date('"+begin+"') and date(invoice_list.write_date) <= date('"+end+"')";
-				}
-				else{
 					condition+=" and date(invoice_list.write_date) >= date('"+begin+"') and date(invoice_list.write_date) <= date('"+end+"')";
-				}
 			}
 		}
 		
-		if(date.equals("COLLECTED")){//??
-			if(!begin.equals("") && !end.equals("")){
-				if(whereFlag==0){
-					whereFlag=1;
-					condition+=" where date(invoice_list.write_date) >= date('"+begin+"') and date(invoice_list.write_date) <= date('"+end+"') and invoice_collection.state='COMPLETE'";
-				}
-				else{
-					condition+=" and date(write_date) >= date('"+begin+"') and date(write_date) <= date('"+end+"') and invoice_collection.state='COMPLETE'";
-				}
-			}
-			else{
-				if(whereFlag==0){
-					whereFlag=1;
-					condition+=" where invoice_collection.state='COMPLETE'";
-				}
-				else{
-					condition+=" and invoice_collection.state='COMPLETE'";
-				}
-			}
-			
-		}
+//		if(date.equals("COLLECTED")){//??
+//			if(!begin.equals("") && !end.equals("")){
+//				if(whereFlag==0){
+//					whereFlag=1;
+//					condition+=" where date(invoice_list.write_date) >= date('"+begin+"') and date(invoice_list.write_date) <= date('"+end+"') and invoice_collection.state='COMPLETE'";
+//				}
+//				else{
+//					condition+=" and date(write_date) >= date('"+begin+"') and date(write_date) <= date('"+end+"') and invoice_collection.state='COMPLETE'";
+//				}
+//			}
+//			else{
+//				if(whereFlag==0){
+//					whereFlag=1;
+//					condition+=" where invoice_collection.state='COMPLETE'";
+//				}
+//				else{
+//					condition+=" and invoice_collection.state='COMPLETE'";
+//				}
+//			}
+//			
+//		}
 		if(!status.equals("ALL")){
 			if(status.equals("COLLECTED")){
 				condition+=" and invoice_collection.state='COMPLETE'";
 			}
 			if(status.equals("UNCOLLECTED")){
-				condition+=" and invoice_collection.state='RESENT'";
+				condition+=" and invoice_collection.state='RESENT' or invoice_collection.state is null";
+				
 			}
 		}
 		sql+=condition;

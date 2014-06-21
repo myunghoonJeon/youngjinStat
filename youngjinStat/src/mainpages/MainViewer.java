@@ -64,6 +64,7 @@ public class MainViewer extends JFrame implements ActionListener{
 	private JButton allScacTotalInvoiceCollectionStatusGblBtn =  new JButton("[ ALL SCAC INVOICE& COLLECTION STATUS (GBL BASE) ]");
 	private JButton eachScacUncollectedStatusGblBtn = new JButton("[ SCAC UNCOLLECTED STATUS (GBL BASE) ]");
 	private JButton eachScacAcceptedAmountStatusGblBtn = new JButton("[ EACH SCAC ACCEPTED AMOUNT STATUS (GBL BASE) ]");
+	private JButton adminBtn = new JButton("[ ADMIN PAGE ]");
 	/*************************[ INVENTORY INPUT ]*****************************/
 	private JPanel inventoryMainPanel;
 	String add = "[ INPUT ]";
@@ -98,6 +99,7 @@ public class MainViewer extends JFrame implements ActionListener{
 		super.setResizable(false);
 		super.setSize(1000,700);
 		super.setLayout(new BorderLayout());
+		System.out.println("START MAIN VIEWR");
 		Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
 		Dimension frm = super.getSize();
 		int y = (int)(screen.height/2 - frm.height/2);
@@ -292,9 +294,9 @@ public class MainViewer extends JFrame implements ActionListener{
 	}
 	public void level3PanelLayout(JPanel jp){
 		levelCenterPanel = new JPanel();
-		autoCreateBorderLayout(jp, 300, 300 , 200, 200);
+		autoCreateBorderLayout(jp, 300, 200 , 200, 200);
 		jp.add("Center",levelCenterPanel);
-		levelCenterPanel.setLayout(new GridLayout(8,0,10,10));
+		levelCenterPanel.setLayout(new GridLayout(9,0,10,10));
 		JLabel level1InformationLabel = new JLabel("[ SELECT MENU ]");
 		levelCenterPanel.add(level1InformationLabel);
 		levelCenterPanel.add(invoiceCollectionFilteringBtn);
@@ -304,6 +306,7 @@ public class MainViewer extends JFrame implements ActionListener{
 		levelCenterPanel.add(eachScacUncollectedStatusBtn);
 		levelCenterPanel.add(eachScacUncollectedStatusGblBtn);		
 		levelCenterPanel.add(eachScacAcceptedAmountStatusGblBtn);
+		levelCenterPanel.add(adminBtn);
 		validate();
 	}
 	public void setStateLevel(int i){
@@ -313,6 +316,7 @@ public class MainViewer extends JFrame implements ActionListener{
 		return statLevel;
 	}
 	public void level1Page(){
+		backBtn.setVisible(true);
 		setStateLevel(1);
 		level1P = new JPanel();
 		level1PanelLayout(level1P);
@@ -323,6 +327,7 @@ public class MainViewer extends JFrame implements ActionListener{
 	}
 	
 	public void level2Page(){
+		backBtn.setVisible(false);
 		setStateLevel(2);
 		level2P = new JPanel();
 		level2PanelLayout(level2P);
@@ -333,6 +338,7 @@ public class MainViewer extends JFrame implements ActionListener{
 	}
 	
 	public void level3Page(){
+		backBtn.setVisible(false);
 		setStateLevel(3);
 		level3P = new JPanel();
 		level3PanelLayout(level3P);
@@ -494,6 +500,7 @@ public class MainViewer extends JFrame implements ActionListener{
 		allScacTotalInvoiceCollectionStatusGblBtn.addActionListener(this);
 		eachScacUncollectedStatusGblBtn.addActionListener(this);
 		eachScacAcceptedAmountStatusGblBtn.addActionListener(this);
+		adminBtn.addActionListener(this);
 	}
 	
 	public void inputOpen(String item, String type){
@@ -541,6 +548,9 @@ public class MainViewer extends JFrame implements ActionListener{
 	}
 	public void eachScacAcceptedAmountStatusGblBtn(){
 		EachScacAcceptedAmountStatusGbl ee = new EachScacAcceptedAmountStatusGbl();
+	}
+	public void adminPage(){
+		AdminPage ap = new AdminPage();
 	}
 	public void actionPerformed(ActionEvent e) {
 		/***********[loginPage Buttons]***********/
@@ -655,8 +665,9 @@ public class MainViewer extends JFrame implements ActionListener{
 		else if(e.getSource() == eachScacAcceptedAmountStatusGblBtn){
 			eachScacAcceptedAmountStatusGblBtn();
 		}
-		
-		
+		else if(e.getSource() == adminBtn){
+			adminPage();
+		}
 	}
 	
 }

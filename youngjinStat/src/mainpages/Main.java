@@ -10,7 +10,7 @@ public class Main {
 //		   System.out.println(number);
 //		   System.out.println(number1);
 //		   System.out.println(number2);
-
+			System.out.println("start");
 		   MainViewer mv = new MainViewer();
 	}
 }

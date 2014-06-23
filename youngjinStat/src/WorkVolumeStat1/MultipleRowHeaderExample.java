@@ -96,7 +96,7 @@ public class MultipleRowHeaderExample extends JFrame {
     cellAtt.combine(new int[] {22 }, new int[]{0,1,2});
     fixedTable = new MultiSpanCellTable( fixedModel );
 //    fixedTable.setBorder(BorderFactory.createLineBorder(Color.darkGray));2	2	
-    GroupableColumnExample ge = new GroupableColumnExample(val);
+    WorkStat1GroupableColumnExample ge = new WorkStat1GroupableColumnExample(val);
     table = ge.getWorkvolumeTableColumnHeader();
 //    table.setBorder(BorderFactory.createLineBorder(Color.darkGray));
     fixedTable.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);

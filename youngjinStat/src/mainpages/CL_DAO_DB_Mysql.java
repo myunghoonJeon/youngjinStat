@@ -1579,7 +1579,7 @@ public class CL_DAO_DB_Mysql implements IT_DAO{
 		WorkVolumeStat1Beans wvs1 = new WorkVolumeStat1Beans();
 		sql="select *,sum(weight_certificate.gross),sum(weight_certificate.net) from invoice_gbl,gbl,weight_certificate where invoice_gbl.gbl_seq = gbl.seq and weight_certificate.gbl_seq = gbl.seq";
 		if(!scac.equals("ALL")){
-			condition+=" and gbl.tsp='"+scac+"'";
+			condition+=" and gbl.scac='"+scac+"'";
 		}
 		if(!code.equals("ALL")){
 				condition+=" and gbl.code='"+code+"'";

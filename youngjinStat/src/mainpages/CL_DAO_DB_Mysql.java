@@ -125,7 +125,7 @@ public class CL_DAO_DB_Mysql implements IT_DAO{
 	public ArrayList<String> getWorkStat1TypeList(){
 		ArrayList<String> list = new ArrayList<>();
 		list.add("WEIGHT");
-		list.add("PERCENTAGE");
+//		list.add("PERCENTAGE");
 		list.add("DENSITY");
 		return list;
 	}
@@ -1735,6 +1735,7 @@ public class CL_DAO_DB_Mysql implements IT_DAO{
 						String tempGross = rs.getString("grossWeight");
 						String tempNet = rs.getString("netWeight");
 						String tempCuft = rs.getString("cuft");
+						System.out.println("tempGross : "+tempGross+" tempNet : "+tempNet+" tempCuft : "+tempCuft);
 						String tempDensity = getDensity(tempGross, tempNet, tempCuft, rs.getString("code"));
 						wvs1.setDensityData(tempArea, tempCode, 1+"",tempDensity );
 					}

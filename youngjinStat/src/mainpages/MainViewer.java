@@ -1,14 +1,21 @@
 package mainpages;
 
-
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.GridLayout;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.print.Book;
+import java.awt.print.PageFormat;
+import java.awt.print.Paper;
+import java.awt.print.Printable;
+import java.awt.print.PrinterException;
+import java.awt.print.PrinterJob;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
@@ -20,12 +27,18 @@ import javax.swing.JTextField;
 
 import AllScacTotalInvoiceCollectionStatusGBL.AllScacTotalInvoiceCollectionStatusGbl;
 
-public class MainViewer extends JFrame implements ActionListener{
+public class MainViewer extends JFrame implements ActionListener,Printable{
+	/*************************[ PRINT LEVEL ]*****************************/
+	JFrame frameToPrint;
+	private JButton printBtn = new JButton("PRINT");
 	/*************************[ LOGIN LEVEL ]*****************************/
+	
 	private int statLevel = 0;
 	private JTextField idTextField;
 	private JPasswordField passwordField;
 	private JLabel loginInformation;
+	
+	
 	
 	private JButton loginBtn = new JButton("LOGIN");
 	private JButton logoutBtn = new JButton("LOGOUT");
@@ -132,6 +145,7 @@ public class MainViewer extends JFrame implements ActionListener{
 	
 	public void init(){
 		loginBtn.setPreferredSize(new Dimension(70,20));
+		printBtn.setPreferredSize(new Dimension(70,20));
 	}
 
 	
@@ -144,6 +158,7 @@ public class MainViewer extends JFrame implements ActionListener{
 		
 		jNorth.add(backBtn);
 		jNorth.add(logoutBtn);
+		jNorth.add(printBtn);/////////////////////////////////////////////////
 		
 		logoutBtn.setVisible(false);
 		jNorth.setPreferredSize(new Dimension(0,40));
@@ -501,6 +516,7 @@ public class MainViewer extends JFrame implements ActionListener{
 		eachScacUncollectedStatusGblBtn.addActionListener(this);
 		eachScacAcceptedAmountStatusGblBtn.addActionListener(this);
 		adminBtn.addActionListener(this);
+		printBtn.addActionListener(this);
 	}
 	
 	public void inputOpen(String item, String type){
@@ -552,10 +568,59 @@ public class MainViewer extends JFrame implements ActionListener{
 	public void adminPage(){
 		AdminPage ap = new AdminPage();
 	}
+	public void print(){
+		frameToPrint = (JFrame)super.getFrames()[0];
+		
+		PrinterJob job = PrinterJob.getPrinterJob();
+		PageFormat pf = job.defaultPage();
+		Paper paper = pf.getPaper();
+//		paper.setSize(3000, 3700);
+//		paper.setSize(8.5 * 72, 11 * 72);
+	    paper.setImageableArea(0.5 * 72, 0.0 * 72, 7.5 * 72, 10.5 * 72);
+	    pf.setPaper(paper);
+	    job.setPrintable(this, pf);
+//	    Book book = new Book();//java.awt.print.Book
+//	    book.append(this, pf);
+//	    job.setPageable(book);
+//		job.setPrintable(this);
+        boolean ok = job.printDialog();
+        if (ok) {
+            try {
+                 job.print();
+            } catch (PrinterException ex) {
+             /* The job did not successfully complete */
+            }
+        }
+	}
+
+    public int print(Graphics g, PageFormat pf, int page) throws
+                                                        PrinterException {
+
+        if (page > 0) { /* We have only one page, and 'page' is zero-based */
+        	 return NO_SUCH_PAGE;
+        }
+
+        /* User (0,0) is typically outside the imageable area, so we must
+         * translate by the X and Y values in the PageFormat to avoid clipping
+         */
+        
+        Graphics2D g2d = (Graphics2D)g;
+        g2d.translate(pf.getImageableX(), pf.getImageableY());
+
+        /* Now print the window and its visible contents */
+        frameToPrint.printAll(g);
+
+        /* tell the caller that this page is part of the printed document */
+        return PAGE_EXISTS;
+    }
+    
 	public void actionPerformed(ActionEvent e) {
 		/***********[loginPage Buttons]***********/
 		if(e.getSource() == loginBtn){
 			checkUser();
+		}
+		else if(e.getSource() == printBtn){
+			print();
 		}
 		else if(e.getSource() == logoutBtn){
 			logOut();

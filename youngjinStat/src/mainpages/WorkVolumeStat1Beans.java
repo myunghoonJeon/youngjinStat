@@ -53,6 +53,9 @@ public class WorkVolumeStat1Beans {
 	}
 	public void setDensityData(String area,String code,String jobValue,String densityValue){
 		String column = hashMapColumn.get(area);
+		System.out.println("AREA : "+area);
+		System.out.println("COLUMN : "+column);
+		if(column!= null){
 		int job = Integer.parseInt(column)-1;
 		int weight = Integer.parseInt(column);
 		
@@ -79,6 +82,10 @@ public class WorkVolumeStat1Beans {
 		input[row][job] = originJob+"";
 		input[row][weight] = originDensity+"";
 		System.out.println("area : "+area +" code : "+code+" set - [job : "+jobValue +"][  weight :"+densityValue+" ]");
+		}
+		else{
+			System.out.println("area Detection result null");
+		}
 	}
 		
 	/***************************************************/

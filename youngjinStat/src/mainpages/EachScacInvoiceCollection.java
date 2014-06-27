@@ -130,13 +130,12 @@ public class EachScacInvoiceCollection extends JFrame implements ActionListener{
 				northUp.add(endPeriod);
 				northUp.add(searchBtn);
 			searchBtn.setPreferredSize(new Dimension(90,30));
-				
 		///////////////////////////////////////////////////////
 		mainCenter.add("Center",bigCenter);
 			bigCenter.setLayout(new BorderLayout());
 			bigCenter.add("North",bcn);
 				bcn.setLayout(new FlowLayout(FlowLayout.LEFT));
-				bcn.setPreferredSize(new Dimension(0,25));
+				bcn.setPreferredSize(new Dimension(0,35));
 				bcn.add(information);
 				information.setLayout(new FlowLayout(FlowLayout.LEFT));
 				information.add(informationLabel);

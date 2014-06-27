@@ -309,7 +309,7 @@ public class MainViewer extends JFrame implements ActionListener,Printable{
 	}
 	public void level3PanelLayout(JPanel jp){
 		levelCenterPanel = new JPanel();
-		autoCreateBorderLayout(jp, 300, 200 , 200, 200);
+		autoCreateBorderLayout(jp, 150, 150 , 10, 50);
 		jp.add("Center",levelCenterPanel);
 		levelCenterPanel.setLayout(new GridLayout(9,0,10,10));
 		JLabel level1InformationLabel = new JLabel("[ SELECT MENU ]");

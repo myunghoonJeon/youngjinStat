@@ -54,6 +54,8 @@ public class AllScacTotalInvoiceCollectionStatusGbl extends JFrame implements Ac
 	JPanel jpCenter = new JPanel();
 	JPanel bigCenter = new JPanel();
 	JPanel bcn = new JPanel();
+	JLabel informationLabel = new JLabel("ALL SCAC TOTAL INVOICE & COLLECTION STATUS (GBL base) cut off date : ");
+	JLabel cutoffDate = new JLabel("");
 	////////////////////////////////////////////////////////////////
 	public AllScacTotalInvoiceCollectionStatusGbl(){
 		super("");
@@ -161,6 +163,8 @@ public class AllScacTotalInvoiceCollectionStatusGbl extends JFrame implements Ac
 			bigCenter.add("North",bcn);
 				bcn.setLayout(new FlowLayout(FlowLayout.LEFT));
 				bcn.setPreferredSize(new Dimension(0,25));
+				bcn.add(informationLabel);
+				bcn.add(cutoffDate);
 			bigCenter.add("Center",center);
 			String[][] initStr = new String[23][7];
 			for(int i=0;i<23;i++){
@@ -169,7 +173,7 @@ public class AllScacTotalInvoiceCollectionStatusGbl extends JFrame implements Ac
 					initStr[i][k] = "";
 				}
 			}
-			MultipleRowHeaderExample frame = new MultipleRowHeaderExample(initStr);
+			AllScacTotalInvoiceMultipleRowHeader frame = new AllScacTotalInvoiceMultipleRowHeader(initStr);
 			JScrollPane js = frame.getWorkVolumeStat1Table();
 			js.setPreferredSize(new Dimension(950,530));
 			center.add(js);
@@ -210,7 +214,9 @@ public class AllScacTotalInvoiceCollectionStatusGbl extends JFrame implements Ac
 			System.out.println("[[[ INBOUND CASE scac : "+scac+" code : "+code+" begin : "+begin+" end : "+end+" ]]]");
 			inboundList = dao.getInboundAllScacTotalInvoiceCollcetionStatusGbl(scac, code, begin, end);
 			System.out.println("[[[ COMPLETE GET DATA ]]]");
-			finalStr = getStringInput(inboundList, "inbound");
+			String[][] inboundStr = getStringInput(inboundList, "inbound");
+			String[][] outboundStr = getStringArr(23, 8);
+			finalStr = combineStrList(inboundStr,outboundStr);
 //			inboundStr = dao.getInboundWorkVolumeStat1(scac, area, hhgUb, code, begin, end,type);
 //			finalStr = inboundStr;
 		}
@@ -218,7 +224,9 @@ public class AllScacTotalInvoiceCollectionStatusGbl extends JFrame implements Ac
 			System.out.println("[[[ OUTBOUND CASE scac : "+scac+" code : "+code+" begin : "+begin+" end : "+end+" ]]]");
 			outboundList = dao.getOutboundAllScacTotalInvoiceCollcetionStatusGbl(scac, code, begin, end);
 			System.out.println("[[[ COMPLETE GET DATA ]]]");
-			finalStr = getStringInput(outboundList, "outbound");
+			String[][] outboundStr = getStringInput(outboundList, "outbound");
+			String[][] inboundStr = getStringArr(23, 8);
+			finalStr = combineStrList(inboundStr,outboundStr);
 //			outboundStr = dao.getOutboundWorkVolumeStat1(scac, area, hhgUb, code, begin, end,type);
 //			finalStr = outboundStr;
 		}
@@ -229,6 +237,16 @@ public class AllScacTotalInvoiceCollectionStatusGbl extends JFrame implements Ac
 		center.add(js);
 		validate();
 	}
+	public String[][] getStringArr(int x, int y){
+		String[][] arr = new String[x][y];
+		for(int i=0;i<x;i++){
+			for(int j=0;j<y;j++){
+				arr[i][j] = "0";
+			}
+		}
+		return arr;
+	}
+	
 	public String[][] combineStrList(String[][] a,String[][] b){
 		String[][] result= new String[23][8];
 		for(int i=0;i<23;i++){
@@ -443,6 +461,7 @@ public class AllScacTotalInvoiceCollectionStatusGbl extends JFrame implements Ac
 	public void actionPerformed(ActionEvent e) {
 		ArrayList<GblBeans> list = new ArrayList<>();
 		if(e.getSource() == searchBtn){
+			cutoffDate.setText(endPeriod.getText());
 			getResult();
 		}//if
 		

@@ -2240,7 +2240,40 @@ public class CL_DAO_DB_Mysql implements IT_DAO{
 //	public Boolean inventoryInput(){
 //		
 //	}
+	public void modifyAdmin(String originId,String originPw,String newId,String newPw,String newlevel){
+		String sql="update stat_user set id='"+newId+"',pw='"+newPw+"', level='"+newlevel+"' where id='"+originId+"' and pw='"+originPw+"'";
+		System.out.println(sql);
+		try {
+			connect();
+			stmt.executeUpdate(sql);
+			System.out.println("[[ MODIFY SUCCESS ]]");
+		}catch(Exception e){
+			
+		}
+	}
 	
+	public void deleteAdmin(String originId,String originPw){
+		String sql="delete from stat_user where id='"+originId+"' and pw='"+originPw+"'";
+		System.out.println(sql);
+		try {
+			connect();
+			stmt.executeUpdate(sql);
+			System.out.println("[[ DELETE SUCCESS ]]");
+		}catch(Exception e){
+			
+		}
+	}
+	public void addUser(String id,String pw,String level){
+		String sql="insert into stat_user (id,pw,level) values('"+id+"','"+pw+"','"+level+"')";
+		System.out.println(sql);
+		try {
+			connect();
+			stmt.executeUpdate(sql);
+			System.out.println("[[ ADDUSER SUCCESS ]]");
+		}catch(Exception e){
+			
+		}
+	}
 	/**
 	public void writeMessage(String board,CL_DataBean data) throws Exception{
 		String sql,columnString,valueString;

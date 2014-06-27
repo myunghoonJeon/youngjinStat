@@ -14,8 +14,6 @@ import TableOption.ColumnGroup;
 import TableOption.GroupableTableColumnModel;
 import TableOption.GroupableTableHeader;
 
-// Steve Webb 16/09/04 swebb99_uk@hotmail.com
-
 public class WorkStat1GroupableColumnExample extends JFrame {
 	JTable table = new JTable( /*dm, new GroupableTableColumnModel()*/);
 	String[][] test= new String[23][20];

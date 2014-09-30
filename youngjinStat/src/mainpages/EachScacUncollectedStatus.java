@@ -33,7 +33,7 @@ public class EachScacUncollectedStatus extends JFrame implements ActionListener 
 	GroupableColumnEachscacUncollectedStatus geus;
 	CL_DAO_DB_Mysql dao = new CL_DAO_DB_Mysql();
 	////////////////////////////////////////////////////////////////
-	int superWide = 1000;
+	int superWide = 1200;
 	int superHeight = 800;
 	int ROW_LENGTH = dao.getScacList().size()+1;
 	int COLUM_LENGTH = 6;
@@ -44,6 +44,8 @@ public class EachScacUncollectedStatus extends JFrame implements ActionListener 
 	JTextField beginPeriod = new JTextField("",8);
 	JTextField endPeriod = new JTextField("",8);
 	JButton searchBtn = new JButton("SEARCH");
+	JButton printBtn = new JButton("PRINT");
+
 	JComboBox scacCombo = new JComboBox(dao.getScacListWork().toArray());
 	JComboBox inoutCombo = new JComboBox(dao.getAllInOutList().toArray());
 	JComboBox codeCombo = new JComboBox(dao.getCodeList().toArray());
@@ -117,7 +119,7 @@ public class EachScacUncollectedStatus extends JFrame implements ActionListener 
 	double gtNu=0.0;
 //////////////////////////////////////////////////////////////	
 	public EachScacUncollectedStatus(){
-		super("");
+		super("scac uncollected status(invoice base)");
 		super.setVisible(true);
 		super.setResizable(false);
 		super.setSize(superWide,superHeight);
@@ -133,6 +135,7 @@ public class EachScacUncollectedStatus extends JFrame implements ActionListener 
 	
 	public void addActionListner(){
 		searchBtn.addActionListener(this);
+		printBtn.addActionListener(this);
 	}
 	
 	public void autoCreateBorderLayout(JPanel a,int wx, int ex, int ny, int sy){
@@ -187,6 +190,9 @@ public class EachScacUncollectedStatus extends JFrame implements ActionListener 
 				northUp.add(new JLabel("~"));
 				northUp.add(endPeriod);
 				northUp.add(searchBtn);
+				northUp.add(printBtn);
+				printBtn.setPreferredSize(new Dimension(90,30));
+		
 				searchBtn.setPreferredSize(new Dimension(90,30));
 			north.add("South",northDown);
 				northDown.setLayout(new FlowLayout(FlowLayout.LEFT));
@@ -205,7 +211,7 @@ public class EachScacUncollectedStatus extends JFrame implements ActionListener 
 			bigCenter.add("Center",center);
 				center.setLayout(new BorderLayout());
 					center.add("Center",innerCenter);
-						innerCenter.setPreferredSize(new Dimension(950,650));
+						innerCenter.setPreferredSize(new Dimension(1100,650));
 						innerCenter.setBackground(Color.black);
 						innerCenter.setLayout(new GridLayout(4,1));
 						innerCenter.add(p15);
@@ -328,12 +334,12 @@ public class EachScacUncollectedStatus extends JFrame implements ActionListener 
 		JScrollPane scrollpane = new JScrollPane(table);
 		
 		if(criteria.equals("total")){
-			table.setPreferredScrollableViewportSize(new Dimension(940,45));
-			scrollpane.setPreferredSize(new Dimension(900,45));
+			table.setPreferredScrollableViewportSize(new Dimension(1150,45));
+			scrollpane.setPreferredSize(new Dimension(1100,45));
 		}
 		else{
-			table.setPreferredScrollableViewportSize(new Dimension(940,150));
-			scrollpane.setPreferredSize(new Dimension(900,150));	
+			table.setPreferredScrollableViewportSize(new Dimension(1150,150));
+			scrollpane.setPreferredSize(new Dimension(1100,150));	
 		}
 		
 		scrollpane.setBorder(BorderFactory.createLineBorder(Color.DARK_GRAY));
@@ -360,6 +366,7 @@ public class EachScacUncollectedStatus extends JFrame implements ActionListener 
 			claimed = esic.get(i).getClaimedAmounts();
 			net = (getDoubleValue(invoiceAmounts)-getDoubleValue(collectedAmounts)-getDoubleValue(accepted))+"";
 			quantity = esic.get(i).getGblQuantity()+"";
+			if(esic.get(i).getDatediff()!=null){
     	   int diff = Integer.parseInt(esic.get(i).getDatediff());
     	   if(criteria.equals("15")){
     		   if(diff<=15){
@@ -400,32 +407,21 @@ public class EachScacUncollectedStatus extends JFrame implements ActionListener 
     	   }
     	   
        }
-		if(criteria.equals("total")){
-				System.out.println("[[[[ CRITERIA  : "+criteria+" DETECTED ]]]]]");
-				System.out.println("total Click");
-				System.out.println(gtQ+" "+gtIa);
-				model.addRow(new String[]{"","",getRoundValue(gtQ),getRoundValue(gtIa),
-					   getRoundValue(gtC),getRoundValue(gtUc),getRoundValue(gtS),getRoundValue(gtA),getRoundValue(gtCl),getRoundValue(gtNu)});
-	   }
-		else{
-			gtQ += tQ;
-			gtIa += tIa;
-			gtC += tC;
-			gtUc += tUc;
-			gtS += tS;
-			gtA += tA;
-			gtCl += tCl;
-			gtNu += tNu;
-		}
-		if(flag !=0){
-			model.addRow(new String[]{"Total","",getRoundValue(tQ),getRoundValue(tIa),getRoundValue(tC),getRoundValue(tUc),getRoundValue(tS),getRoundValue(tA),getRoundValue(tCl),getRoundValue(tNu)});
-		}
-		setTableColumnSize(table, 0,-25);
-		setTableColumnSize(table, 4,-25);
-		setTableColumnSize(table, 5,-20);
-		setTableColumnSize(table, 6,-20);
-		setTableColumnSize(table, 7,-30);
-		setTableColumnSize(table, 8,-30);
+//		if(criteria.equals("total")){
+//				System.out.println("[[[[ CRITERIA  : "+criteria+" DETECTED ]]]]]");
+//				System.out.println("<<<<<<<<<<<<< total Click >>>>?>>");
+//				System.out.println(gtQ+" "+gtIa);
+//				model.addRow(new String[]{"","",getRoundValue(gtQ),getRoundValue(gtIa),
+//					   getRoundValue(gtC),getRoundValue(gtUc),getRoundValue(gtS),getRoundValue(gtA),getRoundValue(gtCl),getRoundValue(gtNu)});
+//	   }
+		
+		
+//		setTableColumnSize(table, 0,-25);
+//		setTableColumnSize(table, 4,-25);
+//		setTableColumnSize(table, 5,-20);
+//		setTableColumnSize(table, 6,-20);
+//		setTableColumnSize(table, 7,-30);
+//		setTableColumnSize(table, 8,-30);
 //		setTableColumnSize(table, 9,-20);
 //		setTableColumnSize(table, 4,30);
 //		setTableColumnSize(table, 5,65);
@@ -436,6 +432,28 @@ public class EachScacUncollectedStatus extends JFrame implements ActionListener 
 //		jsp.add(ge.getTable());
 //		jsp = mreu.getEachScacUncollectedStatusTable();
 //		center.removeAll();
+		}
+		if(flag !=0){
+			model.addRow(new String[]{"Total","",(int)tQ+"",getRoundValue(tIa),getRoundValue(tC),getRoundValue(tUc),getRoundValue(tS),getRoundValue(tA),getRoundValue(tCl),getRoundValue(tNu)});
+		}
+		if(criteria.equals("total")){
+			System.out.println("[[[[ CRITERIA  : "+criteria+" DETECTED ]]]]]");
+			System.out.println("<<<<<<<<<<<<< total Click >>>>?>>");
+			System.out.println("totalQuantity : "+gtQ+" "+gtIa);
+			String totalQuantity = (int)gtQ+"";
+			model.addRow(new String[]{"","",totalQuantity+"",getRoundValue(gtIa),
+				   getRoundValue(gtC),getRoundValue(gtUc),getRoundValue(gtS),getRoundValue(gtA),getRoundValue(gtCl),getRoundValue(gtNu)});
+		}
+		else{
+			gtQ += tQ;
+			gtIa += tIa;
+			gtC += tC;
+			gtUc += tUc;
+			gtS += tS;
+			gtA += tA;
+			gtCl += tCl;
+			gtNu += tNu;
+		}
 		return scrollpane;
 	}
 	/////////////////////////////////////////////////////
@@ -466,14 +484,14 @@ public class EachScacUncollectedStatus extends JFrame implements ActionListener 
 	   	}
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////	
 	public void setTableColumnWidth(TableColumnModel tcm){
-		tcm.getColumn(2).setPreferredWidth(100);
-		tcm.getColumn(3).setPreferredWidth(100);
-		tcm.getColumn(4).setPreferredWidth(110);
-		tcm.getColumn(5).setPreferredWidth(120);
-		tcm.getColumn(6).setPreferredWidth(60);
-		tcm.getColumn(7).setPreferredWidth(60);
-		tcm.getColumn(8).setPreferredWidth(60);
-		tcm.getColumn(9).setPreferredWidth(60);
+//		tcm.getColumn(2).setPreferredWidth(100);
+//		tcm.getColumn(3).setPreferredWidth(100);
+//		tcm.getColumn(4).setPreferredWidth(110);
+//		tcm.getColumn(5).setPreferredWidth(120);
+//		tcm.getColumn(6).setPreferredWidth(60);
+//		tcm.getColumn(7).setPreferredWidth(60);
+//		tcm.getColumn(8).setPreferredWidth(60);
+//		tcm.getColumn(9).setPreferredWidth(60);
 	}
 	
 	public void initTable(){
@@ -550,6 +568,11 @@ public class EachScacUncollectedStatus extends JFrame implements ActionListener 
 			}
 			else if(inoutCombo.getSelectedItem().equals("OUT")){
 				informationLabel.setText("EACH SCAC OUTBOUND UNCOLLECTION STATUS (invoice base) 　　　　cut off date : ");
+			}
+			
+			else if(e.getSource() == printBtn){
+				PrintSolution ps = new PrintSolution();
+				ps.print(this);
 			}
 			else{
 				informationLabel.setText("EACH SCAC TOTAL UNCOLLECTION STATUS (invoice base) 　　　　cut off date : ");

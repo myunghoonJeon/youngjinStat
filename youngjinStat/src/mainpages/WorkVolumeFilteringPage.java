@@ -1,7 +1,6 @@
 package mainpages;
 
 import java.awt.BorderLayout;
-
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
@@ -9,6 +8,7 @@ import java.awt.Font;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 
 import javax.swing.BorderFactory;
@@ -61,11 +61,15 @@ public class WorkVolumeFilteringPage extends JFrame implements ActionListener{
 	JPanel bigCenter = new JPanel();
 	JPanel bcn = new JPanel();
 	////////////////////////////////////////////////////////////////
+	JPanel southMessagePanel = new JPanel();
+	JLabel southMessageLabel = new JLabel("");
+	////////////////////////////////////////////////////////////////
+	
 	public WorkVolumeFilteringPage() {
-		super("");
+		super("work volume filtering");
 		super.setVisible(true);
 		super.setResizable(false);
-		super.setSize(1000,750);
+		super.setSize(1200,750);
 		Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
 		Dimension frm = super.getSize();
 		int y = (int)(screen.height/2 - frm.height/2);
@@ -112,7 +116,6 @@ public class WorkVolumeFilteringPage extends JFrame implements ActionListener{
 	}
 	
 	public void initLayout(){
-		
 		autoCreateBorderLayout(jp, 20, 20, 10, 10);
 		jp.add("Center",mainCenter);
 		mainCenter.setLayout(new BorderLayout());
@@ -145,7 +148,10 @@ public class WorkVolumeFilteringPage extends JFrame implements ActionListener{
 			bcn.setLayout(new FlowLayout(FlowLayout.LEFT));
 				bcn.add(bigCenterItems);
 				bcn.add(bigCenterArea);
+				bcn.add(southMessageLabel);
 			center.setBorder(BorderFactory.createLineBorder(Color.DARK_GRAY));
+			
+				
 		super.add(jp);
 	}
 	
@@ -195,7 +201,7 @@ public class WorkVolumeFilteringPage extends JFrame implements ActionListener{
 				north.add(new JLabel("AREA : "));
 				north.add(areaCombo);
 				areaCombo.setMaximumRowCount(15);
-				north.add(new JLabel("PUD : "));
+				north.add(new JLabel("DEL : "));
 				north.add(pudStartPeriod);
 				north.add(new JLabel("~"));
 				north.add(pudEndPeriod);
@@ -228,10 +234,13 @@ public class WorkVolumeFilteringPage extends JFrame implements ActionListener{
 				DefaultTableModel model = new DefaultTableModel(colName,0);
 				JTable table = new JTable(model);
 				dtcr.setHorizontalAlignment(SwingConstants.CENTER);
+				table.setRowSorter(new TableRowSorter<DefaultTableModel>(model));
+	            table.setFont(new Font( "" , Font.PLAIN, 10 ));
+	            table.getTableHeader().setFont( new Font( "" , Font.PLAIN, 10 ));
 				TableColumnModel tcm = table.getColumnModel();
-				table.setPreferredScrollableViewportSize(new Dimension(940,500));
+//				table.setPreferredScrollableViewportSize(new Dimension(940,500));
 				JScrollPane scrollpane = new JScrollPane(table);
-				scrollpane.setPreferredSize(new Dimension(950,550));
+				scrollpane.setPreferredSize(new Dimension(1100,550));
 				scrollpane.setBorder(BorderFactory.createLineBorder(Color.DARK_GRAY));
 				
 				for(int i=0;i<colName.length;i++){
@@ -246,7 +255,8 @@ public class WorkVolumeFilteringPage extends JFrame implements ActionListener{
 				int totalCuft=0;
 				for(int i=0;i<list.size();i++){
 					String[] insertRow = {list.get(i).getPud(),list.get(i).getRdd(),list.get(i).getScac(),list.get(i).getCode(),list.get(i).getGblno(),list.get(i).getName()
-							, list.get(i).getUsno(),list.get(i).getArea(),list.get(i).getPcs(),list.get(i).getGross(),list.get(i).getNet(),list.get(i).getCuft(), list.get(i).getDensity()};
+							, list.get(i).getUsno(),list.get(i).getArea(),getRoundValue("pcs",list.get(i).getPcs(),1),getRoundValue("gross",list.get(i).getGross(),1),getRoundValue("net",list.get(i).getNet(),1),
+							getRoundValue("cuft",list.get(i).getCuft(),1), getRoundValue("density",list.get(i).getDensity(),2)};
 					totalCount++;
 					try{
 						if(list.get(i).getPcs()!=null || !list.get(i).getPcs().equals("")){
@@ -279,8 +289,8 @@ public class WorkVolumeFilteringPage extends JFrame implements ActionListener{
 				setTableColumnSize(table, 10,-25);
 				setTableColumnSize(table, 11,-25);
 				setTableColumnSize(table, 12,-15);
-				scrollpane.setPreferredSize(new Dimension(950,550));
 				center.add(scrollpane);
+				southMessageLabel.setText("");
 				validate();
 			}//out if
 		else if(inoutCombo.getSelectedItem().equals("IN")){
@@ -296,18 +306,17 @@ public class WorkVolumeFilteringPage extends JFrame implements ActionListener{
 			String rddEnd = rddEndPeriod.getText();
 			String onhandBegin = onhandStartPeriod.getText();
 			String onhandEnd = onhandEndPeriod.getText();
-			String colName[] = {"PUD","RDD","SCAC","CODE","GBL NO","NAME","AREA","PCS","GROSS","NET","CUFT","DENSITY","ON HAND","SIT IN","SIT OUT","SIT NO"};
+			String colName[] = {"PUD","RDD","SCAC","CODE","GBL NO","NAME","AREA","PCS","GROSS","NET","CUFT","DEN","ON HAND","SIT IN","SIT OUT","SIT NO"};
 			DefaultTableCellRenderer dtcr = new DefaultTableCellRenderer();
 			DefaultTableModel model = new DefaultTableModel(colName,0);
 			JTable table = new JTable(model);
-			
+			table.setRowSorter(new TableRowSorter<DefaultTableModel>(model));
+            table.setFont(new Font( "" , Font.PLAIN, 10 ));
+            table.getTableHeader().setFont( new Font( "" , Font.PLAIN, 10 ));
 			dtcr.setHorizontalAlignment(SwingConstants.CENTER);
 			TableColumnModel tcm = table.getColumnModel();
-			table.setRowSorter(new TableRowSorter(model));
-            table.setFont(new Font( "" , Font.PLAIN, 11 ));
-            table.getTableHeader().setFont( new Font( "" , Font.PLAIN, 11 ));
 			JScrollPane scrollpane = new JScrollPane(table);
-			scrollpane.setPreferredSize(new Dimension(950,550));
+			scrollpane.setPreferredSize(new Dimension(1100,550));
 			scrollpane.setBorder(BorderFactory.createLineBorder(Color.DARK_GRAY));
 			for(int i=0;i<colName.length;i++){
 				tcm.getColumn(i).setCellRenderer(dtcr);
@@ -335,8 +344,12 @@ public class WorkVolumeFilteringPage extends JFrame implements ActionListener{
 			int totalNet=0;
 			int totalCuft=0;
 			for(int i=0;i<list.size();i++){
-				String[] insertRow = {list.get(i).getPud(),list.get(i).getRdd(),list.get(i).getScac(),list.get(i).getCode(),list.get(i).getGblno(),list.get(i).getName()
-						, list.get(i).getUsno(),list.get(i).getArea(),list.get(i).getPcs(),list.get(i).getGross(),list.get(i).getNet(),list.get(i).getCuft(), list.get(i).getDensity()};
+				String[] insertRow = {
+						list.get(i).getPud(),list.get(i).getRdd(),list.get(i).getScac(),list.get(i).getCode(),list.get(i).getGblno(),list.get(i).getName()
+						, list.get(i).getArea(), getRoundValue("PCS",list.get(i).getPcs(),1),getRoundValue("g",list.get(i).getGross(),1),getRoundValue("n",list.get(i).getNet(),1),getRoundValue("c",list.get(i).getCuft(),1), 
+						getRoundValue("d",list.get(i).getDensity(),2),
+						list.get(i).getOnhand(),list.get(i).getSitIn(),list.get(i).getSitOut(),list.get(i).getSitNo()
+						};
 				totalCount++;
 				try{
 					if(list.get(i).getPcs()!=null || !list.get(i).getPcs().equals("")){
@@ -358,18 +371,18 @@ public class WorkVolumeFilteringPage extends JFrame implements ActionListener{
 				model.addRow(insertRow);
 			}
 			
-			String[] totalRow = {"TOTAL","","","",totalCount+"건","","","",totalPcs+"",totalGross+"",totalNet+"",totalCuft+""};
+			String[] totalRow = {"TOTAL","","",totalCount+"건","","","",totalPcs+"",totalGross+"",totalNet+"",totalCuft+""};
 			model.addRow(totalRow);
-			setTableColumnSize(table, 2,-15);
-			setTableColumnSize(table, 3,-25);
-			setTableColumnSize(table, 4,30);
+			setTableColumnSize(table, 2,-35);
+			setTableColumnSize(table, 3,-40);//code
+			setTableColumnSize(table, 4,30);//GBLNO
 			setTableColumnSize(table, 5,65);
-			setTableColumnSize(table, 6,-25);
-			setTableColumnSize(table, 7,-15);
-			setTableColumnSize(table, 8,-35);
-			setTableColumnSize(table, 9,-15);
-			setTableColumnSize(table, 10,-25);
-			setTableColumnSize(table, 11,-25);
+			setTableColumnSize(table, 6,-35);
+			setTableColumnSize(table, 7,-40);
+			setTableColumnSize(table, 8,-25);
+			setTableColumnSize(table, 9,-30);//net
+			setTableColumnSize(table, 10,-30);
+			setTableColumnSize(table, 11,-30);
 			setTableColumnSize(table, 12,-15);
 			center.add(scrollpane);
 			validate();
@@ -377,7 +390,44 @@ public class WorkVolumeFilteringPage extends JFrame implements ActionListener{
 		}//if
 		
 	}//method
-	
+	public Double getDoubleValue(String str){
+		return Double.parseDouble(str);
+	}
+	public String getRoundValue(String type,String str,int flag){
+		String result ="";
+//		System.out.println("tyep : "+type+"str : ["+str+"]");
+		if(str!=null){
+			if(flag==1){//int
+				int i=0;
+				if(str.equals("")){
+					i=0;
+				}
+				else{
+				 i = Integer.parseInt(str);
+				}
+				result = new DecimalFormat("#,##0").format(i);
+			}
+			else if(flag==2) {
+				Double d=0.0;
+//				System.out.println("str : "+str);
+				if(!str.contains(".")){
+					if(str.equals("")){
+						str="0.0";
+					}
+					else{
+						str+=".0";
+					}
+				}
+				d = Double.parseDouble(str);
+		   		result = new DecimalFormat("#,##0.00").format(d);
+			}
+		}
+		else{
+			System.out.println("type : "+type);
+			System.out.println("NULL??????");
+		}
+   		return result;
+   	}
 	
 	public void setTableColumnSize(JTable table,int colNum, int size){
 		int prefer = table.getColumnModel().getColumn(colNum).getPreferredWidth();

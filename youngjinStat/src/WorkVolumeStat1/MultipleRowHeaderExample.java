@@ -5,6 +5,7 @@ import TableOption.*;
 
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Font;
 
 import javax.swing.BorderFactory;
 import javax.swing.JFrame;
@@ -102,7 +103,8 @@ public class MultipleRowHeaderExample extends JFrame {
     fixedTable.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
     DefaultTableCellRenderer dtcr = new DefaultTableCellRenderer();
     dtcr.setHorizontalAlignment(SwingConstants.CENTER);
-    for(int i=0;i<7;i++){
+    table.setFont(new Font( "" , Font.PLAIN, 10 ));
+    for(int i=0;i<20;i++){
     	table.getColumnModel().getColumn(i).setCellRenderer(dtcr);
     }
     table.setRowHeight(18);

@@ -49,7 +49,7 @@ public class inventoryFilteringPage extends JFrame implements ActionListener{
 	JPanel center;
 	
 	public inventoryFilteringPage() {
-		super("");
+		super("inventory filtering");
 		super.setVisible(true);
 		super.setResizable(false);
 		super.setSize(900,650);

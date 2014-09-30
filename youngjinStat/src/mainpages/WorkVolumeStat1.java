@@ -31,9 +31,9 @@ import WorkVolumeStat1.*;
 
 public class WorkVolumeStat1 extends JFrame implements ActionListener{
 ////////////////////////////////////////////////////////////////
-	int superWide = 1000;
+	int superWide = 1200;
 	int superHeight = 650;
-	
+	SharedMethod sm = new SharedMethod();
 ////////////////////////////////////////////////////////////////
 	CL_DAO_DB_Mysql dao = new CL_DAO_DB_Mysql();
 	JComboBox areaCombo = new JComboBox(dao.getAreaList2().toArray());
@@ -43,7 +43,7 @@ public class WorkVolumeStat1 extends JFrame implements ActionListener{
 	JComboBox hhgUbCombo = new JComboBox(dao.getHhgUbList().toArray());
 	JComboBox typeCombo = new JComboBox(dao.getWorkStat1TypeList().toArray());
 	JButton searchBtn = new JButton("SEARCH");
-	
+	JButton printBtn = new JButton("PRINT");
 	JTextField startPeriod =  new JTextField("",6);
 	JTextField endPeriod = new JTextField("",6);
 
@@ -57,7 +57,7 @@ public class WorkVolumeStat1 extends JFrame implements ActionListener{
 	JPanel bcn = new JPanel();
 	////////////////////////////////////////////////////////////////
 	public WorkVolumeStat1(){
-		super("");
+		super("work volume stat1");
 		super.setVisible(true);
 		super.setResizable(false);
 		super.setSize(superWide,superHeight);
@@ -73,6 +73,7 @@ public class WorkVolumeStat1 extends JFrame implements ActionListener{
 	
 	public void addActionListner(){
 		searchBtn.addActionListener(this);
+		printBtn.addActionListener(this);
 	}
 	
 	public void autoCreateBorderLayout(JPanel a,int wx, int ex, int ny, int sy){
@@ -117,11 +118,11 @@ public class WorkVolumeStat1 extends JFrame implements ActionListener{
 			northUp.setLayout(new FlowLayout(FlowLayout.LEFT));
 			northUp.add(new JLabel("SCAC:"));
 			northUp.add(scacCombo);
-			scacCombo.setPreferredSize(new Dimension(50,30));
+			scacCombo.setPreferredSize(new Dimension(80,30));
 			scacCombo.setMaximumRowCount(20);
 			northUp.add(new JLabel("AREA:"));
 			northUp.add(areaCombo);
-			areaCombo.setPreferredSize(new Dimension(50,30));
+			areaCombo.setPreferredSize(new Dimension(80,30));
 			northUp.add(new JLabel("IN/OUT:"));
 			northUp.add(inoutCombo);
 			northUp.add(new JLabel("HHG/UB:"));
@@ -136,7 +137,9 @@ public class WorkVolumeStat1 extends JFrame implements ActionListener{
 			northUp.add(new JLabel("~"));
 			northUp.add(endPeriod);
 			northUp.add(searchBtn);
-			searchBtn.setPreferredSize(new Dimension(90,30));
+				searchBtn.setPreferredSize(new Dimension(90,30));
+			northUp.add(printBtn);
+				printBtn.setPreferredSize(new Dimension(100,30));
 		mainCenter.add("Center",bigCenter);
 			bigCenter.setLayout(new BorderLayout());
 			bigCenter.add("North",bcn);
@@ -152,7 +155,7 @@ public class WorkVolumeStat1 extends JFrame implements ActionListener{
 			}
 			MultipleRowHeaderExample frame = new MultipleRowHeaderExample(initStr);
 			JScrollPane js = frame.getWorkVolumeStat1Table();
-			js.setPreferredSize(new Dimension(950,530));
+			js.setPreferredSize(new Dimension(1150,530));
 			center.add(js);
 		super.add(jp);
 	}
@@ -196,11 +199,28 @@ public class WorkVolumeStat1 extends JFrame implements ActionListener{
 			finalStr = outboundStr;
 		}
 		calcurationTotal(finalStr,type);
+		checkMoneyComma(finalStr,type);
 		MultipleRowHeaderExample frame = new MultipleRowHeaderExample(finalStr);
 		JScrollPane js = frame.getWorkVolumeStat1Table();
-		js.setPreferredSize(new Dimension(950,530));
+		js.setPreferredSize(new Dimension(1150,530));
 		center.add(js);
 		validate();
+	}
+	public void checkMoneyComma(String[][] arr,String type){
+		int flag=0;
+		if(type.equals("WEIGHT")){
+			flag = 1;
+		}
+		else if(type.equals("DENSITY")){
+			flag = 2;
+		}
+		for(int i=0;i<arr.length;i++){
+			for(int j=0;j<arr[i].length;j++){
+				if(!arr[i][j].equals("-")){
+					arr[i][j] = sm.getRoundValue(arr[i][j], flag);
+				}
+			}
+		}
 	}
 	public int checkWeightValue(String value){
 		int result=0;
@@ -452,7 +472,10 @@ public class WorkVolumeStat1 extends JFrame implements ActionListener{
 		if(e.getSource() == searchBtn){
 			getResult();
 		}//if
-		
+		else if(e.getSource()==printBtn){
+			PrintSolution ps = new PrintSolution();
+			ps.print(this);
+		}
 	}//method
 	
 	

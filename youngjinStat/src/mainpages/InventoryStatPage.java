@@ -76,7 +76,7 @@ public class InventoryStatPage extends JFrame implements ActionListener{
 			
 	
 	public InventoryStatPage() {
-		super("");
+		super("inventory stat");
 		super.setVisible(true);
 		super.setResizable(false);
 		super.setSize(900,700);

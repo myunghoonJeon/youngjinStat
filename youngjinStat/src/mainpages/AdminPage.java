@@ -68,7 +68,7 @@ public class AdminPage extends JFrame implements ActionListener{
 	JScrollPane js= new JScrollPane();
 //////////////////////////////////////////////////////////////	
 	public AdminPage() {
-		super("");
+		super("ADMIN PAGE");
 		super.setVisible(true);
 		super.setResizable(false);
 		super.setSize(superWide,superHeight);

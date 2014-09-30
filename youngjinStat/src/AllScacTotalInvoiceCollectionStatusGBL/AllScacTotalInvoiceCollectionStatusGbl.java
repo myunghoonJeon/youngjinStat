@@ -22,7 +22,7 @@ import javax.swing.JTextField;
 
 import mainpages.CL_DAO_DB_Mysql;
 import mainpages.GblBeans;
-import WorkVolumeStat1.MultipleRowHeaderExample;
+import mainpages.PrintSolution;
 
 
 public class AllScacTotalInvoiceCollectionStatusGbl extends JFrame implements ActionListener{
@@ -30,7 +30,7 @@ public class AllScacTotalInvoiceCollectionStatusGbl extends JFrame implements Ac
 	HashMap<String, String> inboundMap = new HashMap<>();
 	HashMap<String, String> outboundMap = new HashMap<>();
 ////////////////////////////////////////////////////////////////
-	int superWide = 1000;
+	int superWide = 1200;
 	int superHeight = 650;
 	
 ////////////////////////////////////////////////////////////////
@@ -42,6 +42,7 @@ public class AllScacTotalInvoiceCollectionStatusGbl extends JFrame implements Ac
 //	JComboBox hhgUbCombo = new JComboBox(dao.getHhgUbList().toArray());
 //	JComboBox typeCombo = new JComboBox(dao.getWorkStat1TypeList().toArray());
 	JButton searchBtn = new JButton("SEARCH");
+	JButton printBtn = new JButton("PRINT");
 	
 	JTextField startPeriod =  new JTextField("",6);
 	JTextField endPeriod = new JTextField("",6);
@@ -58,7 +59,7 @@ public class AllScacTotalInvoiceCollectionStatusGbl extends JFrame implements Ac
 	JLabel cutoffDate = new JLabel("");
 	////////////////////////////////////////////////////////////////
 	public AllScacTotalInvoiceCollectionStatusGbl(){
-		super("");
+		super("all scac invoice & collection status (GBL base)");
 		super.setVisible(true);
 		super.setResizable(false);
 		super.setSize(superWide,superHeight);
@@ -104,6 +105,8 @@ public class AllScacTotalInvoiceCollectionStatusGbl extends JFrame implements Ac
 	
 	public void addActionListner(){
 		searchBtn.addActionListener(this);
+		printBtn.addActionListener(this);
+	
 	}
 	
 	public void autoCreateBorderLayout(JPanel a,int wx, int ex, int ny, int sy){
@@ -158,6 +161,10 @@ public class AllScacTotalInvoiceCollectionStatusGbl extends JFrame implements Ac
 			northUp.add(endPeriod);
 			northUp.add(searchBtn);
 			searchBtn.setPreferredSize(new Dimension(90,30));
+			northUp.add(printBtn);
+			printBtn.setPreferredSize(new Dimension(90,30));
+	
+	
 		mainCenter.add("Center",bigCenter);
 			bigCenter.setLayout(new BorderLayout());
 			bigCenter.add("North",bcn);
@@ -175,7 +182,7 @@ public class AllScacTotalInvoiceCollectionStatusGbl extends JFrame implements Ac
 			}
 			AllScacTotalInvoiceMultipleRowHeader frame = new AllScacTotalInvoiceMultipleRowHeader(initStr);
 			JScrollPane js = frame.getWorkVolumeStat1Table();
-			js.setPreferredSize(new Dimension(950,530));
+			js.setPreferredSize(new Dimension(1100,530));
 			center.add(js);
 		super.add(jp);
 	}
@@ -233,7 +240,7 @@ public class AllScacTotalInvoiceCollectionStatusGbl extends JFrame implements Ac
 		finalStr = arrangementStrList(finalStr);
 		AllScacTotalInvoiceMultipleRowHeader frame = new AllScacTotalInvoiceMultipleRowHeader(finalStr);
 		JScrollPane js = frame.getWorkVolumeStat1Table();
-		js.setPreferredSize(new Dimension(950,530));
+		js.setPreferredSize(new Dimension(1100,530));
 		center.add(js);
 		validate();
 	}
@@ -464,7 +471,10 @@ public class AllScacTotalInvoiceCollectionStatusGbl extends JFrame implements Ac
 			cutoffDate.setText(endPeriod.getText());
 			getResult();
 		}//if
-		
+		else if(e.getSource() == printBtn){
+			PrintSolution ps = new PrintSolution();
+			ps.print(this);
+		}
 	}//method
 	
 	public void setTableColumnSize(JTable table,int colNum, int size){

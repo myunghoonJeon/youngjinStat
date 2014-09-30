@@ -24,34 +24,39 @@ public class WorkVolumeStat2Beans {
 		return input;
 	}
 	
-	public void setWeightData(String code,String scac,String jobValue,String weightValue){
+	public String setWeightData(String gblno,String code,String scac,String jobValue,String weightValue){
 		String column = hashMapColumn.get(code);
 		int job = Integer.parseInt(column)-1;
 		int weight = Integer.parseInt(column);
 		String scacStr = hashMapRow.get(scac);
-		int row = Integer.parseInt(scacStr);
-		
-		int originJob;
-		int originWeight;
-		if(input[row][job].equals("-")){
-			originJob = 0;
+		if(scacStr!=null){
+			int row = Integer.parseInt(scacStr);
+			int originJob;
+			int originWeight;
+			if(input[row][job].equals("-")){
+				originJob = 0;
+			}
+			else{
+				originJob = Integer.parseInt(input[row][job]);
+			}
+			if(input[row][weight].equals("-")){
+				originWeight = 0;
+			}
+			else{
+				originWeight = Integer.parseInt(input[row][weight]);
+			}
+			originJob += Integer.parseInt(jobValue);
+			originWeight+= Double.parseDouble(weightValue);
+			
+			input[row][job] = originJob+"";
+			input[row][weight] = originWeight+"";
+	//		System.out.println("job : "+input[row][job]+" weight : "+input[row][weight]);
+//			System.out.println("scac : "+scac +" code : "+code+" set - [job : "+jobValue +"][  weight :"+weightValue+" ]");
 		}
 		else{
-			originJob = Integer.parseInt(input[row][job]);
+			return "[ GBL NO : "+gblno+" ] [ SCAC : "+scac+" ]";
 		}
-		if(input[row][weight].equals("-")){
-			originWeight = 0;
-		}
-		else{
-			originWeight = Integer.parseInt(input[row][weight]);
-		}
-		originJob += Integer.parseInt(jobValue);
-		originWeight+= Double.parseDouble(weightValue);
-		
-		input[row][job] = originJob+"";
-		input[row][weight] = originWeight+"";
-//		System.out.println("job : "+input[row][job]+" weight : "+input[row][weight]);
-		System.out.println("scac : "+scac +" code : "+code+" set - [job : "+jobValue +"][  weight :"+weightValue+" ]");
+		return "";
 	}
 	
 	public void setDensityData(String scac,String code,String jobValue,String densityValue){
@@ -100,6 +105,7 @@ public class WorkVolumeStat2Beans {
 			String scac="";
 			for(int i=0;i<scacList.size();i++){
 				scac = scacList.get(i);
+				System.out.println(scac);
 				hsm.put(scac, i+"");
 			}
 		}

@@ -24,8 +24,9 @@ import WorkVolumeStat2Table.MultipleRowHeaderWorkStat2;
 
 public class WorkVolumeStat2 extends JFrame implements ActionListener{
 	CL_DAO_DB_Mysql dao = new CL_DAO_DB_Mysql();
+	SharedMethod sm = new SharedMethod();
 	////////////////////////////////////////////////////////////////
-	int superWide = 1000;
+	int superWide = 1200;
 	int superHeight = 650;
 	int ROW_LENGTH = dao.getScacList().size()+1;
 	int COLUM_LENGTH = 22;
@@ -38,7 +39,7 @@ public class WorkVolumeStat2 extends JFrame implements ActionListener{
 	JComboBox hhgUbCombo = new JComboBox(dao.getHhgUbList().toArray());
 	JComboBox typeCombo = new JComboBox(dao.getWorkStat1TypeList().toArray());
 	JButton searchBtn = new JButton("SEARCH");
-	
+	JButton printBtn = new JButton("PRINT");
 	JTextField startPeriod =  new JTextField("",6);
 	JTextField endPeriod = new JTextField("",6);
 
@@ -53,7 +54,7 @@ public class WorkVolumeStat2 extends JFrame implements ActionListener{
 	////////////////////////////////////////////////////////////////
 	String[][] initStr;
 	public WorkVolumeStat2(){
-		super("");
+		super("work volume stat2");
 		super.setVisible(true);
 		super.setResizable(false);
 		super.setSize(superWide,superHeight);
@@ -70,6 +71,7 @@ public class WorkVolumeStat2 extends JFrame implements ActionListener{
 	
 	public void addActionListner(){
 		searchBtn.addActionListener(this);
+		printBtn.addActionListener(this);
 	}
 	
 	public void autoCreateBorderLayout(JPanel a,int wx, int ex, int ny, int sy){
@@ -113,11 +115,11 @@ public class WorkVolumeStat2 extends JFrame implements ActionListener{
 			northUp.setLayout(new FlowLayout(FlowLayout.LEFT));
 			northUp.add(new JLabel("SCAC:"));
 			northUp.add(scacCombo);
-			scacCombo.setPreferredSize(new Dimension(60,30));
+			scacCombo.setPreferredSize(new Dimension(80,30));
 			scacCombo.setMaximumRowCount(20);
 			northUp.add(new JLabel("AREA:"));
 			northUp.add(areaCombo);
-			areaCombo.setPreferredSize(new Dimension(50,30));
+			areaCombo.setPreferredSize(new Dimension(80,30));
 			northUp.add(new JLabel("IN/OUT:"));
 			northUp.add(inoutCombo);
 			northUp.add(new JLabel("HHG/UB:"));
@@ -149,7 +151,7 @@ public class WorkVolumeStat2 extends JFrame implements ActionListener{
 		JScrollPane js = new JScrollPane();
 		MultipleRowHeaderWorkStat2 frame = new MultipleRowHeaderWorkStat2(str,inoutCombo.getSelectedItem().toString());
 		js = frame.getWorkVolumeStat2Table();
-		js.setPreferredSize(new Dimension(950,480));
+		js.setPreferredSize(new Dimension(1150,480));
 		js.setAlignmentY(CENTER_ALIGNMENT);
 		return js;
 	}
@@ -158,7 +160,7 @@ public class WorkVolumeStat2 extends JFrame implements ActionListener{
 		JScrollPane js;
 		MultipleRowHeaderWorkStat2 frame = new MultipleRowHeaderWorkStat2(str,inoutCombo.getSelectedItem().toString());
 		js = frame.getWorkVolumeStat2Table();
-		js.setPreferredSize(new Dimension(950,480));
+		js.setPreferredSize(new Dimension(1150,480));
 		js.setAlignmentY(CENTER_ALIGNMENT);
 		return js;
 	}
@@ -229,6 +231,18 @@ public class WorkVolumeStat2 extends JFrame implements ActionListener{
 			finalStr = outboundStr;
 		}
 		calcuration2Total(finalStr,type);
+		for(int i=0;i<finalStr.length;i++){
+			for(int j=0;j<finalStr[i].length;j++){
+				if(!finalStr[i][j].equals("-")){
+					if(typeCombo.getSelectedItem().equals("WEIGHT")){
+						finalStr[i][j] = sm.getRoundValue(finalStr[i][j], 1);
+					}
+					else{
+						finalStr[i][j] = sm.getRoundValue(finalStr[i][j], 2);
+					}
+				}
+			}
+		}
 //		MultipleRowHeaderWorkStat2 frame = new MultipleRowHeaderWorkStat2(finalStr,inoutCombo.getSelectedItem().toString());
 //		JScrollPane js = frame.getWorkVolumeStat1Table();
 //		js.setPreferredSize(new Dimension(950,530));
@@ -467,6 +481,10 @@ public class WorkVolumeStat2 extends JFrame implements ActionListener{
 		if(e.getSource() == searchBtn){
 			getResult();
 		}//if
+		else if(e.getSource() == printBtn){
+			PrintSolution ps = new PrintSolution();
+			ps.print(this);
+		}
 		
 	}//method
 	

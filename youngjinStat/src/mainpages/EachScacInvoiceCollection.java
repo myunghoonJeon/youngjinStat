@@ -4,6 +4,7 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
@@ -31,7 +32,7 @@ import EachScacInvoiceCollection.GroupableColumnEachscacInvoice;
 public class EachScacInvoiceCollection extends JFrame implements ActionListener{
 	CL_DAO_DB_Mysql dao = new CL_DAO_DB_Mysql();
 	////////////////////////////////////////////////////////////////
-	int superWide = 1000;
+	int superWide = 1200;
 	int superHeight = 700;
 	int ROW_LENGTH = dao.getScacList().size()+1;
 	int COLUM_LENGTH = 6;
@@ -41,13 +42,14 @@ public class EachScacInvoiceCollection extends JFrame implements ActionListener{
 	JTextField beginPeriod = new JTextField("",8);
 	JTextField endPeriod = new JTextField("",8);
 	JButton searchBtn = new JButton("SEARCH");
+	JButton printBtn = new JButton("PRINT");
 	JComboBox scacCombo = new JComboBox(dao.getScacList().toArray());
 	JComboBox inoutCombo = new JComboBox(dao.getAllInOutList().toArray());
 	JComboBox codeCombo = new JComboBox(dao.getCodeList().toArray());
 ////////////////////////////////////////////////////////////////
 	JPanel center;
 	JPanel information = new JPanel();
-		JLabel informationLabel = new JLabel("　　ALL SCAC TOTAL INVOICE & COLLECTION STATUS (invoice base) 　　　　cut off date : ");
+		JLabel informationLabel = new JLabel("　　EACH SCAC TOTAL INVOICE & COLLECTION STATUS (invoice base) 　　　　cut off date : ");
 		JLabel cutOffDate = new JLabel("");
 	JPanel mainCenter = new JPanel();
 	JPanel north = new JPanel();
@@ -61,7 +63,7 @@ public class EachScacInvoiceCollection extends JFrame implements ActionListener{
 	JScrollPane js= new JScrollPane();
 //////////////////////////////////////////////////////////////	
 	public EachScacInvoiceCollection() {
-		super("");
+		super(" each scac invoice & collection status (invoice base)");
 		super.setVisible(true);
 		super.setResizable(false);
 		super.setSize(superWide,superHeight);
@@ -77,6 +79,7 @@ public class EachScacInvoiceCollection extends JFrame implements ActionListener{
 	
 	public void addActionListner(){
 		searchBtn.addActionListener(this);
+		printBtn.addActionListener(this);
 	}
 	
 	public void autoCreateBorderLayout(JPanel a,int wx, int ex, int ny, int sy){
@@ -122,13 +125,13 @@ public class EachScacInvoiceCollection extends JFrame implements ActionListener{
 				northUp.add(scacCombo);
 				northUp.add(new JLabel("IN/OUT"));
 				northUp.add(inoutCombo);
-				northUp.add(new JLabel("CODE"));
-				northUp.add(codeCombo);
 				northUp.add(new JLabel("PERIOD:"));
 				northUp.add(beginPeriod);
 				northUp.add(new JLabel("~"));
 				northUp.add(endPeriod);
 				northUp.add(searchBtn);
+				northUp.add(printBtn);
+				printBtn.setPreferredSize(new Dimension(90,30));
 			searchBtn.setPreferredSize(new Dimension(90,30));
 		///////////////////////////////////////////////////////
 		mainCenter.add("Center",bigCenter);
@@ -225,13 +228,15 @@ public class EachScacInvoiceCollection extends JFrame implements ActionListener{
 		dtcr.setHorizontalAlignment(SwingConstants.CENTER);
 		TableColumnModel tcm = table.getColumnModel();
 		table.setRowSorter(new TableRowSorter(model));
+		table.setFont(new Font( "" , Font.PLAIN, 10 ));
+        table.getTableHeader().setFont( new Font( "" , Font.PLAIN, 10));
 		js = new JScrollPane(table);
 		js.setBorder(BorderFactory.createLineBorder(Color.DARK_GRAY));
 		for(int i=0;i<colName.length;i++){
 			tcm.getColumn(i).setCellRenderer(dtcr);
 		}
 		setTableColumnWidth(tcm);
-		js.setPreferredSize(new Dimension(950,550));
+		js.setPreferredSize(new Dimension(1100,550));
 		center.add(js);
 		validate();
 		return js;
@@ -282,7 +287,10 @@ public class EachScacInvoiceCollection extends JFrame implements ActionListener{
 			getResult();
 			validate();
 		}//if
-		
+		else if(e.getSource() == printBtn){
+			PrintSolution ps = new PrintSolution();
+			ps.print(this);
+		}
 	}//method
 	
 	public void setTableColumnSize(JTable table,int colNum, int size){

@@ -35,7 +35,7 @@ public class EachScacUncollectedStatusGbl extends JFrame implements ActionListen
 	GroupableColumnEachscacUncollectedStatus geus;
 	CL_DAO_DB_Mysql dao = new CL_DAO_DB_Mysql();
 	////////////////////////////////////////////////////////////////
-	int superWide = 1000;
+	int superWide = 1200;
 	int superHeight = 800;
 	int ROW_LENGTH = dao.getScacList().size()+1;
 	int COLUM_LENGTH = 6;
@@ -46,6 +46,8 @@ public class EachScacUncollectedStatusGbl extends JFrame implements ActionListen
 	JTextField beginPeriod = new JTextField("",8);
 	JTextField endPeriod = new JTextField("",8);
 	JButton searchBtn = new JButton("SEARCH");
+	JButton printBtn = new JButton("PRINT");
+	
 	JComboBox scacCombo = new JComboBox(dao.getScacListWork().toArray());
 	JComboBox inoutCombo = new JComboBox(dao.getAllInOutList().toArray());
 	JComboBox codeCombo = new JComboBox(dao.getCodeList().toArray());
@@ -118,7 +120,7 @@ public class EachScacUncollectedStatusGbl extends JFrame implements ActionListen
 	double gtNu=0.0;
 //////////////////////////////////////////////////////////////	
 	public EachScacUncollectedStatusGbl(){
-		super("");
+		super("scac uncollected status(GBL base)");
 		super.setVisible(true);
 		super.setResizable(false);
 		super.setSize(superWide,superHeight);
@@ -134,6 +136,7 @@ public class EachScacUncollectedStatusGbl extends JFrame implements ActionListen
 	
 	public void addActionListner(){
 		searchBtn.addActionListener(this);
+		printBtn.addActionListener(this);
 	}
 	
 	public void autoCreateBorderLayout(JPanel a,int wx, int ex, int ny, int sy){
@@ -189,9 +192,13 @@ public class EachScacUncollectedStatusGbl extends JFrame implements ActionListen
 				northUp.add(endPeriod);
 				northUp.add(searchBtn);
 				searchBtn.setPreferredSize(new Dimension(90,30));
+				northUp.add(printBtn);
+				printBtn.setPreferredSize(new Dimension(90,30));
+		
+		
 			north.add("South",northDown);
 				northDown.setLayout(new FlowLayout(FlowLayout.LEFT));
-				northDown.setPreferredSize(new Dimension(1000,25));
+				northDown.setPreferredSize(new Dimension(1200,25));
 //				northDown.setBackground(Color.yellow);
 				northDown.add(information);
 				information.setLayout(new FlowLayout(FlowLayout.LEFT));
@@ -206,7 +213,7 @@ public class EachScacUncollectedStatusGbl extends JFrame implements ActionListen
 			bigCenter.add("Center",center);
 				center.setLayout(new BorderLayout());
 					center.add("Center",innerCenter);
-						innerCenter.setPreferredSize(new Dimension(950,650));
+						innerCenter.setPreferredSize(new Dimension(1200,650));
 						innerCenter.setBackground(Color.black);
 						innerCenter.setLayout(new GridLayout(4,1));
 						innerCenter.add(p15);
@@ -329,12 +336,12 @@ public class EachScacUncollectedStatusGbl extends JFrame implements ActionListen
 		JScrollPane scrollpane = new JScrollPane(table);
 		
 		if(criteria.equals("total")){
-			table.setPreferredScrollableViewportSize(new Dimension(940,45));
-			scrollpane.setPreferredSize(new Dimension(900,45));
+			table.setPreferredScrollableViewportSize(new Dimension(1150,45));
+			scrollpane.setPreferredSize(new Dimension(1100,45));
 		}
 		else{
-			table.setPreferredScrollableViewportSize(new Dimension(940,150));
-			scrollpane.setPreferredSize(new Dimension(900,150));	
+			table.setPreferredScrollableViewportSize(new Dimension(1150,150));
+			scrollpane.setPreferredSize(new Dimension(1100,150));	
 		}
 		
 		scrollpane.setBorder(BorderFactory.createLineBorder(Color.DARK_GRAY));
@@ -418,7 +425,7 @@ public class EachScacUncollectedStatusGbl extends JFrame implements ActionListen
 				System.out.println("[[[[ CRITERIA  : "+criteria+" DETECTED ]]]]]");
 				System.out.println("total Click");
 				System.out.println(gtQ+" "+gtIa);
-				model.addRow(new String[]{"","",getRoundValue(gtQ),getRoundValue(gtIa),
+				model.addRow(new String[]{"","",getRoundValue(gtIa),
 					   getRoundValue(gtC),getRoundValue(gtUc),getRoundValue(gtS),getRoundValue(gtA),getRoundValue(gtCl),getRoundValue(gtNu)});
 	   }
 		else{
@@ -433,12 +440,12 @@ public class EachScacUncollectedStatusGbl extends JFrame implements ActionListen
 		if(flag !=0){
 			model.addRow(new String[]{"Total","",getRoundValue(tIa),getRoundValue(tC),getRoundValue(tUc),getRoundValue(tS),getRoundValue(tA),getRoundValue(tCl),getRoundValue(tNu)});
 		}
-		setTableColumnSize(table, 0,-25);
-		setTableColumnSize(table, 4,-25);
-		setTableColumnSize(table, 5,-25);
-		setTableColumnSize(table, 6,-25);
-		setTableColumnSize(table, 7,-25);
-		setTableColumnSize(table, 8,-15);
+//		setTableColumnSize(table, 0,-25);
+//		setTableColumnSize(table, 4,-25);
+//		setTableColumnSize(table, 5,-25);
+//		setTableColumnSize(table, 6,-25);
+//		setTableColumnSize(table, 7,-25);
+//		setTableColumnSize(table, 8,-15);
 //		setTableColumnSize(table, 9,-20);
 //		setTableColumnSize(table, 4,30);
 //		setTableColumnSize(table, 5,65);
@@ -479,14 +486,14 @@ public class EachScacUncollectedStatusGbl extends JFrame implements ActionListen
 	   	}
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////	
 	public void setTableColumnWidth(TableColumnModel tcm){
-		tcm.getColumn(2).setPreferredWidth(100);
-		tcm.getColumn(3).setPreferredWidth(100);
-		tcm.getColumn(4).setPreferredWidth(110);
-		tcm.getColumn(5).setPreferredWidth(120);
-		tcm.getColumn(6).setPreferredWidth(60);
-		tcm.getColumn(7).setPreferredWidth(60);
-		tcm.getColumn(8).setPreferredWidth(60);
-		tcm.getColumn(9).setPreferredWidth(60);
+//		tcm.getColumn(2).setPreferredWidth(100);
+//		tcm.getColumn(3).setPreferredWidth(100);
+//		tcm.getColumn(4).setPreferredWidth(110);
+//		tcm.getColumn(5).setPreferredWidth(120);
+//		tcm.getColumn(6).setPreferredWidth(60);
+//		tcm.getColumn(7).setPreferredWidth(60);
+//		tcm.getColumn(8).setPreferredWidth(60);
+//		tcm.getColumn(9).setPreferredWidth(60);
 	}
 	
 	public void initTable(){
@@ -652,7 +659,11 @@ public class EachScacUncollectedStatusGbl extends JFrame implements ActionListen
 			getResult();
 			validate();
 		}//if
-		
+		else if(e.getSource() == printBtn){
+			System.out.println("print");
+			PrintSolution ps = new PrintSolution();
+			ps.print(this);
+		}
 	}//method
 	
 	public void setTableColumnSize(JTable table,int colNum, int size){

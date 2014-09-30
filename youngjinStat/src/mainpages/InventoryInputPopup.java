@@ -67,7 +67,7 @@ public class InventoryInputPopup extends JFrame implements ActionListener{
 	}
 	
 	public InventoryInputPopup(String unit,String type) {
-		super("");
+		super("inventory input popup");
 		super.setVisible(true);
 		super.setResizable(false);
 		super.setSize(300,200);

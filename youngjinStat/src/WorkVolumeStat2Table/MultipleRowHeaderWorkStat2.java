@@ -5,6 +5,7 @@ import TableOption.*;
 
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Font;
 import java.util.ArrayList;
 
 import javax.swing.BorderFactory;
@@ -58,6 +59,7 @@ public class MultipleRowHeaderWorkStat2 extends JFrame {
     val = resultStr;
     ArrayList<String> scacList = dao.getScacList();
     int dataSize = scacList.size()+1;
+    System.out.println("data size : "+dataSize);
     data = new Object[dataSize][1];
     for(int i=0;i<scacList.size();i++){
     	data[i][0] = scacList.get(i);
@@ -101,6 +103,8 @@ public class MultipleRowHeaderWorkStat2 extends JFrame {
     fixedTable.getTableHeader().setBackground(Color.LIGHT_GRAY);
     fixedTable.setDefaultRenderer(Object.class, new RowHeaderRenderer(fixedTable));
     fixedTable.setGridColor(table.getTableHeader().getBackground());
+    table.setFont(new Font( "" , Font.PLAIN, 9 ));
+    
     /**************************[ SET COLUMN ROW WIDTH ]*****************************/
     fixedTable.getColumnModel().getColumn(0).setPreferredWidth(50);//in/out width
 //    fixedTable.getColumnModel().getColumn(1).setPreferredWidth(40);//in/out width

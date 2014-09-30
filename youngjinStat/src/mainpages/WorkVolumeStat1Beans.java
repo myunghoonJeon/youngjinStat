@@ -21,34 +21,42 @@ public class WorkVolumeStat1Beans {
 	
 	public void setWeightData(String area,String code,String jobValue,String weightValue){
 		String column = hashMapColumn.get(area);
+		int job;
+		int weight;
 		if(column!=null){
-			int job = Integer.parseInt(column)-1;
-			int weight = Integer.parseInt(column);
-			
-			String codeStr = hashMapRow.get(code);
-			if(codeStr!=null){
-				int row = Integer.parseInt(codeStr);
-				int originJob;
-				int originWeight;
-				if(input[row][job].equals("-")){
-					originJob = 0;
-				}
-				else{
-					originJob = Integer.parseInt(input[row][job]);
-				}
-				if(input[row][weight].equals("-")){
-					originWeight = 0;
-				}
-				else{
-					originWeight = Integer.parseInt(input[row][weight]);
-				}
-				originJob += Integer.parseInt(jobValue);
-				originWeight+= Double.parseDouble(weightValue);
-				
-				input[row][job] = originJob+"";
-				input[row][weight] = originWeight+"";
-				System.out.println("area : "+area +" code : "+code+" set - [job : "+jobValue +"][  weight :"+weightValue+" ]");
+			job = Integer.parseInt(column)-1;
+			weight = Integer.parseInt(column);
+		}
+		else{
+			column="17";
+			job = Integer.parseInt(column)-1;
+			weight = Integer.parseInt(column);
+		}
+		String codeStr = hashMapRow.get(code);
+		if(codeStr!=null){
+			int row = Integer.parseInt(codeStr);
+			int originJob;
+			int originWeight;
+			if(input[row][job].equals("-")){
+				originJob = 0;
 			}
+			else{
+				originJob = Integer.parseInt(input[row][job]);
+			}
+			if(input[row][weight].equals("-")){
+				originWeight = 0;
+			}
+			else{
+				originWeight = Integer.parseInt(input[row][weight]);
+			}
+			originJob += Integer.parseInt(jobValue);
+			originWeight+= Double.parseDouble(weightValue);
+			
+			input[row][job] = originJob+"";
+			input[row][weight] = originWeight+"";
+		}
+		else{
+			System.out.println("code null????");
 		}
 	}
 	public void setDensityData(String area,String code,String jobValue,String densityValue){
@@ -81,7 +89,7 @@ public class WorkVolumeStat1Beans {
 		
 		input[row][job] = originJob+"";
 		input[row][weight] = originDensity+"";
-		System.out.println("area : "+area +" code : "+code+" set - [job : "+jobValue +"][  weight :"+densityValue+" ]");
+//		System.out.println("area : "+area +" code : "+code+" set - [job : "+jobValue +"][  weight :"+densityValue+" ]");
 		}
 		else{
 			System.out.println("area Detection result null");

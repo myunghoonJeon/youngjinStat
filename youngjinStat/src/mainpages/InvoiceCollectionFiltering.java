@@ -46,7 +46,7 @@ public class InvoiceCollectionFiltering extends JFrame implements ActionListener
 	JComboBox dateCombo = new JComboBox(dao.getDateList().toArray());
 	JComboBox statusCombo = new JComboBox(dao.getStatusList().toArray());
 	JButton searchBtn = new JButton("SEARCH");
-
+	JButton printBtn = new JButton("PRINT");
 	JTextField startPeriod = new JTextField("", 8);
 	JTextField endPeriod = new JTextField("", 8);
 
@@ -63,7 +63,7 @@ public class InvoiceCollectionFiltering extends JFrame implements ActionListener
 	JLabel cutoffLabel = new JLabel();
 	// //////////////////////////////////////////////////////////////
 	public InvoiceCollectionFiltering() {
-		super("");
+		super("invoice & collection filtering ");
 		super.setVisible(true);
 		super.setResizable(false);
 		super.setSize(superWide, superHeight);
@@ -79,6 +79,7 @@ public class InvoiceCollectionFiltering extends JFrame implements ActionListener
 
 	public void addActionListner() {
 		searchBtn.addActionListener(this);
+		printBtn.addActionListener(this);
 	}
 
 	public void autoCreateBorderLayout(JPanel a, int wx, int ex, int ny, int sy) {
@@ -191,14 +192,16 @@ public class InvoiceCollectionFiltering extends JFrame implements ActionListener
 				String tempNet= getRoundValue(getDoubleValue(ifb.getNet()+""));
 				String tempUncollected = getRoundValue(getDoubleValue(ifb.getUnCollectedAmounts()+""));
 				String[] row = {ifb.getInvoiceNo(),ifb.getInvoicedDate(),tempAmounts,tempNet,tempUncollected};
+				
 				model.addRow(row);
 				ta+=getDoubleValue(ifb.getInvoicedAmounts());
-				tc+=getDoubleValue(ifb.getCollectedAmounts());
+				tc+=getDoubleValue(ifb.getNet());
 				tuc+=getDoubleValue(ifb.getUnCollectedAmounts());
 			}
 			model.addRow(new String[]{"TOTAL","",getRoundValue(ta),getRoundValue(tc),getRoundValue(tuc)});
 		}
 		JTable table = new JTable(model);
+		table.setRowSorter(new TableRowSorter<DefaultTableModel>(model));
 		dtcr.setHorizontalAlignment(SwingConstants.CENTER);
 		TableColumnModel tcm = table.getColumnModel();
 		JScrollPane scrollpane = new JScrollPane(table);
@@ -239,7 +242,10 @@ public class InvoiceCollectionFiltering extends JFrame implements ActionListener
 			cutoffLabel.setText(endPeriod.getText());
 			setFilteringInformation();
 		}
-		
+		else if(e.getSource() == printBtn){
+			PrintSolution ps = new PrintSolution();
+			ps.print(this);
+		}
 	}
 	
 }

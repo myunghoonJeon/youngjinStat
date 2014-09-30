@@ -158,7 +158,7 @@ public class MainViewer extends JFrame implements ActionListener,Printable{
 		
 		jNorth.add(backBtn);
 		jNorth.add(logoutBtn);
-		jNorth.add(printBtn);/////////////////////////////////////////////////
+//		jNorth.add(printBtn);/////////////////////////////////////////////////
 		
 		logoutBtn.setVisible(false);
 		jNorth.setPreferredSize(new Dimension(0,40));

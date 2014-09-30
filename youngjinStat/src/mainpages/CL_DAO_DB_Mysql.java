@@ -24,6 +24,8 @@ import AllScacTotalInvoiceCollectionStatusGBL.AllScacTotalInvoiceCollectionStatu
 
 
 public class CL_DAO_DB_Mysql implements IT_DAO{
+	/*************************************************************************/
+	ErrorPopup ep;
 	/*-------------------system parameter---------------------------------*/
 	private String jdbc_driver = "com.mysql.jdbc.Driver";
 	private String jdbc_url = "jdbc:mysql://119.192.215.138/youngjin";
@@ -34,7 +36,8 @@ public class CL_DAO_DB_Mysql implements IT_DAO{
 	private userBean ub = null;
 	private ResultSet rs = null; 
 	/*-------------------normal parameter---------------------------------*/
-	
+	/*-------------------Shared Method---------------------------------*/
+	SharedMethod sm = new SharedMethod();
 	////////////////////////////////////////////////////////////////
 	int ROW_LENGTH;
 	int COLUMN_LENGTH;
@@ -516,11 +519,11 @@ public class CL_DAO_DB_Mysql implements IT_DAO{
 		ArrayList<String> scacList = new ArrayList<String>();
 		try {
 			connect();
-			sql = "select * from stat_scac";
+			sql = "select tsp from invoice_rate group by tsp";
 			
 			rs = stmt.executeQuery(sql);
 			while(rs.next()){
-				scacList.add(rs.getString("name"));
+				scacList.add(rs.getString("tsp"));
 			}
 			disconnect();
 		} catch (Exception e) {
@@ -591,70 +594,121 @@ public class CL_DAO_DB_Mysql implements IT_DAO{
 				}
 			}
 			sql+=condition;
-			System.out.println("work volume outbound SQL : "+sql);
+			System.out.println("work filtering outbound SQL : "+sql);
 			try {
 				connect();
 				rs = stmt.executeQuery(sql);
+				int count=0;
 				while(rs.next()){
+					count++;
 					gb = new GblBeans();
 					String tempCode=rs.getString("code");
 					gblno = rs.getString("no");
+					Double density=0.0;
 					gb.setPud(rs.getString("pud"));
 					gb.setRdd(rs.getString("rdd"));
 					gb.setScac(rs.getString("scac"));
 					gb.setSeq(rs.getString("seq"));
+					gb.setArea(rs.getString("area"));
 					gb.setCode(tempCode);
 					gb.setGblno(gblno);
 					gb.setName(rs.getString("customer_name"));
 					gb.setUsno(rs.getString("us_no"));
+					gb.setGross(rs.getString("grossWeight"));
+					gb.setNet(rs.getString("netWeight"));
+					gb.setPcs(rs.getString("totalPcs"));
+					gb.setCuft(getZeroValue(rs.getString("cuft")));
+					if(gb.getCode().equals("3")||gb.getCode().equals("4")||gb.getCode().equals("5")||gb.getCode().equals("T")||gb.getCode().equals("t")){//HHG
+							String tempValue = sm.checkMinimumValue(gb.getNet(), "HHG");
+							gb.setNet(tempValue);
+							if(gb.getCuft().equals("0")){
+								System.out.println("CUFG IS ZERO");
+								density=0.0;
+							}
+							else{
+								density = Double.parseDouble(gb.getNet())/Double.parseDouble(gb.getCuft());
+							}
+							DecimalFormat df = new DecimalFormat("######0.00");
+							gb.setDensity(df.format(density));
+//						System.out.println(gb1.getDensity());
+					}
+					else if(gb.getCode().equals("7")||gb.getCode().equals("8")||gb.getCode().equals("j")||gb.getCode().equals("J")){//UB
+						String tempValue = sm.checkMinimumValue(gb.getGross(), "UB");
+						gb.setGross(tempValue);
+						if(gb.getCuft().equals("0")){
+							System.out.println("CUFT IS ZERO");
+							density=0.0;
+						}
+						else{
+							density = Double.parseDouble(gb.getNet())/Double.parseDouble(gb.getCuft());
+						}
+						DecimalFormat df = new DecimalFormat("######0.00");
+						gb.setDensity(df.format(density));
+//						System.out.println(gb1.getDensity());
+					}
 					list.add(gb);
 				}//while end
+				System.out.println("size : "+count);
 			disconnect();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		for(int i=0;i<list.size();i++){
-			String seq = list.get(i).getSeq();
-			GblBeans gb1 = list.get(i);
-			try{
-				connect();
-				String sumGrossSql ="select sum(gross),sum(net),sum(cuft),count(gbl_seq) from weight_certificate where gbl_seq='"+seq+"'";
-				rs = stmt.executeQuery(sumGrossSql);
-				while(rs.next()){
-					String gross = rs.getString("sum(gross)");
-					String net = rs.getString("sum(net)");
-					String cuft = rs.getString("sum(cuft)");
-					String pcs = rs.getString("count(gbl_seq)");
-					String gblNo = list.get(i).getGblno();
-					list.get(i).setGross(gross);
-					list.get(i).setCuft(cuft);
-					list.get(i).setNet(net);
-					list.get(i).setPcs(pcs);
-					double density = 0;
-					if(gblNo==null || gross == null || net== null || cuft==null || pcs == null){
-						System.out.println(" DETECTED NULL");
-					}
-//					System.out.println(list.get(i).getGblno() +" - "+gross+" - "+net+" - "+cuft+" - "+pcs);
-					else{
-						if(gb1.getCode().equals("3")||gb1.getCode().equals("4")||gb1.getCode().equals("5")||gb1.getCode().equals("T")||gb1.getCode().equals("t")){
-							density = Double.parseDouble(gb1.getGross())/Double.parseDouble(gb1.getCuft());
-							DecimalFormat df = new DecimalFormat("######0.00");
-							list.get(i).setDensity(df.format(density));
-	//						System.out.println(gb1.getDensity());
-						}
-						else if(gb1.getCode().equals("7")||gb1.getCode().equals("8")||gb1.getCode().equals("j")||gb1.getCode().equals("J")){
-							density = Double.parseDouble(gb1.getNet())/Double.parseDouble(gb1.getCuft());
-							DecimalFormat df = new DecimalFormat("######0.00");
-							list.get(i).setDensity(df.format(density));
-	//						System.out.println(gb1.getDensity());
-						}
-					}
-				}
-			}catch(Exception e){
-				
-			}
-		}
+//		for(int i=0;i<list.size();i++){
+//			String seq = list.get(i).getSeq();
+//			GblBeans gb1 = list.get(i);
+//			try{
+//				connect();
+//				String sumGrossSql ="select sum(gross),sum(net),sum(cuft),count(gbl_seq) from weight_certificate where gbl_seq='"+seq+"'";
+//				rs = stmt.executeQuery(sumGrossSql);
+//				while(rs.next()){
+//					String gross = rs.getString("sum(gross)");
+//					String net = rs.getString("sum(net)");
+//					String cuft = rs.getString("sum(cuft)");
+//					String pcs = rs.getString("count(gbl_seq)");
+//					String gblNo = list.get(i).getGblno();
+//					
+//					list.get(i).setGross(gross);
+//					list.get(i).setCuft(cuft);
+//					list.get(i).setNet(net);
+//					list.get(i).setPcs(pcs);
+//					double density = 0;
+//					if(gblNo==null || gross == null || net== null || cuft==null || pcs == null){
+//						System.out.println(" DETECTED NULL");
+//						System.out.println("GBL no : "+gblNo);
+//					}
+////					System.out.println(list.get(i).getGblno() +" - "+gross+" - "+net+" - "+cuft+" - "+pcs);
+//					else{
+//						if(gb1.getCode().equals("3")||gb1.getCode().equals("4")||gb1.getCode().equals("5")||gb1.getCode().equals("T")||gb1.getCode().equals("t")){//HHG
+//							String tempValue = sm.checkMinimumValue(gb1.getNet(), "HHG");
+//							gb1.setNet(tempValue);
+//							density = Double.parseDouble(gb1.getNet())/Double.parseDouble(gb1.getCuft());
+//							DecimalFormat df = new DecimalFormat("######0.00");
+//							list.get(i).setDensity(df.format(density));
+//	//						System.out.println(gb1.getDensity());
+//						}
+//						else if(gb1.getCode().equals("7")||gb1.getCode().equals("8")||gb1.getCode().equals("j")||gb1.getCode().equals("J")){//UB
+//							String tempValue = sm.checkMinimumValue(gb1.getGross(), "UB");
+//							gb1.setNet(tempValue);
+//							density = Double.parseDouble(gb1.getGross())/Double.parseDouble(gb1.getCuft());
+//							DecimalFormat df = new DecimalFormat("######0.00");
+//							list.get(i).setDensity(df.format(density));
+//	//						System.out.println(gb1.getDensity());
+//						}
+//					}
+//				}
+//			}catch(Exception e){
+//				
+//			}
+//		}
 		return list;
+	}
+	public String getZeroValue(String input){
+		if(input!=null){
+			return input;
+		}
+		else{
+			return "0";
+		}
 	}
 	public ArrayList<GblBeans> getInboundGblList(String scac,String inout,String code, String area, String pudBegin,String pudEnd,String rddBegin,String rddEnd,String onhandBegin,String onhandEnd){
 		ArrayList<GblBeans> list = new ArrayList<>();
@@ -686,6 +740,7 @@ public class CL_DAO_DB_Mysql implements IT_DAO{
 			if(!area.equals("ALL")){
 				if(whereflag==0){
 					condition+=" where area='"+area+"'";
+					whereflag=1;
 				}
 				else{
 					condition+=" and area='"+area+"'";
@@ -694,6 +749,7 @@ public class CL_DAO_DB_Mysql implements IT_DAO{
 			if(!pudBegin.equals("") && !pudEnd.equals("")){
 				if(whereflag==0){
 					condition+=" where pud >= date_format('"+pudBegin+"','%y-%m-%d') and pud <= date_format('"+pudEnd+"','%y-%m-%d')";
+					whereflag=1;
 				}
 				else{
 					condition+=" and pud >= date_format('"+pudBegin+"','%y-%m-%d') and pud <= date_format('"+pudEnd+"','%y-%m-%d')";
@@ -702,6 +758,7 @@ public class CL_DAO_DB_Mysql implements IT_DAO{
 			if(!rddBegin.equals("") && !rddEnd.equals("")){
 				if(whereflag==0){
 					condition+=" where rdd >= date_format('"+pudBegin+"','%y-%m-%d') and rdd <= date_format('"+pudEnd+"','%y-%m-%d')";
+					whereflag=1;
 				}
 				else{
 					condition+=" and rdd >= date_format('"+pudBegin+"','%y-%m-%d') and rdd <= date_format('"+pudEnd+"','%y-%m-%d')";
@@ -710,16 +767,18 @@ public class CL_DAO_DB_Mysql implements IT_DAO{
 			if(!onhandBegin.equals("") && !onhandEnd.equals("")){
 				if(whereflag==0){
 					condition+=" where onHandDate >= date_format('"+pudBegin+"','%y-%m-%d') and onHandDate <= date_format('"+pudEnd+"','%y-%m-%d')";
+					whereflag=1;
 				}
 				else{
 					condition+=" and onHandDate >= date_format('"+pudBegin+"','%y-%m-%d') and onHandDate <= date_format('"+pudEnd+"','%y-%m-%d')";
 				}
 			}
 			sql+=condition;
-			System.out.println("work volume inbound : "+sql);
+			System.out.println("work filtering inbound : "+sql);
 			try {
 				connect();
 				rs = stmt.executeQuery(sql);
+				double density=0.0;
 				while(rs.next()){
 					GblBeans gb = new GblBeans();
 					String tempCode=rs.getString("code");
@@ -736,57 +795,52 @@ public class CL_DAO_DB_Mysql implements IT_DAO{
 					gb.setCode(tempCode);
 					gb.setGblno(gblno);
 					gb.setSeq(rs.getString("seq"));
+//					list.add(gb);
+					gb.setPcs(rs.getString("totalPcs"));
+					gb.setCuft(getZeroValue(rs.getString("cuft")));
+					gb.setGross(rs.getString("grossWeight"));
+					gb.setNet(rs.getString("netWeight"));
+					if(gb.getCode().equals("3")||gb.getCode().equals("4")||gb.getCode().equals("5")||gb.getCode().equals("T")||gb.getCode().equals("t")){//HHG
+							String tempValue = sm.checkMinimumValue(gb.getNet(), "HHG");
+							gb.setNet(tempValue);
+							if(gb.getCuft().equals("0")||gb.getNet().equals("0")){
+								System.out.println("net : "+gb.getNet());
+								System.out.println("cuft : "+gb.getCuft());
+								System.out.println("GBLNO : "+gblno);
+								density=0.0;
+							}
+							else{
+//								System.out.println("NET : "+gb.getNet()+" CUFT : "+gb.getCuft());
+								density = Double.parseDouble(gb.getNet())/Double.parseDouble(gb.getCuft());
+							}
+							DecimalFormat df = new DecimalFormat("######0.00");
+							gb.setDensity(df.format(density));
+//						System.out.println(gb1.getDensity());
+					}
+					else if(gb.getCode().equals("7")||gb.getCode().equals("8")||gb.getCode().equals("j")||gb.getCode().equals("J")){//UB
+						String tempValue = sm.checkMinimumValue(gb.getGross(), "UB");
+						gb.setGross(tempValue);
+						if(gb.getCuft().equals("0")||gb.getGross().equals("0")){
+							System.out.println("gross : "+gb.getGross());
+							System.out.println("cuft : "+gb.getCuft());
+							System.out.println("GBLNO : "+gblno);
+							density=0.0;
+						}
+						else{
+							density = Double.parseDouble(gb.getNet())/Double.parseDouble(gb.getCuft());
+							System.out.println("GROSS : "+gb.getGross()+" CUFT : "+gb.getCuft()+" DENSITY : "+density);
+						}
+						DecimalFormat df = new DecimalFormat("######0.00");
+						gb.setDensity(df.format(density));
+//						System.out.println(gb1.getDensity());
+					}
 					list.add(gb);
 				}//while end
-			System.out.println("??");
 			disconnect();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		for(int i=0;i<list.size();i++){
-			GblBeans gb = new GblBeans();
-			double density=0;
-			gb = list.get(i);
-			String seq = gb.getSeq();
-			String qry = "select * from weight_ib where gblSeq='"+seq+"'";
-			System.out.println(qry);
-			int totalPcs=0;
-			int totalGross=0;
-			int totalNet=0;
-			int totalCuft=0;
-			try{
-				connect();
-				rs = stmt.executeQuery(qry);
-				while(rs.next()){
-					totalGross += Integer.parseInt(rs.getString("gross"));
-					totalNet += Integer.parseInt(rs.getString("net"));
-					totalCuft += Integer.parseInt(rs.getString("cuft"));
-					totalPcs++;
-				}
-				gb.setGross(totalGross+"");
-				gb.setNet(totalNet+"");
-				gb.setCuft(totalCuft+"");
-				gb.setPcs(totalPcs+"");
-				disconnect();
-			}catch(Exception e){
-				e.printStackTrace();
-			}
-			if(gb.getCode().equals("3")||gb.getCode().equals("4")||gb.getCode().equals("5")||gb.getCode().equals("T")||gb.getCode().equals("t")){
-				density = Double.parseDouble(gb.getGross())/Double.parseDouble(gb.getCuft());
-				DecimalFormat df = new DecimalFormat("######0.00");
-				gb.setDensity(df.format(density));
-			}
-			else if(gb.getCode().equals("7")||gb.getCode().equals("8")||gb.getCode().equals("j")||gb.getCode().equals("J")){
-				density = Double.parseDouble(gb.getNet())/Double.parseDouble(gb.getCuft());
-				DecimalFormat df = new DecimalFormat("######0.00");
-				gb.setDensity(df.format(density));
-			}
-			System.out.println("inbound seq : "+seq);
-			System.out.println("inbound pcs : "+gb.getPcs());
-			System.out.println("inbound totalGross : "+gb.getGross());
-			System.out.println("inbound totalNet : "+gb.getNet());
-			System.out.println("density : "+gb.getDensity());
-		}			
+
 		return list;
 	}
 	public userBean userAccessValidateCheck(String id,String pw){
@@ -1156,23 +1210,25 @@ public class CL_DAO_DB_Mysql implements IT_DAO{
 //					System.out.println("[ 2st SQL execution result is not null ]");
 					index = hm.get(rs.getString("listSeq"));
 //					list.get(index).addGblQuantity();
-					if(rs.getString("state").equals("ACCEPT")){
-						double accept = Double.parseDouble(checkAmountsNull(rs.getString("amount")));
-	//					list.get(index).addShortPaid((-1*accept)+"");
-						list.get(index).addAcceptPaid(accept+"");
-						System.out.println("===================================");
-						System.out.println("Invoice No : "+list.get(index).getInvoiceNo());
-						System.out.println("Accepted Amount : "+accept);
-						System.out.println("===================================");
-					}
-					else if(rs.getString("state").equals("CLAIM")){
-						double claim = Double.parseDouble(checkAmountsNull(rs.getString("amount")));
-						list.get(index).addClaimPaid(claim+"");
-	//					list.get(index).addShortPaid((-1*claim)+"");
-						System.out.println("===================================");
-						System.out.println("Invoice No : "+list.get(index).getInvoiceNo());
-						System.out.println("Claimed Amount : "+claim);
-						System.out.println("===================================");
+					if(rs.getString("state")!=null){
+						if(rs.getString("state").equals("ACCEPT")){
+							double accept = Double.parseDouble(checkAmountsNull(rs.getString("amount")));
+		//					list.get(index).addShortPaid((-1*accept)+"");
+							list.get(index).addAcceptPaid(accept+"");
+							System.out.println("===================================");
+							System.out.println("Invoice No : "+list.get(index).getInvoiceNo());
+							System.out.println("Accepted Amount : "+accept);
+							System.out.println("===================================");
+						}
+						else if(rs.getString("state").equals("CLAIM")){
+							double claim = Double.parseDouble(checkAmountsNull(rs.getString("amount")));
+							list.get(index).addClaimPaid(claim+"");
+		//					list.get(index).addShortPaid((-1*claim)+"");
+							System.out.println("===================================");
+							System.out.println("Invoice No : "+list.get(index).getInvoiceNo());
+							System.out.println("Claimed Amount : "+claim);
+							System.out.println("===================================");
+						}
 					}
 				}
 			}
@@ -1235,6 +1291,15 @@ public class CL_DAO_DB_Mysql implements IT_DAO{
 				else{
 					condition += " and invoice_list.process='outbound'";
 				}
+			}
+		}
+		if(!begin.equals("")||!end.equals("")){
+			if(whereFlag==0){
+				whereFlag=1;
+				condition+=" where date(invoice_list.invoice_date) >= date('"+begin+"') and date(invoice_list.invoice_date) <= date('"+end+"')";
+			}
+			else{
+				condition+=" and date(invoice_list.invoice_date) >= date('"+begin+"') and date(invoice_list.invoice_date) <= date('"+end+"')";
 			}
 		}
 		sql+=condition;
@@ -1366,23 +1431,25 @@ public class CL_DAO_DB_Mysql implements IT_DAO{
 //					System.out.println("[ 2st SQL execution result is not null ]");
 					index = hm.get(rs.getString("listSeq"));
 //					list.get(index).addGblQuantity();
-					if(rs.getString("state").equals("ACCEPT")){
-						double accept = Double.parseDouble(checkAmountsNull(rs.getString("amount")));
-	//					list.get(index).addShortPaid((-1*accept)+"");
-						list.get(index).addAcceptPaid(accept+"");
-						System.out.println("=======================");
-						System.out.println("Invoice No : "+list.get(index).getInvoiceNo());
-						System.out.println("Accepted Amount : "+accept);
-						System.out.println("=======================");
-					}
-					else if(rs.getString("state").equals("CLAIM")){
-						double claim = Double.parseDouble(checkAmountsNull(rs.getString("amount")));
-						list.get(index).addClaimPaid(claim+"");
-	//					list.get(index).addShortPaid((-1*claim)+"");
-						System.out.println("=======================");
-						System.out.println("Invoice No : "+list.get(index).getInvoiceNo());
-						System.out.println("Claimed Amount : "+claim);
-						System.out.println("=======================");
+					if(rs.getString("state")!=null){
+						if(rs.getString("state").equals("ACCEPT")){
+							double accept = Double.parseDouble(checkAmountsNull(rs.getString("amount")));
+		//					list.get(index).addShortPaid((-1*accept)+"");
+							list.get(index).addAcceptPaid(accept+"");
+							System.out.println("=======================");
+							System.out.println("Invoice No : "+list.get(index).getInvoiceNo());
+							System.out.println("Accepted Amount : "+accept);
+							System.out.println("=======================");
+						}
+						else if(rs.getString("state").equals("CLAIM")){
+							double claim = Double.parseDouble(checkAmountsNull(rs.getString("amount")));
+							list.get(index).addClaimPaid(claim+"");
+		//					list.get(index).addShortPaid((-1*claim)+"");
+							System.out.println("=======================");
+							System.out.println("Invoice No : "+list.get(index).getInvoiceNo());
+							System.out.println("Claimed Amount : "+claim);
+							System.out.println("=======================");
+						}
 					}
 				}
 			}
@@ -1446,7 +1513,7 @@ public class CL_DAO_DB_Mysql implements IT_DAO{
 		}
 		if(!begin.equals("")&!end.equals("")){
 			if( !begin.equals("") && !end.equals("")){
-					condition+=" and date(invoice_list.write_date) >= date('"+begin+"') and date(invoice_list.write_date) <= date('"+end+"')";
+					condition+=" and date(invoice_list.invoice_date) >= date('"+begin+"') and date(invoice_list.invoice_date) <= date('"+end+"')";
 			}
 		}
 		
@@ -1577,44 +1644,86 @@ public class CL_DAO_DB_Mysql implements IT_DAO{
 		String sql="";
 		String condition="";
 		WorkVolumeStat1Beans wvs1 = new WorkVolumeStat1Beans();
-		sql="select *,sum(weight_certificate.gross),sum(weight_certificate.net) from invoice_gbl,gbl,weight_certificate where invoice_gbl.gbl_seq = gbl.seq and weight_certificate.gbl_seq = gbl.seq";
+		int whereflag=0;
+		sql="select * from gbl";
+		String querry="";
 		if(!scac.equals("ALL")){
-			condition+=" and gbl.scac='"+scac+"'";
+			querry="gbl.scac='"+scac+"'";
+			condition+=sm.getWhereString(querry, whereflag);
+			whereflag = sm.whereflagChange(whereflag);
 		}
 		if(!code.equals("ALL")){
-				condition+=" and gbl.code='"+code+"'";
+				querry=" gbl.code='"+code+"'";
+				condition+=sm.getWhereString(querry, whereflag);
+				whereflag = sm.whereflagChange(whereflag);
 		}
 		if(!area.equals("ALL")){
-			condition+=" and gbl.area='"+area+"'";
+				querry=" gbl.area='"+area+"'";
+				condition+=sm.getWhereString(querry, whereflag);
+				whereflag = sm.whereflagChange(whereflag);
 		}
 		if(!begin.equals("") && !end.equals("")){
-				condition+=" and date(gbl.pud) >= date_format('"+begin+"','%y-%m-%d') and date(gbl.pud) <= date_format('"+end+"','%y-%m-%d')";
+				querry=" date(gbl.pud) >= date_format('"+begin+"','%y-%m-%d') and date(gbl.pud) <= date_format('"+end+"','%y-%m-%d')";
+				condition+=sm.getWhereString(querry, whereflag);
+				whereflag = sm.whereflagChange(whereflag);
 		}
 		if(!hhgUb.equals("")){
 			if(hhgUb.equals("HHG")){
-				condition+=" and (gbl.code = '3' or gbl.code = '4' or gbl.code = '5' or gbl.code='T' or gbl.code='t')";
+				querry=" (gbl.code = '3' or gbl.code = '4' or gbl.code = '5' or gbl.code='T' or gbl.code='t')";
+				condition+=sm.getWhereString(querry, whereflag);
+				whereflag = sm.whereflagChange(whereflag);
 			}
 			else if(hhgUb.equals("UB")){
-				condition+=" and (gbl.code = 'J' or gbl.code = '7' or gbl.code = '8' or gbl.code='j')";
+				querry+=" (gbl.code = 'J' or gbl.code = '7' or gbl.code = '8' or gbl.code='j')";
+				condition+=sm.getWhereString(querry, whereflag);
+				whereflag = sm.whereflagChange(whereflag);
 			}
 		}
 		sql+=condition;
-		System.out.println("work volume outbound : "+sql);
+		System.out.println("Work Stat1 outbound : "+sql);
 		if(type.equals("WEIGHT")){
 			try {
 				connect();
 				rs = stmt.executeQuery(sql);
+				int count=0;
 				while(rs.next()){
-					String tempCode = "out_"+rs.getString("code");
+					count++;
+					String tempWeight="";
+					String code1 = rs.getString("code");
+					String tempCode = "out_"+code1;
 					String tempArea = rs.getString("area");
-					String tempWeight = rs.getString("sum(weight_certificate.gross)");
-					System.out.println("code : "+tempCode);
-					System.out.println("area : "+tempArea);
-					System.out.println("weight : "+tempWeight);
-					if(tempCode!=null && tempArea!=null && tempWeight!=null){
-						wvs1.setWeightData(tempArea, tempCode, 1+"",tempWeight );
+						if(code1.equals("3")||code1.equals("4")||code1.equals("5")||code1.equals("T")||code1.equals("t")){
+							 tempWeight = sm.checkMinimumValue(rs.getString("netWeight"), "HHG");
+						}
+						else if(code1.equals("J")||code1.equals("j")||code1.equals("7")||code1.equals("8")){
+							 tempWeight = sm.checkMinimumValue(rs.getString("grossWeight"), "UB");
+						}
+						else{
+							System.out.println("what code??");
+							System.out.println("gblNo : "+rs.getString("no"));
+						}
+						
+//					System.out.println("code : "+tempCode);
+//					System.out.println("area : "+tempArea);
+//					System.out.println("weight : "+tempWeight);
+					if(code1!=null){
+						if(tempWeight == null){
+							tempWeight="0";
+							wvs1.setWeightData(tempArea, tempCode, 1+"",tempWeight );
+						}
+						else{
+							wvs1.setWeightData(tempArea, tempCode, 1+"",tempWeight );
+						}
+					}
+					else{
+						System.out.println("null !!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+						System.out.println(tempCode);
+						System.out.println(tempArea);
+						System.out.println(tempWeight);
+						System.out.println(rs.getString("no"));
 					}
 				}
+				System.out.println("size : "+count);
 				disconnect();
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -1628,8 +1737,8 @@ public class CL_DAO_DB_Mysql implements IT_DAO{
 				while(rs.next()){
 					String tempCode = "out_"+rs.getString("code");
 					String tempArea = rs.getString("area");
-					String tempGross = rs.getString("sum(weight_certificate.gross)");
-					String tempNet = rs.getString("sum(weight_certificate.net)");
+					String tempGross = rs.getString("grossWeight");
+					String tempNet = rs.getString("netWeight");
 					String tempCuft = rs.getString("cuft");
 					String tempDensity = getDensity(tempGross, tempNet, tempCuft, rs.getString("code"));
 					wvs1.setDensityData(tempArea, tempCode, 1+"",tempDensity );
@@ -1679,25 +1788,68 @@ public class CL_DAO_DB_Mysql implements IT_DAO{
 //		System.out.println(scac);
 		//INBOUND
 		WorkVolumeStat1Beans wvs1 = new WorkVolumeStat1Beans();
-		sql="select * from invoice_gbl,gbl_ib where invoice_gbl.gbl_seq = gbl_ib.seq";
+		sql="select * from gbl_ib";
+		int whereflag=0;
 		if(!scac.equals("ALL")){
-			condition+=" and gbl_ib.tsp='"+scac+"'";
+			if(whereflag==0){
+				condition+=" where gbl_ib.tsp='"+scac+"'";
+				whereflag=1;
+			}
+			else{
+				condition+=" and gbl_ib.tsp='"+scac+"'";
+			}
+			
 		}
 		if(!code.equals("ALL")){
+			if(whereflag==0){
+				condition+=" where gbl_ib.code='"+code+"'";
+				whereflag=1;
+			}
+			else{
 				condition+=" and gbl_ib.code='"+code+"'";
+			}
+				
 		}
 		if(!area.equals("ALL")){
-			condition+=" and gbl_ib.area='"+area+"'";
+			if(whereflag==0){
+				condition+=" where gbl_ib.area='"+area+"'";
+				whereflag=1;
+			}
+			else{
+				condition+=" and gbl_ib.area='"+area+"'";
+			}
+			
 		}
 		if(!begin.equals("") && !end.equals("")){
-			condition+=" and date(gbl_ib.pud) >= date_format('"+begin+"','%y-%m-%d') and date(gbl_ib.pud) <= date_format('"+end+"','%y-%m-%d')";
+			if(whereflag==0){
+				condition+=" where date(gbl_ib.pud) >= date_format('"+begin+"','%y-%m-%d') and date(gbl_ib.pud) <= date_format('"+end+"','%y-%m-%d')";
+				whereflag=1;
+			}
+			else{
+				condition+=" and date(gbl_ib.pud) >= date_format('"+begin+"','%y-%m-%d') and date(gbl_ib.pud) <= date_format('"+end+"','%y-%m-%d')";
+			}
+			
 		}
 		if(!hhgUb.equals("")){
 			if(hhgUb.equals("HHG")){
-				condition+=" and (gbl_ib.code = '3' or gbl_ib.code = '4' or gbl_ib.code = '5' or gbl_ib.code='T' or gbl_ib.code='t')";
+				if(whereflag==0){
+					condition+=" wehere (gbl_ib.code = '3' or gbl_ib.code = '4' or gbl_ib.code = '5' or gbl_ib.code='T' or gbl_ib.code='t')";
+					whereflag=1;
+				}
+				else{
+					condition+=" and (gbl_ib.code = '3' or gbl_ib.code = '4' or gbl_ib.code = '5' or gbl_ib.code='T' or gbl_ib.code='t')";
+				}
+				
 			}
 			else if(hhgUb.equals("UB")){
-				condition+=" and (gbl_ib.code = 'J' or gbl_ib.code = '7' or gbl_ib.code = '8' or gbl_ib.code='j')";
+				if(whereflag==0){
+					condition+=" where (gbl_ib.code = 'J' or gbl_ib.code = '7' or gbl_ib.code = '8' or gbl_ib.code='j')";
+					whereflag=1;
+				}
+				else{
+					condition+=" and (gbl_ib.code = 'J' or gbl_ib.code = '7' or gbl_ib.code = '8' or gbl_ib.code='j')";
+				}
+				
 			}
 		}
 		if(!type.equals("")){
@@ -1708,11 +1860,22 @@ public class CL_DAO_DB_Mysql implements IT_DAO{
 					connect();
 					rs = stmt.executeQuery(sql);
 					while(rs.next()){
-						String tempCode = "in_"+rs.getString("code");
+						String tempWeight="";
+						String code1=rs.getString("code");
+						String tempCode = "in_"+code1;
 						String tempArea = rs.getString("area");
 						System.out.println("code : "+tempCode);
 						System.out.println("area : "+tempArea);
-						String tempWeight = rs.getString("grossWeight");
+						if(code1.equals("3")||code1.equals("4")||code1.equals("5")||code1.equals("T")||code1.equals("t")){
+							 tempWeight = sm.checkMinimumValue(rs.getString("netWeight"), "HHG");
+						}
+						else if(code1.equals("J")||code1.equals("j")||code1.equals("7")||code1.equals("8")){
+							 tempWeight = sm.checkMinimumValue(rs.getString("grossWeight"), "UB");
+						}
+						else{
+							System.out.println("what code??");
+							System.out.println("gblNo : "+rs.getString("gblNo"));
+						}
 						wvs1.setWeightData(tempArea, tempCode, 1+"",tempWeight );
 					}
 					disconnect();
@@ -1730,12 +1893,12 @@ public class CL_DAO_DB_Mysql implements IT_DAO{
 					while(rs.next()){
 						String tempCode = "in_"+rs.getString("code");
 						String tempArea = rs.getString("area");
-						System.out.println("code : "+tempCode);
-						System.out.println("area : "+tempArea);
+//						System.out.println("code : "+tempCode);
+//						System.out.println("area : "+tempArea);
 						String tempGross = rs.getString("grossWeight");
 						String tempNet = rs.getString("netWeight");
 						String tempCuft = rs.getString("cuft");
-						System.out.println("tempGross : "+tempGross+" tempNet : "+tempNet+" tempCuft : "+tempCuft);
+//						System.out.println("tempGross : "+tempGross+" tempNet : "+tempNet+" tempCuft : "+tempCuft);
 						String tempDensity = getDensity(tempGross, tempNet, tempCuft, rs.getString("code"));
 						wvs1.setDensityData(tempArea, tempCode, 1+"",tempDensity );
 					}
@@ -1753,42 +1916,91 @@ public class CL_DAO_DB_Mysql implements IT_DAO{
 		String[][] str = new String[ROW_LENGTH][20];
 		String sql="";
 		String condition="";
+		String qr="";
+		int whereflag=0;
 		WorkVolumeStat2Beans wvs2 = new WorkVolumeStat2Beans();
-		sql="select *,sum(weight_certificate.gross),sum(weight_certificate.net) from invoice_gbl,gbl,weight_certificate where invoice_gbl.gbl_seq = gbl.seq and weight_certificate.gbl_seq = gbl.seq";
+		sql="select no,scac,code,area,pud,grossWeight,netWeight,cuft from gbl";
 		if(!scac.equals("ALL")){
-			condition+=" and gbl.scac='"+scac+"'";
+			qr = " gbl.scac='"+scac+"'";
+			condition+=sm.getWhereString(qr, whereflag);
+			whereflag = sm.whereflagChange(whereflag);
 		}
 		if(!code.equals("ALL")){
-				condition+=" and gbl.code='"+code+"'";
+			qr = " gbl.code='"+code+"'";
+			condition+=sm.getWhereString(qr, whereflag);
+			whereflag = sm.whereflagChange(whereflag);
 		}
 		if(!area.equals("ALL")){
-			condition+=" and gbl.area='"+area+"'";
+			qr = " gbl.area='"+area+"'";
+			condition+=sm.getWhereString(qr, whereflag);
+			whereflag = sm.whereflagChange(whereflag);
 		}
 		if(!begin.equals("") && !end.equals("")){
-				condition+=" and date(gbl.pud) >= date_format('"+begin+"','%y-%m-%d') and date(gbl.pud) <= date_format('"+end+"','%y-%m-%d')";
+			qr = " date(gbl.pud) >= date_format('"+begin+"','%y-%m-%d') and date(gbl.pud) <= date_format('"+end+"','%y-%m-%d')";
+			condition+=sm.getWhereString(qr, whereflag);
+			whereflag = sm.whereflagChange(whereflag);
 		}
 		if(!hhgUb.equals("")){
 			if(hhgUb.equals("HHG")){
-				condition+=" and (gbl.code = '3' or gbl.code = '4' or gbl.code = '5' or gbl.code='T' or gbl.code='t')";
+				qr = " (gbl.code = '3' or gbl.code = '4' or gbl.code = '5' or gbl.code='T' or gbl.code='t')";
+				condition+=sm.getWhereString(qr, whereflag);
+				whereflag = sm.whereflagChange(whereflag);
 			}
 			else if(hhgUb.equals("UB")){
-				condition+=" and (gbl.code = 'J' or gbl.code = '7' or gbl.code = '8' or gbl.code='j')";
+				qr = " (gbl.code = 'J' or gbl.code = '7' or gbl.code = '8' or gbl.code='j')";
+				condition+=sm.getWhereString(qr, whereflag);
+				whereflag = sm.whereflagChange(whereflag);
 			}
 		}
+		
 		sql+=condition;
-		System.out.println("work volume outbound : "+sql);
+		System.out.println("Workstat2 outbound : "+sql);
+		
 		if(type.equals("WEIGHT")){
 			try {
 				connect();
 				rs = stmt.executeQuery(sql);
+				int count=0;
+				boolean errorflag=false;
+				String tempErrorMsg="";
+				String errorMessage="";
 				while(rs.next()){
-					if(rs.getString("code")!=null){
-						String tempCode = rs.getString("code");
+					count++;
+					String code1 = rs.getString("code");
+					if(code1 != null){
+						
+						String tempCode = code1;
 						String tempArea = rs.getString("area");
-						String tempWeight = rs.getString("sum(weight_certificate.gross)");
-						String tempScac = rs.getString("scac");
-						wvs2.setWeightData(tempCode,tempScac,1+"",tempWeight );
+						String tempNet=rs.getString("netWeight");
+						String tempGross=rs.getString("grossWeight");
+						String tempWeight="ok";
+						String tempScac = rs.getString("scac"); 
+						String tempGblNo = rs.getString("no");
+						 if(tempWeight!=null){
+							if(tempCode.equals("3")||tempCode.equals("4")||tempCode.equals("5")||tempCode.equals("T")||tempCode.equals("t")){
+									tempWeight= sm.checkMinimumValue(tempNet, "HHG");
+								}
+							else if(tempCode.equals("J")||tempCode.equals("7")||tempCode.equals("8")||tempCode.equals("j")){
+								tempWeight = sm.checkMinimumValue(tempGross, "UB");
+							}
+							else{
+								System.out.println("???what code : "+tempCode);
+								System.out.println("gbl no : "+tempGblNo);
+							}
+							tempErrorMsg = wvs2.setWeightData(tempGblNo,tempCode,tempScac,1+"",tempWeight );
+							if(!tempErrorMsg.equals("")){
+								errorMessage+=tempErrorMsg+"\n";
+								errorflag=true;
+							}
+						 }
 					}
+					else{
+						System.out.println("null code : "+code1);
+					}
+				}
+				System.out.println("size : "+count);
+				if(errorflag==true){
+					ep = new ErrorPopup("OUTBOUND ERROR LIST", errorMessage);
 				}
 				disconnect();
 			} catch (Exception e) {
@@ -1823,38 +2035,54 @@ public class CL_DAO_DB_Mysql implements IT_DAO{
 	public String[][] getInboundWorkVolumeStat2(String scac,String area,String hhgUb,String code,String begin,String end,String type){
 		String[][] str = new String[ROW_LENGTH][20];
 		String gblno="";
-//		int whereflag=0;
+		int whereflag=0;
 		String sql="";
 		String joinstr="";
 		String condition="";
+		String qr="";
 //		System.out.println(scac);
 		//INBOUND
 		WorkVolumeStat2Beans wvs2 = new WorkVolumeStat2Beans();
-		sql="select * from invoice_gbl,gbl_ib where invoice_gbl.gbl_seq = gbl_ib.seq";
+		sql="select gblNo,tsp,code,area,pud,grossWeight,netWeight,cuft from gbl_ib";
 		if(!scac.equals("ALL")){
-			condition+=" and gbl_ib.tsp='"+scac+"'";
+			qr = " tsp = '"+scac+"'";
+			condition += sm.getWhereString(qr, whereflag);
+			whereflag = sm.whereflagChange(whereflag);
 		}
 		if(!code.equals("ALL")){
-				condition+=" and gbl_ib.code='"+code+"'";
+			qr = " code='"+code+"'";
+			condition += sm.getWhereString(qr, whereflag);
+			whereflag = sm.whereflagChange(whereflag);
 		}
 		if(!area.equals("ALL")){
-			condition+=" and gbl_ib.area='"+area+"'";
+			qr = " area='"+area+"'";
+			condition+= sm.getWhereString(qr, whereflag);
+			whereflag = sm.whereflagChange(whereflag);
 		}
 		if(!begin.equals("") && !end.equals("")){
-			condition+=" and date(gbl_ib.pud) >= date_format('"+begin+"','%y-%m-%d') and date(gbl_ib.pud) <= date_format('"+end+"','%y-%m-%d')";
+			qr = " date(pud) >= date_format('"+begin+"','%y-%m-%d') and date(pud) <= date_format('"+end+"','%y-%m-%d')";
+			condition+=sm.getWhereString(qr, whereflag);
+			whereflag = sm.whereflagChange(whereflag);
 		}
 		if(!hhgUb.equals("")){
 			if(hhgUb.equals("HHG")){
-				condition+=" and (gbl_ib.code = '3' or gbl_ib.code = '4' or gbl_ib.code = '5' or gbl_ib.code='T' or gbl_ib.code='t')";
+				qr = " (code = '3' or code = '4' or code = '5' or code='T' or code='t')";
+				condition+= sm.getWhereString(qr, whereflag);
+				whereflag = sm.whereflagChange(whereflag);
 			}
 			else if(hhgUb.equals("UB")){
-				condition+=" and (gbl_ib.code = 'J' or gbl_ib.code = '7' or gbl_ib.code = '8' or gbl_ib.code='j')";
+				qr = " and (code = 'J' or code = '7' or code = '8' or code='j')";
+				condition+= sm.getWhereString(qr, whereflag);
+				whereflag = sm.whereflagChange(whereflag);
 			}
 		}
 		if(!type.equals("")){
 			if(type.equals("WEIGHT")){
+				String errorMessage="";
+				String tempErrorMsg="1";
+				boolean errorflag = false;
 				sql+=condition;
-				System.out.println("work volume inbound : "+sql);
+				System.out.println("Workstat2 inbound : "+sql);
 				try {
 					connect();
 					rs = stmt.executeQuery(sql);
@@ -1862,10 +2090,24 @@ public class CL_DAO_DB_Mysql implements IT_DAO{
 						String tempCode = rs.getString("code").toUpperCase();
 						String tempArea = rs.getString("area");
 						String tempScac = rs.getString("tsp");
-						System.out.println("code : "+tempCode);
-						System.out.println("area : "+tempArea);
-						String tempWeight = rs.getString("grossWeight");
-						wvs2.setWeightData(tempCode,tempScac, 1+"",tempWeight );
+						String tempGblNo = rs.getString("gblNo");
+						String tempWeight="";
+						if(tempCode.equals("3")||tempCode.equals("4")||tempCode.equals("5")||tempCode.equals("T")||tempCode.equals("t")){
+							tempWeight = sm.checkMinimumValue(rs.getString("netWeight"), "HHG");
+						}
+						else{
+							tempWeight = sm.checkMinimumValue(rs.getString("grossWeight"), "UB");
+						}
+						if(tempWeight!=null){
+							tempErrorMsg = wvs2.setWeightData(tempGblNo,tempCode,tempScac, 1+"",tempWeight );
+							if(!tempErrorMsg.equals("")){
+								errorMessage+=tempErrorMsg+"\n";
+								errorflag = true;
+							}
+						}
+					}
+					if(errorflag==true){
+						ep = new ErrorPopup("INBOUND ERROR LIST",errorMessage);
 					}
 					disconnect();
 				} catch (Exception e) {

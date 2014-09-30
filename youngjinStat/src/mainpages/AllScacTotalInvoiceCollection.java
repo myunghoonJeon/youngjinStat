@@ -26,7 +26,7 @@ import WorkVolumeStat2Table.MultipleRowHeaderWorkStat2;
 public class AllScacTotalInvoiceCollection extends JFrame implements ActionListener{
 	CL_DAO_DB_Mysql dao = new CL_DAO_DB_Mysql();
 	////////////////////////////////////////////////////////////////
-	int superWide = 1000;
+	int superWide = 1200;
 	int superHeight = 550;
 	int ROW_LENGTH = dao.getScacList().size()+1;
 	int COLUM_LENGTH = 6;
@@ -36,6 +36,7 @@ public class AllScacTotalInvoiceCollection extends JFrame implements ActionListe
 	JTextField beginPeriod = new JTextField("",8);
 	JTextField endPeriod = new JTextField("",8);
 	JButton searchBtn = new JButton("SEARCH");
+	JButton printBtn = new JButton("PRINT");
 ////////////////////////////////////////////////////////////////
 	JPanel center;
 	JPanel information = new JPanel();
@@ -50,7 +51,7 @@ public class AllScacTotalInvoiceCollection extends JFrame implements ActionListe
 ////////////////////////////////////////////////////////////////
 	String[][] initStr;
 	public AllScacTotalInvoiceCollection(){
-		super("");
+		super("all scac total invoice & collection status");
 		super.setVisible(true);
 		super.setResizable(false);
 		super.setSize(superWide,superHeight);
@@ -67,6 +68,8 @@ public class AllScacTotalInvoiceCollection extends JFrame implements ActionListe
 	
 	public void addActionListner(){
 		searchBtn.addActionListener(this);
+//		Button printBtn = new JButton("PRINT");
+		printBtn.addActionListener(this);
 	}
 	
 	public void autoCreateBorderLayout(JPanel a,int wx, int ex, int ny, int sy){
@@ -113,8 +116,10 @@ public class AllScacTotalInvoiceCollection extends JFrame implements ActionListe
 			northUp.add(new JLabel("~"));
 			northUp.add(endPeriod);
 			northUp.add(searchBtn);
+			northUp.add(printBtn);
 			northUp.add(information);
 			searchBtn.setPreferredSize(new Dimension(90,30));
+			printBtn.setPreferredSize(new Dimension(90,30));
 				information.setLayout(new FlowLayout(FlowLayout.LEFT));
 				information.add(informationLabel);
 				information.add(cutOffDate);
@@ -136,7 +141,7 @@ public class AllScacTotalInvoiceCollection extends JFrame implements ActionListe
 		JScrollPane js = new JScrollPane();
 		MultipleRowHeaderAllscacInvoice frame = new MultipleRowHeaderAllscacInvoice(str);
 		js = frame.getAllScacTotalInvoiceTable();
-		js.setPreferredSize(new Dimension(950,480));
+		js.setPreferredSize(new Dimension(1100,480));
 		js.setAlignmentY(CENTER_ALIGNMENT);
 		return js;
 	}
@@ -145,7 +150,7 @@ public class AllScacTotalInvoiceCollection extends JFrame implements ActionListe
 		JScrollPane js;
 		MultipleRowHeaderAllscacInvoice frame = new MultipleRowHeaderAllscacInvoice(str);
 		js = frame.getAllScacTotalInvoiceTable();
-		js.setPreferredSize(new Dimension(950,480));
+		js.setPreferredSize(new Dimension(1100,480));
 		js.setAlignmentY(CENTER_ALIGNMENT);
 		return js;
 	}
@@ -447,7 +452,10 @@ public class AllScacTotalInvoiceCollection extends JFrame implements ActionListe
 			cutOffDate.setText(endPeriod.getText());
 			getResult();
 		}//if
-		
+		else if(e.getSource() == printBtn){
+			PrintSolution ps = new PrintSolution();
+			ps.print(this);
+		}
 	}//method
 	
 	public void setTableColumnSize(JTable table,int colNum, int size){

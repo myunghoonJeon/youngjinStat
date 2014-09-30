@@ -33,7 +33,7 @@ public class EachScacAcceptedAmountStatusGbl extends JFrame implements ActionLis
 	GroupableColumnEachscacUncollectedStatus geus;
 	CL_DAO_DB_Mysql dao = new CL_DAO_DB_Mysql();
 	////////////////////////////////////////////////////////////////
-	int superWide = 1000;
+	int superWide = 1200;
 	int superHeight = 800;
 	int ROW_LENGTH = dao.getScacList().size()+1;
 	int COLUM_LENGTH = 6;
@@ -44,6 +44,8 @@ public class EachScacAcceptedAmountStatusGbl extends JFrame implements ActionLis
 	JTextField beginPeriod = new JTextField("",8);
 	JTextField endPeriod = new JTextField("",8);
 	JButton searchBtn = new JButton("SEARCH");
+	JButton printBtn = new JButton("PRINT");
+	
 	JComboBox scacCombo = new JComboBox(dao.getScacListWork().toArray());
 	JComboBox inoutCombo = new JComboBox(dao.getAllInOutList().toArray());
 ////////////////////////////////////////////////////////////////
@@ -99,7 +101,7 @@ public class EachScacAcceptedAmountStatusGbl extends JFrame implements ActionLis
 	ArrayList<EachScacAcceptedAmountStatusGblBean> esubIn = new ArrayList<>();
 //////////////////////////////////////////////////////////////	
 	public EachScacAcceptedAmountStatusGbl(){
-		super("");
+		super("each scac accepted amount status (GBL base)");
 		super.setVisible(true);
 		super.setResizable(false);
 		super.setSize(superWide,superHeight);
@@ -115,6 +117,8 @@ public class EachScacAcceptedAmountStatusGbl extends JFrame implements ActionLis
 	
 	public void addActionListner(){
 		searchBtn.addActionListener(this);
+		printBtn.addActionListener(this);
+		
 	}
 	
 	public void autoCreateBorderLayout(JPanel a,int wx, int ex, int ny, int sy){
@@ -168,9 +172,13 @@ public class EachScacAcceptedAmountStatusGbl extends JFrame implements ActionLis
 				northUp.add(endPeriod);
 				northUp.add(searchBtn);
 				searchBtn.setPreferredSize(new Dimension(90,30));
+				northUp.add(printBtn);
+				printBtn.setPreferredSize(new Dimension(90,30));
+		
+		
 			north.add("South",northDown);
 				northDown.setLayout(new FlowLayout(FlowLayout.LEFT));
-				northDown.setPreferredSize(new Dimension(1000,25));
+				northDown.setPreferredSize(new Dimension(1100,25));
 //				northDown.setBackground(Color.yellow);
 				northDown.add(information);
 				information.setLayout(new FlowLayout(FlowLayout.LEFT));
@@ -187,11 +195,11 @@ public class EachScacAcceptedAmountStatusGbl extends JFrame implements ActionLis
 			bigCenter.setLayout(new BorderLayout());
 			bigCenter.add("North",bcn);
 				bcn.setLayout(new FlowLayout(FlowLayout.LEFT));
-				bcn.setPreferredSize(new Dimension(1000,1));
+				bcn.setPreferredSize(new Dimension(1100,1));
 			bigCenter.add("Center",center);
 				center.setLayout(new BorderLayout());
 					center.add("Center",innerCenter);
-						innerCenter.setPreferredSize(new Dimension(950,700));
+						innerCenter.setPreferredSize(new Dimension(1100,700));
 						innerCenter.setBackground(Color.black);
 						innerCenter.setLayout(new GridLayout(6,1));
 						innerCenter.add(code34);
@@ -259,13 +267,13 @@ public class EachScacAcceptedAmountStatusGbl extends JFrame implements ActionLis
 		dtcr.setHorizontalAlignment(SwingConstants.CENTER);
 		TableColumnModel tcm = table.getColumnModel();
 		JScrollPane scrollpane = new JScrollPane(table);
-		scrollpane.setPreferredSize(new Dimension(990,90));
-		tcm.getColumn(0).setPreferredWidth(15);
-		tcm.getColumn(1).setPreferredWidth(15);
-		tcm.getColumn(2).setPreferredWidth(15);
-		tcm.getColumn(3).setPreferredWidth(15);
-		tcm.getColumn(4).setPreferredWidth(15);
-		tcm.getColumn(5).setPreferredWidth(200);
+		scrollpane.setPreferredSize(new Dimension(1100,90));
+//		tcm.getColumn(0).setPreferredWidth(15);
+//		tcm.getColumn(1).setPreferredWidth(15);
+//		tcm.getColumn(2).setPreferredWidth(15);
+//		tcm.getColumn(3).setPreferredWidth(15);
+//		tcm.getColumn(4).setPreferredWidth(15);
+//		tcm.getColumn(5).setPreferredWidth(200);
 		return scrollpane;
 	}
 	 public double getDoubleValue(String str){
@@ -392,6 +400,10 @@ public class EachScacAcceptedAmountStatusGbl extends JFrame implements ActionLis
 			}
 			getResult();
 			validate();
+		}
+		else if(e.getSource() == printBtn){
+			PrintSolution ps = new PrintSolution();
+			ps.print(this);
 		}
 	}
 }

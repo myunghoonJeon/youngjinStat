@@ -22,7 +22,7 @@ import javax.swing.JTextField;
 import WorkVolumeStat2Table.MultipleRowHeaderWorkStat2;
 
 
-public class WorkVolumeStat2 extends JFrame implements ActionListener{
+public class ScacWorkStatus extends JFrame implements ActionListener{
 	CL_DAO_DB_Mysql dao = new CL_DAO_DB_Mysql();
 	SharedMethod sm = new SharedMethod();
 	////////////////////////////////////////////////////////////////
@@ -39,9 +39,11 @@ public class WorkVolumeStat2 extends JFrame implements ActionListener{
 	JComboBox hhgUbCombo = new JComboBox(dao.getHhgUbList().toArray());
 	JComboBox typeCombo = new JComboBox(dao.getWorkStat1TypeList().toArray());
 	JButton searchBtn = new JButton("SEARCH");
-	JButton printBtn = new JButton("PRINT");
+	
 	JTextField startPeriod =  new JTextField("",6);
 	JTextField endPeriod = new JTextField("",6);
+
+JButton printBtn = new JButton("PRINT");
 
 	JPanel center;
 ////////////////////////////////////////////////////////////////	
@@ -53,8 +55,8 @@ public class WorkVolumeStat2 extends JFrame implements ActionListener{
 	JPanel bcn = new JPanel();
 	////////////////////////////////////////////////////////////////
 	String[][] initStr;
-	public WorkVolumeStat2(){
-		super("work volume stat2");
+	public ScacWorkStatus(){
+		super("scac work status (weight/density)");
 		super.setVisible(true);
 		super.setResizable(false);
 		super.setSize(superWide,superHeight);
@@ -72,6 +74,8 @@ public class WorkVolumeStat2 extends JFrame implements ActionListener{
 	public void addActionListner(){
 		searchBtn.addActionListener(this);
 		printBtn.addActionListener(this);
+		printBtn.addActionListener(this);
+		
 	}
 	
 	public void autoCreateBorderLayout(JPanel a,int wx, int ex, int ny, int sy){
@@ -135,6 +139,10 @@ public class WorkVolumeStat2 extends JFrame implements ActionListener{
 			northUp.add(endPeriod);
 			northUp.add(searchBtn);
 			searchBtn.setPreferredSize(new Dimension(90,30));
+			northUp.add(printBtn);
+			printBtn.setPreferredSize(new Dimension(90,30));
+	
+	
 		mainCenter.add("Center",bigCenter);
 			bigCenter.setLayout(new BorderLayout());
 			bigCenter.add("North",bcn);
@@ -182,22 +190,8 @@ public class WorkVolumeStat2 extends JFrame implements ActionListener{
 		}
 		else if(type.equals("DENSITY")){
 			for(int i=0;i<ROW_LENGTH;i++){
-				for(int j=0;j<COLUM_LENGTH;j++){
-					if(j%2==0){
-						result[i][j] = new String();
-						result[i][j] = checkWeightValue(ib[i][j])+checkWeightValue(ob[i][j])+"";
-						if(result[i][j].equals("0")){
-							result[i][j]="-";
-						}
-					}
-					else{
-						result[i][j] = new String();
-						result[i][j] = checkDensityValue(ib[i][j])+checkDensityValue(ob[i][j])+"";
-						if(result[i][j].equals("0.0")){
-							result[i][j]="-";
-						}
-					}
-					
+				for(int j=0;j<22;j++){
+					result[i][j] = Integer.parseInt(ib[i][j])+Integer.parseInt(ob[i][j])+"";
 				}
 			}
 		}
@@ -207,9 +201,10 @@ public class WorkVolumeStat2 extends JFrame implements ActionListener{
 	
 	public void getResult(){
 		center.removeAll();
-		String[][] inboundStr = new String[ROW_LENGTH][COLUM_LENGTH];
-		String[][] outboundStr = new String[ROW_LENGTH][COLUM_LENGTH];
-		String[][] finalStr = new String[ROW_LENGTH][COLUM_LENGTH];
+		WorkVolumeStat2Beans wvs2In = new WorkVolumeStat2Beans();
+		WorkVolumeStat2Beans wvs2Out = new WorkVolumeStat2Beans();
+		String[][] finalCuftStr = new String[ROW_LENGTH][COLUM_LENGTH];
+		String[][] finalWeightStr = new String[ROW_LENGTH][COLUM_LENGTH];
 		String scac = scacCombo.getSelectedItem().toString();
 		String area = areaCombo.getSelectedItem().toString();
 		String hhgUb = hhgUbCombo.getSelectedItem().toString();
@@ -218,35 +213,49 @@ public class WorkVolumeStat2 extends JFrame implements ActionListener{
 		String end = endPeriod.getText();
 		String type = typeCombo.getSelectedItem().toString();
 		if(inoutCombo.getSelectedItem().toString().equals("ALL")){
-			inboundStr = dao.getInboundWorkVolumeStat2(scac, area, hhgUb, code, begin, end,type);
-			outboundStr = dao.getOutboundWorkVolumeStat2(scac, area, hhgUb, code, begin, end,type);
-			finalStr = combine(inboundStr,outboundStr,type);
+			wvs2In = dao.getInboundWorkVolumeStat2(scac, area, hhgUb, code, begin, end,type);
+			wvs2Out = dao.getOutboundWorkVolumeStat2(scac, area, hhgUb, code, begin, end,type);
+			finalWeightStr = combine(wvs2In.getStr(),wvs2Out.getStr(),"WEIGHT");
+			finalCuftStr = combine(wvs2In.getCuftStr(),wvs2Out.cuftInput,"DENSITY");
 		}
 		if(inoutCombo.getSelectedItem().toString().equals("IN")){
-			inboundStr = dao.getInboundWorkVolumeStat2(scac, area, hhgUb, code, begin, end,type);
-			finalStr = inboundStr;
+			wvs2In = dao.getInboundWorkVolumeStat2(scac, area, hhgUb, code, begin, end,type);
+			finalWeightStr = wvs2In.getStr();
+			finalCuftStr = wvs2In.getCuftStr();
 		}
 		else if(inoutCombo.getSelectedItem().toString().equals("OUT")){
-			outboundStr = dao.getOutboundWorkVolumeStat2(scac, area, hhgUb, code, begin, end,type);
-			finalStr = outboundStr;
+			wvs2Out = dao.getOutboundWorkVolumeStat2(scac, area, hhgUb, code, begin, end,type);
+			finalWeightStr = wvs2Out.getStr();
+			finalCuftStr = wvs2Out.getCuftStr();
 		}
-		calcuration2Total(finalStr,type);
-		for(int i=0;i<finalStr.length;i++){
-			for(int j=0;j<finalStr[i].length;j++){
-				if(!finalStr[i][j].equals("-")){
+		calcuration2Total(finalWeightStr,"WEIGHT");
+		if(type.equals("DENSITY")){
+			finalCuftStr = dao.calcDensity(finalWeightStr, finalCuftStr);
+		}
+		for(int i=0;i<finalWeightStr.length;i++){
+			for(int j=0;j<finalWeightStr[i].length;j++){
+				System.out.print(finalWeightStr[i][j]+" ");
+				if(!finalWeightStr[i][j].equals("-")){
 					if(typeCombo.getSelectedItem().equals("WEIGHT")){
-						finalStr[i][j] = sm.getRoundValue(finalStr[i][j], 1);
-					}
-					else{
-						finalStr[i][j] = sm.getRoundValue(finalStr[i][j], 2);
+						finalWeightStr[i][j] = sm.getRoundValue(finalWeightStr[i][j], 1);
 					}
 				}
 			}
+			System.out.println();
 		}
+		
+		
+		
 //		MultipleRowHeaderWorkStat2 frame = new MultipleRowHeaderWorkStat2(finalStr,inoutCombo.getSelectedItem().toString());
 //		JScrollPane js = frame.getWorkVolumeStat1Table();
 //		js.setPreferredSize(new Dimension(950,530));
-		JScrollPane js = tableLayout(finalStr,type);
+		JScrollPane js;
+		if(type.equals("WEIGHT")){
+			 js = tableLayout(finalWeightStr,type);
+		}
+		else{
+			js = tableLayout(finalCuftStr,type);
+		}
 		center.add(js);
 		validate();
 	}

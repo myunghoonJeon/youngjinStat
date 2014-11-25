@@ -25,7 +25,7 @@ import mainpages.GblBeans;
 import mainpages.PrintSolution;
 
 
-public class AllScacTotalInvoiceCollectionStatusGbl extends JFrame implements ActionListener{
+public class TotalInvoiceCollectionStatusForAllScacByEachScac extends JFrame implements ActionListener{
 ////////////////////////////////////////////////////////////////
 	HashMap<String, String> inboundMap = new HashMap<>();
 	HashMap<String, String> outboundMap = new HashMap<>();
@@ -55,11 +55,11 @@ public class AllScacTotalInvoiceCollectionStatusGbl extends JFrame implements Ac
 	JPanel jpCenter = new JPanel();
 	JPanel bigCenter = new JPanel();
 	JPanel bcn = new JPanel();
-	JLabel informationLabel = new JLabel("ALL SCAC TOTAL INVOICE & COLLECTION STATUS (GBL base) cut off date : ");
+	JLabel informationLabel = new JLabel("TOTAL (IN/OUT) INVOICE & COLLECTION STATUS FOR ALL SCAC & BY EACH SCAC (GBL BASE) cut off date : ");
 	JLabel cutoffDate = new JLabel("");
 	////////////////////////////////////////////////////////////////
-	public AllScacTotalInvoiceCollectionStatusGbl(){
-		super("all scac invoice & collection status (GBL base)");
+	public TotalInvoiceCollectionStatusForAllScacByEachScac(){
+		super("total (in/out) invoice & collection status for all scac & by each scac (GBL base)");
 		super.setVisible(true);
 		super.setResizable(false);
 		super.setSize(superWide,superHeight);
@@ -323,7 +323,7 @@ public class AllScacTotalInvoiceCollectionStatusGbl extends JFrame implements Ac
 //				strList[i][k].equals("0")||strList[i][k].equals(".00")||strList[i][k].equals("0.0")
 //				||strList[i][k].equals(".0")||strList[i][k].equals(".000")
 				try{
-						if((int)Double.parseDouble(strList[i][k]+"")==0){
+						if(Double.parseDouble(strList[i][k]+"")==0){
 							strList[i][k] = "0";
 						}
 						else{
@@ -331,7 +331,7 @@ public class AllScacTotalInvoiceCollectionStatusGbl extends JFrame implements Ac
 								strList[i][k] = (int)Double.parseDouble(strList[i][k])+"";
 							}
 							else{
-								strList[i][k] = new DecimalFormat("###,###.00").format(Double.parseDouble(strList[i][k]+""));
+								strList[i][k] = new DecimalFormat("###,##0.00").format(Double.parseDouble(strList[i][k]+""));
 							}
 						}
 				}catch(NumberFormatException e){
@@ -400,28 +400,28 @@ public class AllScacTotalInvoiceCollectionStatusGbl extends JFrame implements Ac
 			//////////////////////////////////[0] quantity
 			double origin = getDoubleValue(strList[index][0]);
 			if(flag == 0){
-				System.out.println("[[ Quantity - index : "+index+" code : "+tempCode +" value : "+origin+" ]]");
+//				System.out.println("[[ Quantity - index : "+index+" code : "+tempCode +" value : "+origin+" ]]");
 				origin++;
-				System.out.println("[[ After count : "+origin+" ]]");
+//				System.out.println("[[ After count : "+origin+" ]]");
 				int tempQuantity = (int)origin;
 				strList[index][0] = tempQuantity+"";
 			}
 			//////////////////////////////////[1] invoiced Amount
 			origin = getDoubleValue(strList[index][1]);
 			if(flag==0){
-				System.out.println("[[ Invoiced Amount - index : "+index+" code : "+tempCode +" value : "+origin+" ]]");
+//				System.out.println("[[ Invoiced Amount - index : "+index+" code : "+tempCode +" value : "+origin+" ]]");
 				origin += getDoubleValue(tempBean.getAmount());
 				strList[index][1] = new DecimalFormat("######.00").format(origin);
 			}
 			//////////////////////////////////[2] collected
 			origin = getDoubleValue(strList[index][2]);
-			System.out.println("[[ Collected Amount - index : "+index+" code : "+tempCode +" value : "+origin+" ]]");
+//			System.out.println("[[ Collected Amount - index : "+index+" code : "+tempCode +" value : "+origin+" ]]");
 			origin += getDoubleValue(tempBean.getCollectionAmount());
 			strList[index][2] = origin+"";
 			//////////////////////////////////[3] Uncollected
 			if(flag==0){
 				origin = getDoubleValue(strList[index][3]);
-				System.out.println("[[ Uncollected Amount - index : "+index+" code : "+tempCode +" value : "+origin+" ]]");
+//				System.out.println("[[ Uncollected Amount - index : "+index+" code : "+tempCode +" value : "+origin+" ]]");
 				origin += getDoubleValue(tempBean.getUncollectedAmount());
 				strList[index][3] = new DecimalFormat("######.00").format(origin);
 			}
@@ -430,6 +430,9 @@ public class AllScacTotalInvoiceCollectionStatusGbl extends JFrame implements Ac
 			if(flag == 0){//포함되어있지 않으면 더해라
 				System.out.println("[[ ShortPaid Amount - index : "+index+" code : "+tempCode +" value : "+origin+" GBL NO : "+tempBean.getGblNo()+" ]]");
 				origin += getDoubleValue(tempBean.getDifference());
+				System.out.println(strList[index][4]);
+//				System.out.println("tempBean.difference() : "+tempBean.getDifference());
+//				System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ : "+origin);
 				strList[index][4] = new DecimalFormat("######.00").format(origin);
 			}
 			//////////////////////////////////[5] Accepted

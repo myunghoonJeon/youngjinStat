@@ -23,7 +23,7 @@ import javax.swing.JTextField;
 import AallScacTotalInvoiceCollection.MultipleRowHeaderAllscacInvoice;
 import WorkVolumeStat2Table.MultipleRowHeaderWorkStat2;
 
-public class AllScacTotalInvoiceCollection extends JFrame implements ActionListener{
+public class TotalInvoiceCollectionStatusForAllScacOnly extends JFrame implements ActionListener{
 	CL_DAO_DB_Mysql dao = new CL_DAO_DB_Mysql();
 	////////////////////////////////////////////////////////////////
 	int superWide = 1200;
@@ -40,7 +40,7 @@ public class AllScacTotalInvoiceCollection extends JFrame implements ActionListe
 ////////////////////////////////////////////////////////////////
 	JPanel center;
 	JPanel information = new JPanel();
-		JLabel informationLabel = new JLabel("　　ALL SCAC TOTAL INVOICE & COLLECTION STATUS (invoice base) 　　　　cut off date : ");
+		JLabel informationLabel = new JLabel("　　TOTAL INVOICE & COLLECTION STATUS FOR ALL SCAC ONLY 　　　　cut off date : ");
 		JLabel cutOffDate = new JLabel("");
 	JPanel mainCenter = new JPanel();
 	JPanel north = new JPanel();
@@ -50,8 +50,8 @@ public class AllScacTotalInvoiceCollection extends JFrame implements ActionListe
 	JPanel bcn = new JPanel();
 ////////////////////////////////////////////////////////////////
 	String[][] initStr;
-	public AllScacTotalInvoiceCollection(){
-		super("all scac total invoice & collection status");
+	public TotalInvoiceCollectionStatusForAllScacOnly(){
+		super("total invoice & collection status for all scac only");
 		super.setVisible(true);
 		super.setResizable(false);
 		super.setSize(superWide,superHeight);
@@ -171,8 +171,10 @@ public class AllScacTotalInvoiceCollection extends JFrame implements ActionListe
    		result = new DecimalFormat("#,##0.00").format(d);
    		return result;
    	}
+   	
 	public void getResult(){
 		center.removeAll();
+		ArrayList<AllScacTotalInvoiceCollectionBeans> list = new ArrayList<>();
 		String[][] finalStr = new String[ROW_LENGTH][COLUM_LENGTH];
 //		String scac = scacCombo.getSelectedItem().toString();
 //		String area = areaCombo.getSelectedItem().toString();
@@ -199,22 +201,29 @@ public class AllScacTotalInvoiceCollection extends JFrame implements ActionListe
 //		JScrollPane js = frame.getWorkVolumeStat1Table();
 //		js.setPreferredSize(new Dimension(950,530));
 		finalStr = dao.getAllScacTotalInvoice(begin, end);
-		
-		for(int i=0;i<ROW_LENGTH;i++){
-			for(int k=0;k<COLUM_LENGTH;k++){
-				if(i!=ROW_LENGTH-1){
-					finalStr[(ROW_LENGTH-1)][k] = getDoubleValue(finalStr[i][k])+getDoubleValue(finalStr[(ROW_LENGTH-1)][k])+""; 
+		for(int i=0;i<finalStr.length;i++){
+			for(int j=0;j<finalStr[i].length;j++){
+				if(!finalStr[i][j].equals("-") && !finalStr[i][j].equals("")){
+					finalStr[i][j] = getRoundValue(Double.parseDouble(finalStr[i][j]));
 				}
 			}
 		}
-		for(int i=0;i<ROW_LENGTH;i++){
-			for(int k=0;k<COLUM_LENGTH;k++){
-				finalStr[i][k] = getRoundValue(getDoubleValue(finalStr[i][k]));
-				if(finalStr[i][k].equals("0.00")){
-					finalStr[i][k] = "-";
-				}
-			}
-		}
+//		
+//		for(int i=0;i<ROW_LENGTH;i++){
+//			for(int k=0;k<COLUM_LENGTH;k++){
+//				if(i!=ROW_LENGTH-1){
+//					finalStr[(ROW_LENGTH-1)][k] = getDoubleValue(finalStr[i][k])+getDoubleValue(finalStr[(ROW_LENGTH-1)][k])+""; 
+//				}
+//			}
+//		}
+//		for(int i=0;i<ROW_LENGTH;i++){
+//			for(int k=0;k<COLUM_LENGTH;k++){
+//				finalStr[i][k] = getRoundValue(getDoubleValue(finalStr[i][k]));
+//				if(finalStr[i][k].equals("0.00")){
+//					finalStr[i][k] = "-";
+//				}
+//			}
+//		}
 		JScrollPane js = tableLayout(finalStr);
 		center.add(js);
 		validate();

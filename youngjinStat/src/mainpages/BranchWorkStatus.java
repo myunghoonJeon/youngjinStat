@@ -29,7 +29,7 @@ import javax.swing.table.JTableHeader;
 import WorkVolumeStat1.*;
 
 
-public class WorkVolumeStat1 extends JFrame implements ActionListener{
+public class BranchWorkStatus extends JFrame implements ActionListener{
 ////////////////////////////////////////////////////////////////
 	int superWide = 1200;
 	int superHeight = 650;
@@ -56,8 +56,8 @@ public class WorkVolumeStat1 extends JFrame implements ActionListener{
 	JPanel bigCenter = new JPanel();
 	JPanel bcn = new JPanel();
 	////////////////////////////////////////////////////////////////
-	public WorkVolumeStat1(){
-		super("work volume stat1");
+	public BranchWorkStatus(){
+		super("branch work status (weight/density)");
 		super.setVisible(true);
 		super.setResizable(false);
 		super.setSize(superWide,superHeight);
@@ -175,9 +175,13 @@ public class WorkVolumeStat1 extends JFrame implements ActionListener{
 	}
 	public void getResult(){
 		center.removeAll();
+		WorkVolumeStat1Beans WorkVolumeStat1BeansIn = new WorkVolumeStat1Beans();
+		WorkVolumeStat1Beans WorkVolumeStat1BeansOut = new WorkVolumeStat1Beans();
 		String[][] inboundStr = new String[23][20];
 		String[][] outboundStr = new String[23][20];
 		String[][] finalStr = new String[23][20];
+		String[][] finalCuft = new String[23][20];
+		String[][] tempArr = new String[23][20];
 		String scac = scacCombo.getSelectedItem().toString();
 		String area = areaCombo.getSelectedItem().toString();
 		String hhgUb = hhgUbCombo.getSelectedItem().toString();
@@ -186,25 +190,86 @@ public class WorkVolumeStat1 extends JFrame implements ActionListener{
 		String end = endPeriod.getText();
 		String type = typeCombo.getSelectedItem().toString();
 		if(inoutCombo.getSelectedItem().toString().equals("ALL")){
-			inboundStr = dao.getInboundWorkVolumeStat1(scac, area, hhgUb, code, begin, end,type);
-			outboundStr = dao.getOutboundWorkVolumeStat1(scac, area, hhgUb, code, begin, end,type);
-			finalStr = combine(inboundStr,outboundStr);
+			WorkVolumeStat1BeansIn = dao.getInboundWorkVolumeStat1(scac, area, hhgUb, code, begin, end,type);
+			WorkVolumeStat1BeansOut = dao.getOutboundWorkVolumeStat1(scac, area, hhgUb, code, begin, end,type);
+			System.out.println("COMBINE");
+			finalStr = combine(WorkVolumeStat1BeansIn.getStr(),WorkVolumeStat1BeansOut.getStr());
+			if(type.equals("DENSITY")){
+				 finalCuft = combine(WorkVolumeStat1BeansIn.getCuftStr(),WorkVolumeStat1BeansOut.getCuftStr());
+			}
 		}
 		else if(inoutCombo.getSelectedItem().toString().equals("IN")){
-			inboundStr = dao.getInboundWorkVolumeStat1(scac, area, hhgUb, code, begin, end,type);
-			finalStr = inboundStr;
+			WorkVolumeStat1BeansIn = dao.getInboundWorkVolumeStat1(scac, area, hhgUb, code, begin, end,type);
+			finalStr = WorkVolumeStat1BeansIn.getStr();
+			finalCuft = WorkVolumeStat1BeansIn.getCuftStr();
 		}
 		else if(inoutCombo.getSelectedItem().toString().equals("OUT")){
-			outboundStr = dao.getOutboundWorkVolumeStat1(scac, area, hhgUb, code, begin, end,type);
-			finalStr = outboundStr;
+			WorkVolumeStat1BeansOut = dao.getOutboundWorkVolumeStat1(scac, area, hhgUb, code, begin, end,type);
+			finalStr = WorkVolumeStat1BeansOut.getStr();
+			finalCuft = WorkVolumeStat1BeansOut.getCuftStr();
 		}
-		calcurationTotal(finalStr,type);
-		checkMoneyComma(finalStr,type);
-		MultipleRowHeaderExample frame = new MultipleRowHeaderExample(finalStr);
+		System.out.println("???"+finalStr[0][19]);
+		calcurationTotal(finalStr,"WEIGHT");
+		System.out.println("???"+finalStr[0][19]);
+		if(type.equals("DENSITY")){
+			calcaurationTotalCuft(finalCuft);
+			System.out.println("???"+finalStr[0][19]);
+			System.out.println("CUFT CALCURATION COMPLETE");
+			tempArr = calcurationDensity(finalStr, finalCuft);
+			checkMoneyComma(tempArr,"DENSITY");
+		}
+		else{
+			checkMoneyComma(finalStr,"WEIGHT");
+			tempArr = finalStr;
+		}
+		MultipleRowHeaderExample frame = new MultipleRowHeaderExample(tempArr);
 		JScrollPane js = frame.getWorkVolumeStat1Table();
 		js.setPreferredSize(new Dimension(1150,530));
 		center.add(js);
 		validate();
+	}
+	public String[][] calcurationDensity(String[][] weight,String[][] cuft){
+		String[][] result = new String[23][20];
+		for(int i=0;i<23;i++){
+			for(int j=0;j<20;j++){
+				result[i][j]="-";
+			}
+		}
+		double tempWeight=0;
+		double tempCuft=0;
+		double density;
+		for(int i=0;i<23;i++){
+			for(int j=0;j<20;j++){
+				if(j%2==1){//weight case
+					if(!weight[i][j].equals("-")&&!weight[i][j].equals("")&&weight[i][j]!=null&&!cuft[i][j].equals("-")&&!cuft[i][j].equals("")&&cuft[i][j]!=null){
+						tempWeight = Double.parseDouble(weight[i][j]);
+						tempCuft = Double.parseDouble(cuft[i][j]);
+						if(tempWeight!=0&&tempCuft!=0){
+							density = tempWeight/tempCuft;
+							result[i][j] = density+"";
+						}
+						else{
+							result[i][j] = "-";
+						}
+					}
+					else{
+						System.out.println("======================");
+						System.out.println("[i] : "+i+" [j] : "+j);
+						System.out.println("WEIGHT : "+weight[i][j]);
+						System.out.println("CUFT : "+cuft[i][j]);
+						System.out.println("======================");
+						result[i][j] = "-";
+					}
+				}
+			}
+		}
+//		for(int i=0;i<23;i++){
+//			for(int j=0;j<20;j++){
+//				System.out.print(result[i][j]);
+//			}
+//			System.out.println();
+//		}
+		return result;
 	}
 	public void checkMoneyComma(String[][] arr,String type){
 		int flag=0;
@@ -216,7 +281,7 @@ public class WorkVolumeStat1 extends JFrame implements ActionListener{
 		}
 		for(int i=0;i<arr.length;i++){
 			for(int j=0;j<arr[i].length;j++){
-				if(!arr[i][j].equals("-")){
+				if(!arr[i][j].equals("-") && arr[i][j]!=null){
 					arr[i][j] = sm.getRoundValue(arr[i][j], flag);
 				}
 			}
@@ -244,6 +309,67 @@ public class WorkVolumeStat1 extends JFrame implements ActionListener{
 			result = 0.0;
 		}
 		return result;
+	}
+	public void calcaurationTotalCuft(String[][] arr){
+		String[][] total = new String[23][20];
+		String type="WEIGHT";
+		for(int i=0;i<23;i++){
+			int totalJob=0;
+			int totalWeight = 0;
+			for(int j=0;j<20;j++){
+				total[i][j] = "";
+					if(j%2==0 && j<18){
+//						totalJob += checkWeightValue(arr[i][j]);
+					}
+					else if(j%2==1 && j<18){
+						totalWeight += checkWeightValue(arr[i][j]);
+					}
+					if(j==18){
+						if(totalJob==0){
+							arr[i][j] = "-";
+						}
+						else{
+							arr[i][j] = totalJob+"";
+						}
+					}
+					if(j==19){
+						arr[i][j] = totalWeight+"";
+					}
+					if(i>=0 && i<=3  ){
+						pushArr(0, i, j, total, arr, type);
+					}
+					else if(i==4  ){//hhg total
+						pushHhgUbTotal(i, j, total, arr, type);
+					}
+					else if(i>=5 && i<=8){
+						pushArr(5, i, j, total, arr, type);
+					}
+					else if(i==9){//ub total
+						pushHhgUbTotal(i, j, total, arr, type);
+					}
+					else if(i==10){//in total
+						pushTotal(4, 9, i, j, total, arr, type);
+					}
+					else if(i>=11 && i<=14  ){
+						pushArr(11, i, j, total, arr, type);
+					}
+					else if(i==15){//hhg total
+						pushHhgUbTotal(i, j, total, arr, type);
+					}
+					else if(i>=16 && i<=19){
+						pushArr(16, i, j, total, arr, type);
+					}
+					else if(i==20){//ub total
+						pushHhgUbTotal(i, j, total, arr, type);
+					}
+					else if(i==21){//out total
+						pushTotal(15, 20, i, j, total, arr, type);
+					}
+					else if(i==22){//all total
+						pushTotal(10, 21, i, j, total, arr, type);
+					}
+			}//for (j)
+		}//for(i)
 	}
 	public void calcurationTotal(String[][] arr,String type){
 		String[][] total = new String[23][20];
@@ -311,71 +437,10 @@ public class WorkVolumeStat1 extends JFrame implements ActionListener{
 				}//for (j)
 			}//for(i)
 		}//if
-		else if(type.equals("DENSITY")){
-			for(int i=0;i<23;i++){
-				int totalJob=0;
-				double totalWeight = 0.0;
-				for(int j=0;j<20;j++){
-					total[i][j] = "";
-						if(j%2==0 && j<18){
-							totalJob += checkWeightValue(arr[i][j]);
-						}
-						else if(j%2==1 && j<18){
-							totalWeight += checkDensityValue(arr[i][j]);
-						}
-						if(j==18){
-							if(totalJob==0){
-								arr[i][j] = "-";
-							}
-							else{
-								arr[i][j] = totalJob+"";
-							}
-						}
-						if(j==19){
-							if(totalJob==0){
-								arr[i][j] = "-";
-							}
-							else{
-								arr[i][j] = totalWeight+"";
-							}
-						}
-						if(i>=0 && i<=3  ){
-							pushArr(0, i, j, total, arr, type);
-						}
-						else if(i==4  ){//hhg total
-							pushHhgUbTotal(i, j, total, arr, type);
-						}
-						else if(i>=5 && i<=8){
-							pushArr(5, i, j, total, arr, type);
-						}
-						else if(i==9){//ub total
-							pushHhgUbTotal(i, j, total, arr, type);
-						}
-						else if(i==10){//in total
-							pushTotal(4, 9, i, j, total, arr, type);
-						}
-						else if(i>=11 && i<=14  ){
-							pushArr(11, i, j, total, arr, type);
-						}
-						else if(i==15){//hhg total
-							pushHhgUbTotal(i, j, total, arr, type);
-						}
-						else if(i>=16 && i<=19){
-							pushArr(16, i, j, total, arr, type);
-						}
-						else if(i==20){//ub total
-							pushHhgUbTotal(i, j, total, arr, type);
-						}
-						else if(i==21){//out total
-							pushTotal(15, 20, i, j, total, arr, type);
-						}
-						else if(i==22){//all total
-							pushTotal(10, 21, i, j, total, arr, type);
-						}
-				}//for (j)
-			}//for(i)
-		}//else if
+		else if(type.equals("DENSITY")){}//if
+		
 	}//final method
+
 	public void pushHhgUbTotal(int i, int j,String[][] total,String[][] arr,String type){
 		if(total[i-1][j].equals("0")||total[i-1][j].equals("0.0")){
 			arr[i][j] = "-";

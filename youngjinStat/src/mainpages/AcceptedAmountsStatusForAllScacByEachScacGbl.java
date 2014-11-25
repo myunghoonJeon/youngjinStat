@@ -28,7 +28,7 @@ import javax.swing.table.TableColumnModel;
 import AllScacTotalInvoiceCollectionStatusGBL.AllScacTotalInvoiceCollectionStatusGblBeans;
 import EachScacUncollectedStatus.GroupableColumnEachscacUncollectedStatus;
 
-public class EachScacAcceptedAmountStatusGbl extends JFrame implements ActionListener{
+public class AcceptedAmountsStatusForAllScacByEachScacGbl extends JFrame implements ActionListener{
 
 	GroupableColumnEachscacUncollectedStatus geus;
 	CL_DAO_DB_Mysql dao = new CL_DAO_DB_Mysql();
@@ -74,7 +74,7 @@ public class EachScacAcceptedAmountStatusGbl extends JFrame implements ActionLis
 	JPanel codeJ = new JPanel();
 	JPanel codeJc=new JPanel();
 	JPanel information = new JPanel();
-		JLabel informationLabel = new JLabel("EACH SCAC ACCEPTED AMOUNTS STATUS (GBL base)");
+		JLabel informationLabel = new JLabel("ACCEPTED AMOUNTS STATUS FOR ALL SCAC & BY EACH SCAC (GBL BASE) ");
 		JLabel scacLabel= new JLabel(" SCAC : ");
 		JLabel scacValueLabel = new JLabel("[ ALL ]");
 		JLabel cutOffDateLabel = new JLabel("cut off date : ");
@@ -100,8 +100,8 @@ public class EachScacAcceptedAmountStatusGbl extends JFrame implements ActionLis
 	ArrayList<EachScacAcceptedAmountStatusGblBean> tempEsub = new ArrayList<>();
 	ArrayList<EachScacAcceptedAmountStatusGblBean> esubIn = new ArrayList<>();
 //////////////////////////////////////////////////////////////	
-	public EachScacAcceptedAmountStatusGbl(){
-		super("each scac accepted amount status (GBL base)");
+	public AcceptedAmountsStatusForAllScacByEachScacGbl(){
+		super("accepted amounts status for all scac & by each scac (GBL base)");
 		super.setVisible(true);
 		super.setResizable(false);
 		super.setSize(superWide,superHeight);

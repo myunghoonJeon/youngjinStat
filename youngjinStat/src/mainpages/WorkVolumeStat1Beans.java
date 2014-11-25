@@ -5,16 +5,20 @@ import java.util.HashMap;
 public class WorkVolumeStat1Beans {
 	/******************[define parameter]************************/
 	String[][] input = new String[23][20];
+	String[][] cuftArr = new String[23][20];
 	HashMap<String,String> hashMapColumn = new HashMap<String,String>();
 	HashMap<String,String> hashMapRow = new HashMap<String,String>();
 	String type="";
 	/***************************************************/
 	public WorkVolumeStat1Beans(){
 		initArr(input);
+		initArr(cuftArr);
 		initHashmap(hashMapColumn,"column");
 		initHashmap(hashMapRow,"");
 	}
-	
+	public String[][] getCuftStr(){
+		return cuftArr;
+	}
 	public String[][] getStr(){
 		return input;
 	}
@@ -54,6 +58,52 @@ public class WorkVolumeStat1Beans {
 			
 			input[row][job] = originJob+"";
 			input[row][weight] = originWeight+"";
+		}
+		else{
+			System.out.println("code null????");
+		}
+	}
+	public void setNewDensity(String area,String code,String jobValue,String weightValue,String cuftValue){
+		String column = hashMapColumn.get(area);
+		int job;
+		int weight;
+		if(column!=null){
+			job = Integer.parseInt(column)-1;
+			weight = Integer.parseInt(column);
+		}
+		else{
+			column="17";
+			job = Integer.parseInt(column)-1;
+			weight = Integer.parseInt(column);
+		}
+		String codeStr = hashMapRow.get(code);
+		if(codeStr!=null){
+			int row = Integer.parseInt(codeStr);
+			int originJob;
+			int originWeight;
+			int originCuft=0;
+			if(input[row][job].equals("-")){
+				originJob = 0;
+			}
+			else{
+				originJob = Integer.parseInt(input[row][job]);
+			}
+			if(input[row][weight].equals("-")){
+				originWeight = 0;
+				if(cuftArr[row][weight].equals("-")){
+					originCuft=0;
+				}
+			}
+			else{
+				originWeight = Integer.parseInt(input[row][weight]);
+				originCuft = Integer.parseInt(cuftArr[row][weight]);
+			}
+			originJob += Integer.parseInt(jobValue);
+			originWeight+= Double.parseDouble(weightValue);
+			originCuft +=Integer.parseInt(cuftValue);
+			input[row][job] = originJob+"";
+			input[row][weight] = originWeight+"";
+			cuftArr[row][weight] = originCuft+"";
 		}
 		else{
 			System.out.println("code null????");

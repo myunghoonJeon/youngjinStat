@@ -26,7 +26,7 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumnModel;
 import javax.swing.table.TableRowSorter;
 
-public class WorkVolumeFilteringPage extends JFrame implements ActionListener{
+public class WorkVolumeStatus extends JFrame implements ActionListener{
 	CL_DAO_DB_Mysql dao = new CL_DAO_DB_Mysql();
 	JComboBox itemsCombo = new JComboBox(dao.getInventoryFilteringItemsList().toArray());
 	JComboBox areaCombo = new JComboBox(dao.getAreaList2().toArray());
@@ -34,7 +34,9 @@ public class WorkVolumeFilteringPage extends JFrame implements ActionListener{
 	JComboBox inoutCombo = new JComboBox(dao.getInOutList().toArray());
 	JComboBox codeCombo = new JComboBox(dao.getCodeList().toArray());
 	JButton searchBtn = new JButton("SEARCH");
-	
+
+	JButton printBtn = new JButton("PRINT");
+
 	
 	JButton outboundBtn = new JButton("OUTBOUND");
 	JButton inboundBtn = new JButton("INBOUND");
@@ -65,8 +67,8 @@ public class WorkVolumeFilteringPage extends JFrame implements ActionListener{
 	JLabel southMessageLabel = new JLabel("");
 	////////////////////////////////////////////////////////////////
 	
-	public WorkVolumeFilteringPage() {
-		super("work volume filtering");
+	public WorkVolumeStatus() {
+		super("work volume status");
 		super.setVisible(true);
 		super.setResizable(false);
 		super.setSize(1200,750);
@@ -85,6 +87,8 @@ public class WorkVolumeFilteringPage extends JFrame implements ActionListener{
 		outboundBtn.addActionListener(this);
 		inboundBtn.addActionListener(this);
 		inoutCombo.addActionListener(this);
+		printBtn.addActionListener(this);
+	
 	}
 	
 	public void autoCreateBorderLayout(JPanel a,int wx, int ex, int ny, int sy){
@@ -141,6 +145,10 @@ public class WorkVolumeFilteringPage extends JFrame implements ActionListener{
 			north.add(pudEndPeriod);
 			north.add(new JLabel("　　"));
 			north.add(searchBtn);
+			searchBtn.setPreferredSize(new Dimension(90,30));
+			north.add(printBtn);
+			printBtn.setPreferredSize(new Dimension(90,30));
+			
 		mainCenter.add("Center",bigCenter);
 			bigCenter.setLayout(new BorderLayout());
 			bigCenter.add("North",bcn);
@@ -182,6 +190,7 @@ public class WorkVolumeFilteringPage extends JFrame implements ActionListener{
 				north.add(pudEndPeriod);
 				north.add(new JLabel("　　"));
 				north.add(searchBtn);
+				north.add(printBtn);
 				validate();
 			}
 			else{//inbound
@@ -205,17 +214,19 @@ public class WorkVolumeFilteringPage extends JFrame implements ActionListener{
 				north.add(pudStartPeriod);
 				north.add(new JLabel("~"));
 				north.add(pudEndPeriod);
-				north.add(term);
-//				term.setPreferredSize(new Dimension(200,30));
+				
+				term.setPreferredSize(new Dimension(200,30));
 				north.add(new JLabel("RDD : "));
 				north.add(rddStartPeriod);
 				north.add(new JLabel("~"));
 				north.add(rddEndPeriod);
+				north.add(term);
 				north.add(new JLabel("ON HAND : "));
 				north.add(onhandStartPeriod);
 				north.add(new JLabel("~"));
 				north.add(onhandEndPeriod);
 				north.add(searchBtn);
+				north.add(printBtn);
 				validate();
 			}
 		}
@@ -388,6 +399,11 @@ public class WorkVolumeFilteringPage extends JFrame implements ActionListener{
 			validate();
 		}
 		}//if
+		else if(e.getSource() == printBtn){
+			PrintSolution ps = new PrintSolution();
+		
+			ps.print(this);
+		}
 		
 	}//method
 	public Double getDoubleValue(String str){

@@ -29,7 +29,7 @@ import javax.swing.table.TableRowSorter;
 
 import EachScacInvoiceCollection.GroupableColumnEachscacInvoice;
 
-public class EachScacInvoiceCollection extends JFrame implements ActionListener{
+public class InvoiceCollectionStatusByEachScacOnly extends JFrame implements ActionListener{
 	CL_DAO_DB_Mysql dao = new CL_DAO_DB_Mysql();
 	////////////////////////////////////////////////////////////////
 	int superWide = 1200;
@@ -49,7 +49,7 @@ public class EachScacInvoiceCollection extends JFrame implements ActionListener{
 ////////////////////////////////////////////////////////////////
 	JPanel center;
 	JPanel information = new JPanel();
-		JLabel informationLabel = new JLabel("　　EACH SCAC TOTAL INVOICE & COLLECTION STATUS (invoice base) 　　　　cut off date : ");
+		JLabel informationLabel = new JLabel("　　INVOICE & COLLECTION STATUS BY EACH SCAC ONLY (invoice base) 　　　cut off date : ");
 		JLabel cutOffDate = new JLabel("");
 	JPanel mainCenter = new JPanel();
 	JPanel north = new JPanel();
@@ -57,13 +57,13 @@ public class EachScacInvoiceCollection extends JFrame implements ActionListener{
 	JPanel jpCenter = new JPanel();
 	JPanel bigCenter = new JPanel();
 	JPanel bcn = new JPanel();
-	ArrayList<EachScacInvoiceCollectionBeans> esic = new ArrayList<>();
+	ArrayList<EachScacInvoiceCollectionBeans> list = new ArrayList<>();
 ////////////////////////////////////////////////////////////////
 	DefaultTableModel model;
 	JScrollPane js= new JScrollPane();
 //////////////////////////////////////////////////////////////	
-	public EachScacInvoiceCollection() {
-		super(" each scac invoice & collection status (invoice base)");
+	public InvoiceCollectionStatusByEachScacOnly() {
+		super(" invoice & collection status by each scac only (invoice base)");
 		super.setVisible(true);
 		super.setResizable(false);
 		super.setSize(superWide,superHeight);
@@ -144,7 +144,7 @@ public class EachScacInvoiceCollection extends JFrame implements ActionListener{
 				information.add(informationLabel);
 				information.add(cutOffDate);
 			bigCenter.add("Center",center);
-			js = tableLayout(js,esic);
+			js = tableLayout(js,list);
 			center.add(js);
 			super.add(jp);
 			validate();
@@ -159,7 +159,7 @@ public class EachScacInvoiceCollection extends JFrame implements ActionListener{
 //		return js;
 //	}
 //////////////////////////////////////////[ table column layout ]//////////////////////////////////////////////////////////////			
-	public JScrollPane tableLayout(JScrollPane js,ArrayList<EachScacInvoiceCollectionBeans> esic){
+	public JScrollPane tableLayout(JScrollPane js,ArrayList<EachScacInvoiceCollectionBeans> list){
 		js.removeAll();
 		GroupableColumnEachscacInvoice ge = new GroupableColumnEachscacInvoice();
 		String colName[] = ge.getJobWeight();
@@ -186,34 +186,38 @@ public class EachScacInvoiceCollection extends JFrame implements ActionListener{
 		double tcl=0;
 		double tnu=0;
 		center.removeAll();
-		for(int i=0;i<esic.size();i++){
+		for(int i=0;i<list.size();i++){
 			code =codeCombo.getSelectedItem().toString();
-			date=esic.get(i).getInvoiceDate();
-			invoiceNo = esic.get(i).getInvoiceNo();
-			invoiceAmounts = esic.get(i).getInvoicedAmounts();
-			collectedAmounts = esic.get(i).getCollectedAmounts();
-			uncollectedAmounts = esic.get(i).getUncollectedAmounts();
-			shortPaid = esic.get(i).getShortpaidAmounts();
-			accepted = esic.get(i).getAcceptedAmounts();
-			claimed = esic.get(i).getClaimedAmounts();
-			net = getDoubleValue(collectedAmounts)+getDoubleValue(accepted)-getDoubleValue(shortPaid)+"";
-			quantity = esic.get(i).getGblQuantity()+"";
-			status=esic.get(i).getStatus();
-			if(code.equals("ALL")){
-				System.out.println("[NET : "+net+"]");
-				String[] input = {date,invoiceNo,quantity,getRoundValue(getDoubleValue(invoiceAmounts)),getRoundValue(getDoubleValue(collectedAmounts)),
-						getRoundValue(getDoubleValue(uncollectedAmounts)),getRoundValue(getDoubleValue(shortPaid)),getRoundValue(getDoubleValue(accepted)),getRoundValue(getDoubleValue(claimed)),getRoundValue(getDoubleValue(net)),status};
-				model.addRow(input);
+			date=list.get(i).getInvoiceDate();
+			invoiceNo = list.get(i).getInvoiceNo();
+			invoiceAmounts = list.get(i).getInvoicedAmounts();
+			collectedAmounts = list.get(i).getCollectedAmounts();
+			uncollectedAmounts = list.get(i).getUncollectedAmounts();
+			shortPaid = list.get(i).getShortpaidAmounts();
+			accepted = list.get(i).getAcceptedAmounts();
+			claimed = list.get(i).getClaimedAmounts();
+			net = getDoubleValue(invoiceAmounts)-getDoubleValue(accepted)-getDoubleValue(shortPaid)-getDoubleValue(claimed)-getDoubleValue(uncollectedAmounts)+"";
+			quantity = list.get(i).getGblQuantity()+"";
+			if(getDoubleValue(invoiceAmounts)==getDoubleValue(collectedAmounts)+getDoubleValue(accepted)){
+				status="OK";
 			}
 			else{
-				if(esic.get(i).getCode().equals(code)){// to operation when discover same code
-					System.out.println("[NET : "+net+"]");
-					String[] input = {date,invoiceNo,quantity,getRoundValue(getDoubleValue(invoiceAmounts)),getRoundValue(getDoubleValue(collectedAmounts)),
-							getRoundValue(getDoubleValue(uncollectedAmounts)),getRoundValue(getDoubleValue(shortPaid)),getRoundValue(getDoubleValue(accepted)),
-							getRoundValue(getDoubleValue(claimed)),getRoundValue(getDoubleValue(net)),status};
-					model.addRow(input);
-				}
+				status="PENDING";
 			}
+//			if(code.equals("ALL")){
+//				System.out.println("[NET : "+net+"]");
+//				String[] input = {date,invoiceNo,quantity,getRoundValue(getDoubleValue(invoiceAmounts)),getRoundValue(getDoubleValue(collectedAmounts)),
+//						getRoundValue(getDoubleValue(uncollectedAmounts)),getRoundValue(getDoubleValue(shortPaid)),getRoundValue(getDoubleValue(accepted)),getRoundValue(getDoubleValue(claimed)),getRoundValue(getDoubleValue(net)),status};
+//				model.addRow(input);
+//			}
+//			else{
+//				if(esic.get(i).getCode().equals(code)){// to operation when discover same code
+//					System.out.println("[NET : "+net+"]");
+				String[] input = {date,invoiceNo,quantity,getRoundValue(getDoubleValue(invoiceAmounts)),getRoundValue(getDoubleValue(collectedAmounts)),
+						getRoundValue(getDoubleValue(uncollectedAmounts)),getRoundValue(getDoubleValue(shortPaid)),getRoundValue(getDoubleValue(accepted)),getRoundValue(getDoubleValue(claimed)),getRoundValue(getDoubleValue(net)),status};
+					model.addRow(input);
+//				}
+//			}
 			tq+=Integer.parseInt(quantity);
 			ta+=getDoubleValue(invoiceAmounts);
 			tc+=getDoubleValue(collectedAmounts);
@@ -251,7 +255,11 @@ public class EachScacInvoiceCollection extends JFrame implements ActionListener{
 		if(str==null){
 			str="0.0";
 		}
-		d = Double.parseDouble(str);
+		else{
+			d = Double.parseDouble(str);
+			String result = new DecimalFormat("###0.00").format(d);
+			d = Double.parseDouble(result);
+		}
 		return d;
 	}
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////	
@@ -273,9 +281,9 @@ public class EachScacInvoiceCollection extends JFrame implements ActionListener{
 		String end = endPeriod.getText();
 		String type = typeCombo.getSelectedItem().toString();
 		String inOut = inoutCombo.getSelectedItem().toString();
-		esic.clear();
-		esic = dao.getEachScacInvoiceCollection(scac, inOut, code, begin, end);
-		tableLayout(js,esic);
+		list.clear();
+		list = dao.getEachScacInvoiceCollection(scac, inOut, code, begin, end);
+		tableLayout(js,list);
 		validate();
 	}
 	

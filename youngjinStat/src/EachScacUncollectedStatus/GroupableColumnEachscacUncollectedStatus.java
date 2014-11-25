@@ -13,7 +13,7 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
 
 import mainpages.EachScacUncollectedBeans;
-import mainpages.EachScacUncollectedStatus;
+import mainpages.UncollectedPeriodStatusForAllScacByEachScacInvoice;
 import TableOption.GroupableTableColumnModel;
 import TableOption.GroupableTableHeader;
 

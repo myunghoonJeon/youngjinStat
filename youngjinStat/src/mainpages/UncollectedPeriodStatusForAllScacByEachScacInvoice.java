@@ -29,7 +29,7 @@ import javax.swing.table.TableRowSorter;
 
 import EachScacUncollectedStatus.GroupableColumnEachscacUncollectedStatus;
 
-public class EachScacUncollectedStatus extends JFrame implements ActionListener {
+public class UncollectedPeriodStatusForAllScacByEachScacInvoice extends JFrame implements ActionListener {
 	GroupableColumnEachscacUncollectedStatus geus;
 	CL_DAO_DB_Mysql dao = new CL_DAO_DB_Mysql();
 	////////////////////////////////////////////////////////////////
@@ -80,7 +80,7 @@ public class EachScacUncollectedStatus extends JFrame implements ActionListener 
 	JPanel p45Total = new JPanel();
 	JPanel ptotal=new JPanel();
 	JPanel information = new JPanel();
-		JLabel informationLabel = new JLabel("EACH SCAC TOTAL UNCOLLECTION STATUS (invoice base) 　　　　cut off date : ");
+		JLabel informationLabel = new JLabel("UNCOLLECTED PERIOD STATUS FOR ALL SCAC & BY EACH SCAC  (INVOICE BASE)　　cut off date : ");
 		JLabel cutOffDate = new JLabel("");
 	JPanel mainCenter = new JPanel();
 	JPanel north = new JPanel();
@@ -118,8 +118,8 @@ public class EachScacUncollectedStatus extends JFrame implements ActionListener 
 	double gtCl=0.0;
 	double gtNu=0.0;
 //////////////////////////////////////////////////////////////	
-	public EachScacUncollectedStatus(){
-		super("scac uncollected status(invoice base)");
+	public UncollectedPeriodStatusForAllScacByEachScacInvoice(){
+		super("uncollected period status for all scac & by each scac (invoice base)");
 		super.setVisible(true);
 		super.setResizable(false);
 		super.setSize(superWide,superHeight);
@@ -192,7 +192,6 @@ public class EachScacUncollectedStatus extends JFrame implements ActionListener 
 				northUp.add(searchBtn);
 				northUp.add(printBtn);
 				printBtn.setPreferredSize(new Dimension(90,30));
-		
 				searchBtn.setPreferredSize(new Dimension(90,30));
 			north.add("South",northDown);
 				northDown.setLayout(new FlowLayout(FlowLayout.LEFT));
@@ -569,11 +568,7 @@ public class EachScacUncollectedStatus extends JFrame implements ActionListener 
 			else if(inoutCombo.getSelectedItem().equals("OUT")){
 				informationLabel.setText("EACH SCAC OUTBOUND UNCOLLECTION STATUS (invoice base) 　　　　cut off date : ");
 			}
-			
-			else if(e.getSource() == printBtn){
-				PrintSolution ps = new PrintSolution();
-				ps.print(this);
-			}
+
 			else{
 				informationLabel.setText("EACH SCAC TOTAL UNCOLLECTION STATUS (invoice base) 　　　　cut off date : ");
 			}
@@ -581,7 +576,11 @@ public class EachScacUncollectedStatus extends JFrame implements ActionListener 
 			getResult();
 			validate();
 		}//if
-		
+		else if(e.getSource() == printBtn){
+			System.out.println("print CLICK");
+			PrintSolution ps = new PrintSolution();
+			ps.print(this);
+		}
 	}//method
 	
 	public void setTableColumnSize(JTable table,int colNum, int size){

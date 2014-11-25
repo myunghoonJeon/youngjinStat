@@ -35,9 +35,15 @@ public class SharedMethod {
 	//*************************************************************************//
 	public String getRoundValue(String str,int flag){
 		String result ="";
+		int i;
 		if(str!=null){
 			if(flag==1){//int 
-				int i = Integer.parseInt(str);
+				if(str.equals("")||str==null){
+					i=0;
+				}
+				else{
+					i = Integer.parseInt(str);
+				}
 				result = new DecimalFormat("#,##0").format(i);
 			}
 			else if(flag==2) {

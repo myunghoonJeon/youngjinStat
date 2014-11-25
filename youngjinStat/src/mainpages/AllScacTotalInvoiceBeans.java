@@ -109,7 +109,6 @@ public class AllScacTotalInvoiceBeans {
 			}
 			temp = Double.parseDouble(s[row][i])+d[i];
 			s[row][i] = df.format(temp)+"";
-			
 		}
 	}
 	

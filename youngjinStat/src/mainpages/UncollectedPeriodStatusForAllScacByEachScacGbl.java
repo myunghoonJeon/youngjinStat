@@ -30,7 +30,7 @@ import javax.swing.table.TableRowSorter;
 import AllScacTotalInvoiceCollectionStatusGBL.AllScacTotalInvoiceCollectionStatusGblBeans;
 import EachScacUncollectedStatus.GroupableColumnEachscacUncollectedStatus;
 
-public class EachScacUncollectedStatusGbl extends JFrame implements ActionListener{
+public class UncollectedPeriodStatusForAllScacByEachScacGbl extends JFrame implements ActionListener{
 
 	GroupableColumnEachscacUncollectedStatus geus;
 	CL_DAO_DB_Mysql dao = new CL_DAO_DB_Mysql();
@@ -82,7 +82,7 @@ public class EachScacUncollectedStatusGbl extends JFrame implements ActionListen
 	JPanel p45Total = new JPanel();
 	JPanel ptotal=new JPanel();
 	JPanel information = new JPanel();
-		JLabel informationLabel = new JLabel("EACH SCAC TOTAL UNCOLLECTION STATUS (GBL base) 　　　　cut off date : ");
+		JLabel informationLabel = new JLabel("UNCOLLECTED PERIOD STATUS FOR ALL SCAC & BY EACH SCAC  (GBL BASE)　　cut off date2 : ");
 		JLabel cutOffDate = new JLabel("");
 	JPanel mainCenter = new JPanel();
 	JPanel north = new JPanel();
@@ -119,8 +119,8 @@ public class EachScacUncollectedStatusGbl extends JFrame implements ActionListen
 	double gtCl=0.0;
 	double gtNu=0.0;
 //////////////////////////////////////////////////////////////	
-	public EachScacUncollectedStatusGbl(){
-		super("scac uncollected status(GBL base)");
+	public UncollectedPeriodStatusForAllScacByEachScacGbl(){
+		super("uncollected period status for all scac & by each scac (GBL base)");
 		super.setVisible(true);
 		super.setResizable(false);
 		super.setSize(superWide,superHeight);
@@ -373,6 +373,7 @@ public class EachScacUncollectedStatusGbl extends JFrame implements ActionListen
 //			claimed = esic.get(i).getClaimedAmounts();
 //			net = (getDoubleValue(invoiceAmounts)-getDoubleValue(collectedAmounts)-getDoubleValue(accepted))+"";
 //			quantity = esic.get(i).getGblQuantity()+"";
+			if(dateDiff!=null){
     	   int diff = Integer.parseInt(dateDiff);
     	   if(criteria.equals("15")){
     		   if(diff<=15){
@@ -419,7 +420,7 @@ public class EachScacUncollectedStatusGbl extends JFrame implements ActionListen
     			   		   calcTotal(amount,collectionAmount,unCollected,shortPaid,accepted,claimed,net);
     		   }
     	   }
-    	   
+		}
        }
 		if(criteria.equals("total")){
 				System.out.println("[[[[ CRITERIA  : "+criteria+" DETECTED ]]]]]");
@@ -470,7 +471,7 @@ public class EachScacUncollectedStatusGbl extends JFrame implements ActionListen
 	   }
 	   public double getDoubleValue(String str){
 			double d=0.0;
-			System.out.println("GETDOUBLEVALUE : "+str);
+//			System.out.println("GETDOUBLEVALUE : "+str);
 			if(str==null || str.equals("")){
 				d=0.0;
 			}

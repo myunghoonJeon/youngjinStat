@@ -30,11 +30,11 @@ import javax.swing.table.TableRowSorter;
 
 import WorkVolumeStat1.MultipleRowHeaderExample;
 
-public class InvoiceCollectionFiltering extends JFrame implements ActionListener{
+public class InvoiceCollectionStatusGeneral extends JFrame implements ActionListener{
 
 	// //////////////////////////////////////////////////////////////
-	int superWide = 970;
-	int superHeight = 650;
+	int superWide = 1200;
+	int superHeight = 700;
 
 	// //////////////////////////////////////////////////////////////
 	CL_DAO_DB_Mysql dao = new CL_DAO_DB_Mysql();
@@ -49,7 +49,6 @@ public class InvoiceCollectionFiltering extends JFrame implements ActionListener
 	JButton printBtn = new JButton("PRINT");
 	JTextField startPeriod = new JTextField("", 8);
 	JTextField endPeriod = new JTextField("", 8);
-
 	JPanel center;
 	// //////////////////////////////////////////////////////////////
 	JPanel mainCenter = new JPanel();
@@ -59,11 +58,11 @@ public class InvoiceCollectionFiltering extends JFrame implements ActionListener
 	JPanel bigCenter = new JPanel();
 	JPanel bcn = new JPanel();
 	
-	JLabel informationLabel = new JLabel("[ INVOICE & COLLECTION FILTERING ]                     cut offdate : ");
+	JLabel informationLabel = new JLabel("[ INVOICE & COLLECTION STATUS (GENERAL) ]                    cut offdate : ");
 	JLabel cutoffLabel = new JLabel();
 	// //////////////////////////////////////////////////////////////
-	public InvoiceCollectionFiltering() {
-		super("invoice & collection filtering ");
+	public InvoiceCollectionStatusGeneral() {
+		super("invoice & collection status (general) ");
 		super.setVisible(true);
 		super.setResizable(false);
 		super.setSize(superWide, superHeight);
@@ -138,7 +137,9 @@ public class InvoiceCollectionFiltering extends JFrame implements ActionListener
 		northUp.add(new JLabel("~"));
 		northUp.add(endPeriod);
 		northUp.add(searchBtn);
+		northUp.add(printBtn);
 		searchBtn.setPreferredSize(new Dimension(90, 30));
+		printBtn.setPreferredSize(new Dimension(90, 30));
 		mainCenter.add("Center", bigCenter);
 		bigCenter.setLayout(new BorderLayout());
 		bigCenter.add("North", bcn);

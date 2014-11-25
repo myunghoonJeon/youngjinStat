@@ -25,7 +25,7 @@ import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 
-import AllScacTotalInvoiceCollectionStatusGBL.AllScacTotalInvoiceCollectionStatusGbl;
+import AllScacTotalInvoiceCollectionStatusGBL.TotalInvoiceCollectionStatusForAllScacByEachScac;
 
 public class MainViewer extends JFrame implements ActionListener,Printable{
 	/*************************[ PRINT LEVEL ]*****************************/
@@ -62,21 +62,21 @@ public class MainViewer extends JFrame implements ActionListener,Printable{
 	private JPanel level1P;
 	
 	/*************************[ LEVEL 2 ]*****************************/
-	private JButton workVolumeFilteringBtn = new JButton("[WORK VOLUME FILTERING]");
-	private JButton workVolumestat1Btn = new JButton("[WORK VOLUME STAT1]");
-	private JButton workvolumeStat2Btn = new JButton("[WORK VOLUME STAT2]");
+	private JButton workVolumeFilteringBtn = new JButton("[WORK VOLUME STATUS]");
+	private JButton workVolumestat1Btn = new JButton("[BRANCH WORK STATUS(WEIGHT/DENSITY)]");
+	private JButton workvolumeStat2Btn = new JButton("[SCAC WORK STATUS (WEIGHT/DENSITY)]");
 	private JPanel level2P;
 	
 	/*************************[ LEVEL 3 ]*****************************/
 	private JPanel level3P;
-	private JButton invoiceCollectionFilteringBtn = new JButton("[INVOICE & COLLECTION FILTERING]");
-	private JButton invoiceCollectionStatBtn = new JButton("[INVOICE & COLLECTION STAT]");
-	private JButton allScacTotalInvoiceCollectionStatusBtn = new JButton("[ALL SCAC TOTAL INVOICE & COLLECTIOIN STATUS]");
-	private JButton eachScacInvoiceCollectionStatusBtn = new JButton("[EACH SCAC INVOICE & COLLECTION STATUS] (INVOICE BASE)");
-	private JButton eachScacUncollectedStatusBtn = new JButton("[ SCAC UNCOLLECTED STATUS (INVOICE BASE) ]");
-	private JButton allScacTotalInvoiceCollectionStatusGblBtn =  new JButton("[ ALL SCAC INVOICE& COLLECTION STATUS (GBL BASE) ]");
-	private JButton eachScacUncollectedStatusGblBtn = new JButton("[ SCAC UNCOLLECTED STATUS (GBL BASE) ]");
-	private JButton eachScacAcceptedAmountStatusGblBtn = new JButton("[ EACH SCAC ACCEPTED AMOUNT STATUS (GBL BASE) ]");
+	private JButton invoiceCollectionStatusBtn = new JButton("[INVOICE & COLLECTION STATUS (GENERAL)]");
+//	private JButton invoiceCollectionStatBtn = new JButton("[INVOICE & COLLECTION STAT]");
+	private JButton totalInvoiceCollectionStatusForAllScacOnlyBtn = new JButton("[TOTAL INVOICE & COLLECTION STATUS FOR ALL SCAC ONLY ]");
+	private JButton InvoiceCollectionStatusByEachScacOnlyBtn = new JButton("[INVOICE & COLLECTION STATUS BY EACH SCAC ONLY (INVOICE BASE) ]");
+	private JButton uncollectedPeriodStatusForAllScacByEachScacInvoiceBtn = new JButton("[ UNCOLLECTED PERIOD STATUS FOR ALL SCAC & BY EACH SCAC  (INVOICE BASE) ]");
+	private JButton totalInvoiceCollectionStatusForAllScacByEachScac =  new JButton("[ TOTAL (IN/OUT) INVOICE & COLLECTION STATUS FOR ALL SCAC & BY EACH SCAC (GBL BASE) ]");
+	private JButton uncollectedPeriodStatusForAllScacByEachScacGbl = new JButton("[ UNCOLLECTED PERIOD STATUS FOR ALL SCAC & BY EACH SCAC  (GBL BASE) ]");
+	private JButton acceptedAmountsStatusForAllScacByEachScacGblBtn = new JButton("[ ACCEPTED AMOUNTS STATUS FOR ALL SCAC & BY EACH SCAC  (GBL BASE)  ]");
 	private JButton adminBtn = new JButton("[ ADMIN PAGE ]");
 	/*************************[ INVENTORY INPUT ]*****************************/
 	private JPanel inventoryMainPanel;
@@ -314,13 +314,13 @@ public class MainViewer extends JFrame implements ActionListener,Printable{
 		levelCenterPanel.setLayout(new GridLayout(9,0,10,10));
 		JLabel level1InformationLabel = new JLabel("[ SELECT MENU ]");
 		levelCenterPanel.add(level1InformationLabel);
-		levelCenterPanel.add(invoiceCollectionFilteringBtn);
-		levelCenterPanel.add(allScacTotalInvoiceCollectionStatusBtn);
-		levelCenterPanel.add(eachScacInvoiceCollectionStatusBtn);
-		levelCenterPanel.add(allScacTotalInvoiceCollectionStatusGblBtn);
-		levelCenterPanel.add(eachScacUncollectedStatusBtn);
-		levelCenterPanel.add(eachScacUncollectedStatusGblBtn);		
-		levelCenterPanel.add(eachScacAcceptedAmountStatusGblBtn);
+		levelCenterPanel.add(invoiceCollectionStatusBtn);
+		levelCenterPanel.add(totalInvoiceCollectionStatusForAllScacOnlyBtn);
+		levelCenterPanel.add(totalInvoiceCollectionStatusForAllScacByEachScac);
+		levelCenterPanel.add(InvoiceCollectionStatusByEachScacOnlyBtn);
+		levelCenterPanel.add(uncollectedPeriodStatusForAllScacByEachScacInvoiceBtn);
+		levelCenterPanel.add(uncollectedPeriodStatusForAllScacByEachScacGbl);		
+		levelCenterPanel.add(acceptedAmountsStatusForAllScacByEachScacGblBtn);
 		levelCenterPanel.add(adminBtn);
 		validate();
 	}
@@ -507,14 +507,14 @@ public class MainViewer extends JFrame implements ActionListener,Printable{
 		workVolumeFilteringBtn.addActionListener(this);
 		workvolumeStat2Btn.addActionListener(this);
 		workVolumestat1Btn.addActionListener(this);
-		invoiceCollectionFilteringBtn.addActionListener(this);
-		invoiceCollectionStatBtn.addActionListener(this);
-		eachScacInvoiceCollectionStatusBtn.addActionListener(this);
-		allScacTotalInvoiceCollectionStatusBtn.addActionListener(this);
-		eachScacUncollectedStatusBtn.addActionListener(this);
-		allScacTotalInvoiceCollectionStatusGblBtn.addActionListener(this);
-		eachScacUncollectedStatusGblBtn.addActionListener(this);
-		eachScacAcceptedAmountStatusGblBtn.addActionListener(this);
+		invoiceCollectionStatusBtn.addActionListener(this);
+//		invoiceCollectionStatBtn.addActionListener(this);
+		InvoiceCollectionStatusByEachScacOnlyBtn.addActionListener(this);
+		totalInvoiceCollectionStatusForAllScacOnlyBtn.addActionListener(this);
+		uncollectedPeriodStatusForAllScacByEachScacInvoiceBtn.addActionListener(this);
+		totalInvoiceCollectionStatusForAllScacByEachScac.addActionListener(this);
+		uncollectedPeriodStatusForAllScacByEachScacGbl.addActionListener(this);
+		acceptedAmountsStatusForAllScacByEachScacGblBtn.addActionListener(this);
 		adminBtn.addActionListener(this);
 		printBtn.addActionListener(this);
 	}
@@ -532,38 +532,38 @@ public class MainViewer extends JFrame implements ActionListener,Printable{
 	}
 	
 	public void workVolumeFilteringPage(){
-		WorkVolumeFilteringPage wvf = new WorkVolumeFilteringPage();
+		WorkVolumeStatus wvf = new WorkVolumeStatus();
 	}
 	
 	public void workVolumeStat1(){
-		WorkVolumeStat1 ws1 = new WorkVolumeStat1();
+		BranchWorkStatus ws1 = new BranchWorkStatus();
 	}
 	public void workVolumeStat2(){
-		WorkVolumeStat2 ws2 = new WorkVolumeStat2();
+		ScacWorkStatus ws2 = new ScacWorkStatus();
 	}
 	public void invoiceCollectionFiltering(){
-		InvoiceCollectionFiltering icf = new InvoiceCollectionFiltering();
+		InvoiceCollectionStatusGeneral icf = new InvoiceCollectionStatusGeneral();
 	}
 	public void invoiceCollectionStat(){
 		InvoiceCollectionStat ics = new InvoiceCollectionStat();
 	}
 	public void allScacTotalInvoiceCollection(){
-		AllScacTotalInvoiceCollection atic = new AllScacTotalInvoiceCollection();
+		TotalInvoiceCollectionStatusForAllScacOnly atic = new TotalInvoiceCollectionStatusForAllScacOnly();
 	}
 	public void eachScacInvoiceCollection(){
-		EachScacInvoiceCollection eic = new EachScacInvoiceCollection();
+		InvoiceCollectionStatusByEachScacOnly eic = new InvoiceCollectionStatusByEachScacOnly();
 	}
 	public void eachScacUncollectedStatus(){
-		EachScacUncollectedStatus esu = new EachScacUncollectedStatus();
+		UncollectedPeriodStatusForAllScacByEachScacInvoice esu = new UncollectedPeriodStatusForAllScacByEachScacInvoice();
 	}
 	public void eachScacUncollectedGblStatus(){
-		EachScacUncollectedStatusGbl esu = new EachScacUncollectedStatusGbl();
+		UncollectedPeriodStatusForAllScacByEachScacGbl esu = new UncollectedPeriodStatusForAllScacByEachScacGbl();
 	}
 	public void allScacTotalInvoiceCollectionStatusGblB(){
-		AllScacTotalInvoiceCollectionStatusGbl atics = new AllScacTotalInvoiceCollectionStatusGbl();
+		TotalInvoiceCollectionStatusForAllScacByEachScac atics = new TotalInvoiceCollectionStatusForAllScacByEachScac();
 	}
 	public void eachScacAcceptedAmountStatusGblBtn(){
-		EachScacAcceptedAmountStatusGbl ee = new EachScacAcceptedAmountStatusGbl();
+		AcceptedAmountsStatusForAllScacByEachScacGbl ee = new AcceptedAmountsStatusForAllScacByEachScacGbl();
 	}
 	public void adminPage(){
 		AdminPage ap = new AdminPage();
@@ -706,28 +706,28 @@ public class MainViewer extends JFrame implements ActionListener,Printable{
 		else if(e.getSource() == workvolumeStat2Btn){
 			workVolumeStat2();
 		}
-		else if(e.getSource() == invoiceCollectionFilteringBtn){
+		else if(e.getSource() == invoiceCollectionStatusBtn){
 			invoiceCollectionFiltering();
 		}
-		else if(e.getSource() == invoiceCollectionStatBtn){
-			invoiceCollectionStat();
-		}
-		else if(e.getSource() == allScacTotalInvoiceCollectionStatusBtn){
+//		else if(e.getSource() == invoiceCollectionStatBtn){
+//			invoiceCollectionStat();
+//		}
+		else if(e.getSource() == totalInvoiceCollectionStatusForAllScacOnlyBtn){
 			allScacTotalInvoiceCollection();
 		}
-		else if(e.getSource() == eachScacInvoiceCollectionStatusBtn){
+		else if(e.getSource() == InvoiceCollectionStatusByEachScacOnlyBtn){
 			eachScacInvoiceCollection();
 		}
-		else if(e.getSource() == eachScacUncollectedStatusBtn){
+		else if(e.getSource() == uncollectedPeriodStatusForAllScacByEachScacInvoiceBtn){
 			eachScacUncollectedStatus();
 		}
-		else if(e.getSource() == allScacTotalInvoiceCollectionStatusGblBtn){
+		else if(e.getSource() == totalInvoiceCollectionStatusForAllScacByEachScac){
 			allScacTotalInvoiceCollectionStatusGblB();
 		}
-		else if(e.getSource() == eachScacUncollectedStatusGblBtn){
+		else if(e.getSource() == uncollectedPeriodStatusForAllScacByEachScacGbl){
 			eachScacUncollectedGblStatus();
 		}
-		else if(e.getSource() == eachScacAcceptedAmountStatusGblBtn){
+		else if(e.getSource() == acceptedAmountsStatusForAllScacByEachScacGblBtn){
 			eachScacAcceptedAmountStatusGblBtn();
 		}
 		else if(e.getSource() == adminBtn){

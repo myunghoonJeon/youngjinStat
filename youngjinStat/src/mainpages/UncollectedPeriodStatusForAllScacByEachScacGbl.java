@@ -378,7 +378,7 @@ public class UncollectedPeriodStatusForAllScacByEachScacGbl extends JFrame imple
     	   if(criteria.equals("15")){
     		   if(diff<=15){
     			   flag ++;
-    			   System.out.println("[[[[ CRITERIA  : "+criteria+" DETECTED -- GBL NO : : "+gblNo+" ]]]]]");
+//    			   System.out.println("[[[[ CRITERIA  : "+criteria+" DETECTED -- GBL NO : : "+gblNo+" ]]]]]");
     			   		   model.addRow(new String[]{invoiceDate,gblNo,getRoundValue(getDoubleValue(amount)),
     					   getRoundValue(getDoubleValue(collectionAmount)),getRoundValue(getDoubleValue(unCollected)),
     					   getRoundValue(getDoubleValue(shortPaid)),getRoundValue(getDoubleValue(accepted)),
@@ -389,7 +389,7 @@ public class UncollectedPeriodStatusForAllScacByEachScacGbl extends JFrame imple
     	   else if(criteria.equals("1530")){
     		   if(diff>15 && diff <= 30){
     			   flag ++;
-    			   System.out.println("[[[[ CRITERIA  : "+criteria+" DETECTED -- GBL NO : : "+gblNo+" ]]]]]");
+//    			   System.out.println("[[[[ CRITERIA  : "+criteria+" DETECTED -- GBL NO : : "+gblNo+" ]]]]]");
     			   		   model.addRow(new String[]{invoiceDate,gblNo,getRoundValue(getDoubleValue(amount)),
     					   getRoundValue(getDoubleValue(collectionAmount)),getRoundValue(getDoubleValue(unCollected)),
     					   getRoundValue(getDoubleValue(shortPaid)),getRoundValue(getDoubleValue(accepted)),
@@ -401,7 +401,7 @@ public class UncollectedPeriodStatusForAllScacByEachScacGbl extends JFrame imple
     		   
     		   if(diff>30 && diff<=45){
     			   flag ++;
-    			   System.out.println("[[[[ CRITERIA  : "+criteria+" DETECTED -- GBL NO : : "+gblNo+" ]]]]]");
+//    			   System.out.println("[[[[ CRITERIA  : "+criteria+" DETECTED -- GBL NO : : "+gblNo+" ]]]]]");
     			   		   model.addRow(new String[]{invoiceDate,gblNo,getRoundValue(getDoubleValue(amount)),
     					   getRoundValue(getDoubleValue(collectionAmount)),getRoundValue(getDoubleValue(unCollected)),
     					   getRoundValue(getDoubleValue(shortPaid)),getRoundValue(getDoubleValue(accepted)),
@@ -412,7 +412,7 @@ public class UncollectedPeriodStatusForAllScacByEachScacGbl extends JFrame imple
     	   else if(criteria.equals("45")){
     		   if(diff>45){
     			   flag ++;
-    			   System.out.println("[[[[ CRITERIA  : "+criteria+" DETECTED -- GBL NO : : "+gblNo+" ]]]]]");
+//    			   System.out.println("[[[[ CRITERIA  : "+criteria+" DETECTED -- GBL NO : : "+gblNo+" ]]]]]");
     			   		   model.addRow(new String[]{invoiceDate,gblNo,getRoundValue(getDoubleValue(amount)),
     					   getRoundValue(getDoubleValue(collectionAmount)),getRoundValue(getDoubleValue(unCollected)),
     					   getRoundValue(getDoubleValue(shortPaid)),getRoundValue(getDoubleValue(accepted)),
@@ -423,7 +423,7 @@ public class UncollectedPeriodStatusForAllScacByEachScacGbl extends JFrame imple
 		}
        }
 		if(criteria.equals("total")){
-				System.out.println("[[[[ CRITERIA  : "+criteria+" DETECTED ]]]]]");
+//				System.out.println("[[[[ CRITERIA  : "+criteria+" DETECTED ]]]]]");
 				System.out.println("total Click");
 				System.out.println(gtQ+" "+gtIa);
 				model.addRow(new String[]{"","",getRoundValue(gtIa),
@@ -511,7 +511,7 @@ public class UncollectedPeriodStatusForAllScacByEachScacGbl extends JFrame imple
 		p3045Table.removeAll();
 		p45Table.removeAll();
 //		JScrollPane table1515 = tableLayout(esubOut, "15table", "15");
-		System.out.println("DETECTED SIZE : "+esubOut.size());
+//		System.out.println("DETECTED SIZE : "+esubOut.size());
 //		GroupableColumnEachscacUncollectedStatus ge = new GroupableColumnEachscacUncollectedStatus(esubOut, "15");
 //		table1515.setPreferredSize(new Dimension(800,100));
 //		System.out.println("table15 reset");
@@ -536,13 +536,13 @@ public class UncollectedPeriodStatusForAllScacByEachScacGbl extends JFrame imple
 			String temp="";
 			String result="";
 			if(idList.contains(gblNo)){
-				System.out.println("== CONTAINS GBL : "+gblNo+" ==");
+//				System.out.println("== CONTAINS GBL : "+gblNo+" ==");
 				int index = idList.indexOf(gblNo);
 				origin=tempBeans.get(index).getCollectionAmount();
 				temp=beans.get(i).getCollectionAmount();
 //				result = (getDoubleValue(origin)+getDoubleValue(temp))+"";
 				result = getSumResult(origin, temp);
-				System.out.println("SET COLLECTED : "+result);
+//				System.out.println("SET COLLECTED : "+result);
 				tempBeans.get(index).setCollectionAmount(result);
 				////////////////////////////////////////////////////////////////////////// COLLECTED
 				origin=tempBeans.get(index).getAcceptAmount();
@@ -550,36 +550,36 @@ public class UncollectedPeriodStatusForAllScacByEachScacGbl extends JFrame imple
 //				result = (getDoubleValue(origin)+getDoubleValue(temp))+"";
 				result = getSumResult(origin, temp);
 				tempBeans.get(index).setAcceptAmount(result);
-				System.out.println("SET ACCEPT : "+result);
+//				System.out.println("SET ACCEPT : "+result);
 				////////////////////////////////////////////////////////////////////////// ACCEPT
 				origin=tempBeans.get(index).getUncollectedAmount();
 				temp=beans.get(i).getUncollectedAmount();
 //				result = (getDoubleValue(origin)+getDoubleValue(temp))+"";
 				result = getSumResult(origin, temp);
 				tempBeans.get(index).setUncollectedAmount(result);
-				System.out.println("SET UNCOLLECTED : "+result);
+//				System.out.println("SET UNCOLLECTED : "+result);
 				////////////////////////////////////////////////////////////////////////// UNCOLLECTED
 				origin=tempBeans.get(index).getClaimeAmount();
 				temp=beans.get(i).getClaimeAmount();
 //				result = (getDoubleValue(origin)+getDoubleValue(temp))+"";
 				result = getSumResult(origin, temp);
 				tempBeans.get(index).setClaimeAmount(result);
-				System.out.println("SET CLAIMED : "+result);
+//				System.out.println("SET CLAIMED : "+result);
 				/////////////////////////////////////////////////////////////////////////// CLAIMED
 			}
 			else{
-				System.out.println("== NOT CONTAINS GBL : "+gblNo+" [[ADD BEANS INDEX : "+i+"]]");
+//				System.out.println("== NOT CONTAINS GBL : "+gblNo+" [[ADD BEANS INDEX : "+i+"]]");
 				idList.add(gblNo);
 				tempBeans.add(beans.get(i));
 			}
 		}
-		System.out.println("============== BEFORE ==============");
+//		System.out.println("============== BEFORE ==============");
 		for(int i=0;i<beans.size();i++){
-			System.out.println("GBLNO : "+beans.get(i).getGblNo()+" DATE DIFF : "+beans.get(i).getDateDiff());
+//			System.out.println("GBLNO : "+beans.get(i).getGblNo()+" DATE DIFF : "+beans.get(i).getDateDiff());
 		}
-		System.out.println("============== AFTER ==============");
+//		System.out.println("============== AFTER ==============");
 		for(int i=0;i<tempBeans.size();i++){
-			System.out.println("GBLNO : "+tempBeans.get(i).getGblNo()+" DATE DIFF : "+beans.get(i).getDateDiff());
+//			System.out.println("GBLNO : "+tempBeans.get(i).getGblNo()+" DATE DIFF : "+beans.get(i).getDateDiff());
 		}
 		return tempBeans;
 	}
@@ -600,28 +600,28 @@ public class UncollectedPeriodStatusForAllScacByEachScacGbl extends JFrame imple
 		String inOut = inoutCombo.getSelectedItem().toString();
 //		clearEsub();
 		if(inOut.equals("ALL")){
-			System.out.println("[[ ALL CASE ]]");
+//				System.out.println("[[ ALL CASE ]]");
 			tempEsub = dao.getOutboundEachScacUncollectedGbl(scac, code, begin, end);
-				System.out.println("[[GET OUTBOUND DATE]]");
+//				System.out.println("[[GET OUTBOUND DATE]]");
 			esubOut = detectedMultiGbl(tempEsub);
-				System.out.println("--DETECTED MULTI GBL--");
+//				System.out.println("--DETECTED MULTI GBL--");
 			tempEsub = new ArrayList<>();
 			tempEsub = dao.getInboundEachScacUncollectedGbl(scac, code, begin, end);
-				System.out.println("[[GET INBOUND DATE]]");
+//				System.out.println("[[GET INBOUND DATE]]");
 			esubIn = detectedMultiGbl(tempEsub);
-				System.out.println("--DETECTED MULTI GBL--");
+//				System.out.println("--DETECTED MULTI GBL--");
 			esubOut.addAll(esubIn);//combine list
 		}
 		else if(inOut.equals("IN")){
-			System.out.println("[[ IN CASE ]]");
+//			System.out.println("[[ IN CASE ]]");
 			tempEsub = dao.getInboundEachScacUncollectedGbl(scac, code, begin, end);
-			System.out.println("[[GET ONLY INBOUND DATE]]");
+//			System.out.println("[[GET ONLY INBOUND DATE]]");
 			esubOut = detectedMultiGbl(tempEsub);
 		}
 		else if(inOut.equals("OUT")){
-			System.out.println("[[ OUT CASE ]]");
+//			System.out.println("[[ OUT CASE ]]");
 			tempEsub = dao.getOutboundEachScacUncollectedGbl(scac, code, begin, end);
-			System.out.println("[[GET ONLY OUTBOUND DATE]]");
+//			System.out.println("[[GET ONLY OUTBOUND DATE]]");
 			esubOut = detectedMultiGbl(tempEsub);
 		}
 		
@@ -636,6 +636,7 @@ public class UncollectedPeriodStatusForAllScacByEachScacGbl extends JFrame imple
 		p3045Table.add(getJscrollPane(esubOut,"3045"));
 		p45Table.add(getJscrollPane(esubOut,"45"));
 		totalPanelc.add(getJscrollPane(esubOut,"total"));
+		
 //		p15Table.add(table1515);
 //		tableLayout(js,esub);
 		

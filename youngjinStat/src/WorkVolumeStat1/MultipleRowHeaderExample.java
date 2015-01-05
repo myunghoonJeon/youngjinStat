@@ -49,12 +49,13 @@ public class MultipleRowHeaderExample extends JFrame {
   JPanel test = new JPanel();
   JPanel north = new JPanel();
   JScrollPane scroll = null;
-  String[][] val = new String[23][8];
+  String[][] val = new String[25][8];
   public MultipleRowHeaderExample(String[][] resultStr) {
     val = resultStr;
     data =  new Object[][]{
         {"IN","HHG","3,4"},
         {""  ,"","5"},
+        {""  ,"","6"},
         {""  ,"","T"},
         {""  ,"","other"},
         {""  ,"total","(HHG)"},
@@ -67,6 +68,7 @@ public class MultipleRowHeaderExample extends JFrame {
         //////////////////////
         {"OUT","HHG","3,4"},
         {""   ,"","5"},
+        {""  ,"","6"},
         {""   ,"","T"},
         {""   ,"","other"},
         {""   ,"total","(HHG)"},
@@ -88,13 +90,13 @@ public class MultipleRowHeaderExample extends JFrame {
     
     CellSpan cellAtt =(CellSpan)fixedModel.getCellAttribute();
     
-    cellAtt.combine(new int[] {0,1,2,3,4,5,6,7,8,9,10}    ,new int[] {0});
-    cellAtt.combine(new int[] {0,1,2,3 }, new int[]{1});
-    cellAtt.combine(new int[] {5,6,7,8 }, new int[]{1});
-    cellAtt.combine(new int[] {11,12,13,14,15,16,17,18,19,20,21}    ,new int[] {0});
-    cellAtt.combine(new int[] {11,12,13,14 }, new int[]{1});
-    cellAtt.combine(new int[] {16,17,18,19 }, new int[]{1});
-    cellAtt.combine(new int[] {22 }, new int[]{0,1,2});
+    cellAtt.combine(new int[] {0,1,2,3,4,5,6,7,8,9,10,11}    ,new int[] {0});
+    cellAtt.combine(new int[] {0,1,2,3,4 }, new int[]{1});
+    cellAtt.combine(new int[] {6,7,8,9 }, new int[]{1});
+    cellAtt.combine(new int[] {12,13,14,15,16,17,18,19,20,21,22,23}    ,new int[] {0});
+    cellAtt.combine(new int[] {12,13,14,15,16 }, new int[]{1});
+    cellAtt.combine(new int[] {18,19,20,21 }, new int[]{1});
+    cellAtt.combine(new int[] {24 }, new int[]{0,1,2});
     fixedTable = new MultiSpanCellTable( fixedModel );
 //    fixedTable.setBorder(BorderFactory.createLineBorder(Color.darkGray));2	2	
     WorkStat1GroupableColumnExample ge = new WorkStat1GroupableColumnExample(val);

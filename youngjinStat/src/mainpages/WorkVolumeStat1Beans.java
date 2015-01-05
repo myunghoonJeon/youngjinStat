@@ -4,8 +4,8 @@ import java.util.HashMap;
 
 public class WorkVolumeStat1Beans {
 	/******************[define parameter]************************/
-	String[][] input = new String[23][20];
-	String[][] cuftArr = new String[23][20];
+	String[][] input = new String[25][20];
+	String[][] cuftArr = new String[25][20];
 	HashMap<String,String> hashMapColumn = new HashMap<String,String>();
 	HashMap<String,String> hashMapRow = new HashMap<String,String>();
 	String type="";
@@ -163,35 +163,37 @@ public class WorkVolumeStat1Beans {
 			hsm.put("in_3", "0");
 			hsm.put("in_4", "0");
 			hsm.put("in_5", "1");
-			hsm.put("in_T", "2");
-			hsm.put("in_others", "3");
-			hsm.put("in_totalHHG", "4");
-			hsm.put("in_7", "5");
-			hsm.put("in_8", "6");
-			hsm.put("in_J", "7");
-			hsm.put("in_others", "8");
-			hsm.put("in_totalUB", "9");
-			hsm.put("in_totalIN", "10");
+			hsm.put("in_6", "2");
+			hsm.put("in_T", "3");
+			hsm.put("in_others", "4");
+			hsm.put("in_totalHHG", "5");
+			hsm.put("in_7", "6");
+			hsm.put("in_8", "7");
+			hsm.put("in_J", "8");
+			hsm.put("in_others", "9");
+			hsm.put("in_totalUB", "10");
+			hsm.put("in_totalIN", "11");
 			/////////////////////////////////out_
-			hsm.put("out_3", "11");
-			hsm.put("out_4", "11");
-			hsm.put("out_5", "12");
-			hsm.put("out_T", "13");
-			hsm.put("out_others", "14");
-			hsm.put("out_totalHHG", "15");
-			hsm.put("out_7", "16");
-			hsm.put("out_8", "17");
-			hsm.put("out_J", "18");
-			hsm.put("out_others", "19");
-			hsm.put("out_totalUB", "20");
-			hsm.put("out_totalout", "21");
-			hsm.put("total", "22");
+			hsm.put("out_3", "12");
+			hsm.put("out_4", "12");
+			hsm.put("out_5", "13");
+			hsm.put("out_6","14");
+			hsm.put("out_T", "15");
+			hsm.put("out_others", "16");
+			hsm.put("out_totalHHG", "17");
+			hsm.put("out_7", "18");
+			hsm.put("out_8", "19");
+			hsm.put("out_J", "20");
+			hsm.put("out_others", "21");
+			hsm.put("out_totalUB", "22");
+			hsm.put("out_totalout", "23");
+			hsm.put("total", "24");
 		}
 		
 	}
 	/***************************************************/
 	public void initArr(String[][] list){
-		for(int i=0;i<23;i++){
+		for(int i=0;i<25;i++){
 			for(int j=0;j<20;j++){
 				list[i][j] = new String();
 				list[i][j] = "-";

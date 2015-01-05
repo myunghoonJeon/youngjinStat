@@ -232,15 +232,15 @@ public class InvoiceCollectionStatusByEachScacOnly extends JFrame implements Act
 		dtcr.setHorizontalAlignment(SwingConstants.CENTER);
 		TableColumnModel tcm = table.getColumnModel();
 		table.setRowSorter(new TableRowSorter(model));
-		table.setFont(new Font( "" , Font.PLAIN, 10 ));
-        table.getTableHeader().setFont( new Font( "" , Font.PLAIN, 10));
+//		table.setFont(new Font( "" , Font.PLAIN, 10 ));
+//        table.getTableHeader().setFont( new Font( "" , Font.PLAIN, 10));
 		js = new JScrollPane(table);
 		js.setBorder(BorderFactory.createLineBorder(Color.DARK_GRAY));
 		for(int i=0;i<colName.length;i++){
 			tcm.getColumn(i).setCellRenderer(dtcr);
 		}
 		setTableColumnWidth(tcm);
-		js.setPreferredSize(new Dimension(1100,550));
+		js.setPreferredSize(new Dimension(1150,550));
 		center.add(js);
 		validate();
 		return js;

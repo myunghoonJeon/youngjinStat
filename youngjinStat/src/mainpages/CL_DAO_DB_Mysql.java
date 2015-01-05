@@ -888,9 +888,9 @@ public class CL_DAO_DB_Mysql implements IT_DAO{
 	public ArrayList<AllScacTotalInvoiceCollectionStatusGblBeans> getOutboundEachScacUncollectedGbl(String scac,String code,String begin,String end){
 		ArrayList<AllScacTotalInvoiceCollectionStatusGblBeans> list = new ArrayList<>();
 		AllScacTotalInvoiceCollectionStatusGblBeans bean = new AllScacTotalInvoiceCollectionStatusGblBeans();
-		String sql="select	invoice_gbl.gbl_no as gblNo, invoice_gbl.amount as amount, invoice_list.start_date as start, invoice_list.end_date as end,"+
-				   "invoice_gbl.name as name,gbl.code as code,gbl.scac as scac, invoice_gbl_collection.difference as difference,"+
-				   "invoice_gbl_collection.state as state, invoice_gbl_collection_flow.state as collectionState, invoice_gbl_collection_flow.amount collectionAmount,"+
+		String sql="select	invoice_gbl.gbl_no as gblNo, round(invoice_gbl.amount,2) as amount, invoice_list.start_date as start, invoice_list.end_date as end,"+
+				   "invoice_gbl.name as name,gbl.code as code,gbl.scac as scac, round(invoice_gbl_collection.difference,2) as difference,"+
+				   "invoice_gbl_collection.state as state, invoice_gbl_collection_flow.state as collectionState, round(invoice_gbl_collection_flow.amount,2) as collectionAmount,"+
 				   "invoice_list.invoice_date as invoiceDate, DATEDIFF(DATE_FORMAT(SYSDATE(), '%Y%m%d'), DATE_FORMAT(CONVERT(invoice_list.invoice_date, DATE), '%Y%m%d')) as datediff"
 				   + " from	invoice_list left join invoice_gbl on invoice_list.seq = invoice_gbl.invoice_list_seq"
 				   + "	left join gbl on invoice_gbl.gbl_seq = gbl.seq"
@@ -906,7 +906,7 @@ public class CL_DAO_DB_Mysql implements IT_DAO{
 		if(!begin.equals("") && !end.equals("")){
 			sql+=" and date(invoice_list.invoice_date) >= date('"+begin+"') and date(invoice_list.invoice_date) <= date('"+end+"')";
 		}
-		System.out.println("SQL : "+sql);
+		System.out.println("outbound SQL1 : "+sql);
 		try {
 			System.out.println("[[SQL QUERRY EXECUTE]]");
 			connect();
@@ -925,9 +925,10 @@ public class CL_DAO_DB_Mysql implements IT_DAO{
 				String invoiceDate = rs.getString("invoiceDate");
 				bean = new AllScacTotalInvoiceCollectionStatusGblBeans();
 				double tempDiff = getDoubleValue(difference);
-				if(tempDiff <0){
+//				if(tempDiff <0){
+//					System.out.println("@@@@HAPPEN?");
 					tempDiff *= -1;
-				}
+//				}
 				bean.setGblNo(gblNo);
 				bean.setScac(scac1);
 				bean.setAmount(amount);
@@ -939,7 +940,7 @@ public class CL_DAO_DB_Mysql implements IT_DAO{
 				bean.setDateDiff(dateDiff);
 				bean.setProcess("outbound");
 				if(collectionState==null || collectionState.equals("")){
-					System.out.println(gblNo+" : STATE NULL ADD uncollectedAmount : "+amount);
+//					System.out.println(gblNo+" : STATE NULL ADD uncollectedAmount : "+amount);
 					bean.setDifference("0.0");
 					bean.setUncollectedAmount(amount);
 				}
@@ -966,9 +967,9 @@ public class CL_DAO_DB_Mysql implements IT_DAO{
 	public ArrayList<AllScacTotalInvoiceCollectionStatusGblBeans> getInboundEachScacUncollectedGbl(String scac,String code,String begin,String end){
 		ArrayList<AllScacTotalInvoiceCollectionStatusGblBeans> list = new ArrayList<>();
 		AllScacTotalInvoiceCollectionStatusGblBeans bean = new AllScacTotalInvoiceCollectionStatusGblBeans();
-		String sql="select	invoice_gbl.gbl_no as gblNo, invoice_gbl.amount as amount, invoice_list.start_date as start, invoice_list.end_date as end,"+
-				   "invoice_gbl.name as name,gbl_ib.code as code,gbl_ib.tsp as scac, invoice_gbl_collection.difference as difference,"+
-				   "invoice_gbl_collection.state as state, invoice_gbl_collection_flow.state as collectionState, invoice_gbl_collection_flow.amount collectionAmount,"+
+		String sql="select	invoice_gbl.gbl_no as gblNo, round(invoice_gbl.amount,2) as amount, invoice_list.start_date as start, invoice_list.end_date as end,"+
+				   "invoice_gbl.name as name,gbl_ib.code as code,gbl_ib.tsp as scac, round(invoice_gbl_collection.difference,2) as difference,"+
+				   "invoice_gbl_collection.state as state, invoice_gbl_collection_flow.state as collectionState, round(invoice_gbl_collection_flow.amount,2) as collectionAmount,"+
 				   "invoice_list.invoice_date as invoiceDate,DATEDIFF(DATE_FORMAT(SYSDATE(), '%Y%m%d'), DATE_FORMAT(CONVERT(invoice_list.invoice_date, DATE), '%Y%m%d')) as datediff "
 				   + " from	invoice_list left join invoice_gbl on invoice_list.seq = invoice_gbl.invoice_list_seq"
 				   + "	left join gbl_ib on invoice_gbl.gbl_seq = gbl_ib.seq"
@@ -984,7 +985,7 @@ public class CL_DAO_DB_Mysql implements IT_DAO{
 		if(!begin.equals("") && !end.equals("")){
 			sql+=" and date(invoice_list.invoice_date) >= date('"+begin+"') and date(invoice_list.invoice_date) <= date('"+end+"')";
 		}
-		System.out.println("SQL : "+sql);
+		System.out.println("inbound SQL1 : "+sql);
 		try {
 			connect();
 			rs = stmt.executeQuery(sql);
@@ -1009,28 +1010,29 @@ public class CL_DAO_DB_Mysql implements IT_DAO{
 				bean.setCode(code1);
 				bean.setInvoiceDate(invoiceDate);
 				double tempDiff = getDoubleValue(difference);
-				if(tempDiff <0){
+//				if(tempDiff <0){
 					tempDiff *= -1;
-				}
+//				}
+				
 				bean.setDateDiff(dateDiff);
 				bean.setDifference(tempDiff+"");
 				bean.setState(state1);
 				bean.setProcess("inbound");
 				if(collectionState==null || collectionState.equals("")){
-					System.out.println("STATE NULL ADD uncollectedAmount : "+amount);
+//					System.out.println("STATE NULL ADD uncollectedAmount : "+amount);
 					bean.setDifference("0.0");
 					bean.setUncollectedAmount(amount);
 				}
 				else if(collectionState.equals("ACCEPT")){
-					System.out.println("ACCEPT AMOUNT : "+collectionAmount);
+//					System.out.println("ACCEPT AMOUNT : "+collectionAmount);
 					bean.setAcceptAmount(collectionAmount);
 				}
 				else if(collectionState.equals("CLAIM")){
-					System.out.println("CLAIM AMOUNT : "+collectionAmount);
+//					System.out.println("CLAIM AMOUNT : "+collectionAmount);
 					bean.setClaimeAmount(collectionAmount);
 				}
 				else if(collectionState.equals("DEPOSIT")){
-					System.out.println("COLLECTED AMOUNT : "+collectionAmount);
+//					System.out.println("COLLECTED AMOUNT : "+collectionAmount);
 					bean.setCollectionAmount(collectionAmount);
 				}
 				list.add(bean);
@@ -1047,7 +1049,9 @@ public class CL_DAO_DB_Mysql implements IT_DAO{
 		EachScacUncollectedBeans esub = new EachScacUncollectedBeans();		
 		int whereFlag=0;
 		HashMap<String,Integer> hm = new HashMap();
-		String sql = "select *,invoice_list.seq as invoiceSeq,DATEDIFF(DATE_FORMAT(SYSDATE(), '%Y%m%d'), DATE_FORMAT(CONVERT(invoice_list.invoice_date, DATE), '%Y%m%d')) as datediff from invoice_list left join invoice_collection on invoice_list.seq = invoice_collection.invoice_seq";
+		System.out.println("SCAC : "+scac);
+//		String sql = "select *,invoice_list.seq as invoiceSeq,DATEDIFF(DATE_FORMAT(SYSDATE(), '%Y%m%d'), DATE_FORMAT(CONVERT(invoice_list.invoice_date, DATE), '%Y%m%d')) as datediff from invoice_list left join invoice_collection on invoice_list.seq = invoice_collection.invoice_seq";
+		String sql = "select invoice_list.invoice_no,round(invoice_list.amount,2) as amount,invoice_list.invoice_date,round(invoice_collection.net,2) as net ,invoice_list.seq,invoice_list.process,invoice_list.seq as invoiceSeq,DATEDIFF(DATE_FORMAT(SYSDATE(), '%Y%m%d'),DATE_FORMAT(CONVERT(invoice_list.invoice_date, DATE), '%Y%m%d')) as datediff from invoice_list left join invoice_collection on invoice_list.seq = invoice_collection.invoice_seq ";
 		String condition="";
 		if(!scac.equals("ALL")){
 			if(whereFlag==0){
@@ -1088,14 +1092,15 @@ public class CL_DAO_DB_Mysql implements IT_DAO{
 			}
 		}
 		sql+=condition;
-		System.out.println("[[[[[[[[[[[[[[[[[[[[[ FINAL CALL sql : "+sql+" ]]]]]]]]]]]]]]]]]]]]]]]]]]]]");
+//		String alpha = " group by invoice_list.seq ";
+		System.out.println("1sql : "+sql);
 		rs = getResultSet(sql);
 		int index=0;
 		try {
 			while(rs.next()){
 				hm.put(rs.getString("invoiceSeq"),index++);
 				esub = new EachScacUncollectedBeans();
-				System.out.println("[[ HM HASMAP PUT : "+rs.getString("invoiceSeq")+" index : "+(index-1)+" ]]");
+//				System.out.println("[[ HM HASMAP PUT : "+rs.getString("invoiceSeq")+" index : "+(index-1)+" ]]");
 				esub.setInvoiceNo(rs.getString("invoice_no"));
 				esub.setInvoicedAmounts(rs.getString("amount"));
 				esub.setInvoiceDate(rs.getString("invoice_date"));
@@ -1103,14 +1108,14 @@ public class CL_DAO_DB_Mysql implements IT_DAO{
 				esub.setInvoiceListSeq(rs.getString("invoiceSeq"));
 				esub.setProcess(rs.getString("process"));
 				esub.setDatediff(rs.getString("datediff"));
-				System.out.println("========[Basic Information]=======");
-				System.out.println("no : "+rs.getString("invoice_no"));
-				System.out.println("amount : "+rs.getString("amount"));
-				System.out.println("date : "+rs.getString("invoice_date"));
-				System.out.println("collected : "+rs.getString("net"));
-				System.out.println("invoiceSeq : "+rs.getString("invoiceSeq"));
-				System.out.println("date diff : "+rs.getString("datediff"));
-				System.out.println("==================================");
+//				System.out.println("========[Basic Information]=======");
+//				System.out.println("no : "+rs.getString("invoice_no"));
+//				System.out.println("amount : "+rs.getString("amount"));
+//				System.out.println("date : "+rs.getString("invoice_date"));
+//				System.out.println("collected : "+rs.getString("net"));
+//				System.out.println("invoiceSeq : "+rs.getString("invoiceSeq"));
+//				System.out.println("date diff : "+rs.getString("datediff"));
+//				System.out.println("==================================");
 				list.add(esub);
 			}
 			try {
@@ -1124,8 +1129,8 @@ public class CL_DAO_DB_Mysql implements IT_DAO{
 			e.printStackTrace();
 		}
 		//////////////////////////////////////////////////////////////2st querry start//////////////////////////////////////
-		sql="select gbl_ib.code as gblibcode,gbl.code as gblobcode,invoice_gbl.invoice_list_seq as list_seq,invoice_gbl.amount as gblamount, "
-				+ "invoice_gbl_collection.net as net, invoice_gbl_collection.difference as diff, invoice_gbl_collection.seq as gbl_collection_seq "
+		sql="select invoice_gbl.gbl_no as gblNo,gbl_ib.code as gblibcode,gbl.code as gblobcode,invoice_gbl.invoice_list_seq as list_seq,round(invoice_gbl.amount,2) as gblamount, "
+				+ "round(invoice_gbl_collection.net,2) as net, round(invoice_gbl_collection.difference,2) as diff, invoice_gbl_collection.seq as gbl_collection_seq "
 				+"from invoice_gbl left join invoice_gbl_collection on invoice_gbl.seq = invoice_gbl_collection.invoice_gbl_seq "
 				+"left join gbl_ib on invoice_gbl.gbl_seq = gbl_ib.seq left join gbl on invoice_gbl.gbl_seq = gbl.seq";
 		condition="";//init condition string;
@@ -1160,47 +1165,54 @@ public class CL_DAO_DB_Mysql implements IT_DAO{
 		rs = getResultSet(sql);
 		index=0;
 		System.out.println("==== WORMING UP ====");
-		for(int i=0;i<list.size();i++){
-			System.out.println(i+"st : "+list.get(i).getInvoiceNo());
-		}
+//		for(int i=0;i<list.size();i++){
+//			System.out.println(i+"st : "+list.get(i).getInvoiceNo());
+//		}
 		System.out.println("====================");
 		try {
 			while(rs.next()){
 				if(hm.get(rs.getString("list_seq"))!=null){
-					System.out.println("[ 2st SQL execution result is not null ]");
+//					System.out.println("[ 2st SQL execution result is not null ]");
 					index = hm.get(rs.getString("list_seq"));
-					System.out.println("[ GET INDEX FOR LIST_SEQ : "+rs.getString("list_seq")+" - INDEX : "+index);
+//					System.out.println("[ GET INDEX FOR LIST_SEQ : "+rs.getString("list_seq")+" - INDEX : "+index);
 					double net = Double.parseDouble(checkAmountsNull(rs.getString("net")));
 					double diff = Double.parseDouble(checkAmountsNull(rs.getString("diff")));
 					if(diff!=0){
+						if(diff>0){
+							System.out.println("돈이 초과되서 들어온 상황 GBL no : "+rs.getString("gblNo"));
+						}
 						diff *= -1;
 					}
 					list.get(index).addGblQuantity();
 					if(net==0 && diff==0){
 						list.get(index).addUncollectedAmount(rs.getString("gblamount"));
-						System.out.println("=======================");
-						System.out.println("Invoice No : "+list.get(index).getInvoiceNo());
-						System.out.println("UN Collected : "+rs.getString("gblamount"));
-						System.out.println("=======================");
+//						System.out.println("=======================");
+//						System.out.println("Invoice No : "+list.get(index).getInvoiceNo());
+//						System.out.println("UN Collected : "+rs.getString("gblamount"));
+//						System.out.println("=======================");
 					}
 					else if(diff!=0 && net!=0){
 						list.get(index).addShortPaid(diff+"");
-						System.out.println("=======================");
-						System.out.println("Invoice No : "+list.get(index).getInvoiceNo());
-						System.out.println("Short Paid : "+diff);
-						System.out.println("=======================");
+//						System.out.println("=======================");
+//						System.out.println("Invoice No : "+list.get(index).getInvoiceNo());
+//						System.out.println("Short Paid : "+diff);
+//						System.out.println("=======================");
 					}
-					else if(diff!=0 && net==0){
+					else if(diff!=0 && net==0){//안걷힌돈
 						list.get(index).addUncollectedAmount(rs.getString("gblamount"));
-						System.out.println("=======================");
-						System.out.println("Invoice No : "+list.get(index).getInvoiceNo());
-						System.out.println("UN Collected : "+rs.getString("gblamount"));
-						System.out.println("=======================");
+//						System.out.println("?!");
+//						System.out.println("diff : "+diff+" net : "+net+" no : "+list.get(index).getInvoiceNo());
+//						System.out.println("=======================");
+//						System.out.println("Invoice No : "+list.get(index).getInvoiceNo());
+//						System.out.println("UN Collected : "+rs.getString("gblamount"));
+//						System.out.println("=======================");
 					}
-					else{
-						System.out.println("elseelseelseelse");
-						System.out.println("diff : "+diff);
-						System.out.println("net : "+net);
+					else{//완료 된돈
+//						System.out.println("@?diff : "+diff+" net : "+net+" no : "+list.get(index).getInvoiceNo());
+//						System.out.println("elseelseelseelse");
+//						System.out.println("!!!!!!!!!!!!!!!!!!!!! GBL no : "+rs.getString("gblNo"));
+//						System.out.println("diff : "+diff);
+//						System.out.println("net : "+net);
 					}
 				}
 			}
@@ -1234,19 +1246,19 @@ public class CL_DAO_DB_Mysql implements IT_DAO{
 							double accept = Double.parseDouble(checkAmountsNull(rs.getString("amount")));
 		//					list.get(index).addShortPaid((-1*accept)+"");
 							list.get(index).addAcceptPaid(accept+"");
-							System.out.println("===================================");
-							System.out.println("Invoice No : "+list.get(index).getInvoiceNo());
-							System.out.println("Accepted Amount : "+accept);
-							System.out.println("===================================");
+//							System.out.println("===================================");
+//							System.out.println("Invoice No : "+list.get(index).getInvoiceNo());
+//							System.out.println("Accepted Amount : "+accept);
+//							System.out.println("===================================");
 						}
 						else if(rs.getString("state").equals("CLAIM")){
 							double claim = Double.parseDouble(checkAmountsNull(rs.getString("amount")));
 							list.get(index).addClaimPaid(claim+"");
 		//					list.get(index).addShortPaid((-1*claim)+"");
-							System.out.println("===================================");
-							System.out.println("Invoice No : "+list.get(index).getInvoiceNo());
-							System.out.println("Claimed Amount : "+claim);
-							System.out.println("===================================");
+//							System.out.println("===================================");
+//							System.out.println("Invoice No : "+list.get(index).getInvoiceNo());
+//							System.out.println("Claimed Amount : "+claim);
+//							System.out.println("===================================");
 						}
 					}
 				}
@@ -1729,7 +1741,7 @@ public class CL_DAO_DB_Mysql implements IT_DAO{
 		int whereFlag=0;
 		String condition="";
 		String sql="select il.invoice_no as invoiceNo,il.tsp as tsp, il.amount as totalAmount,"+
-				"ig.gbl_no as gblNo, sum(igcf.amount) as sumAmount,count(igcf.seq),il.process as process, "+
+				"ig.gbl_no as gblNo, sum(round(igcf.amount,2)) as sumAmount,count(igcf.seq),il.process as process, "+
 				"il.invoice_date as invoiceDate "+
 				"from invoice_list as il left join invoice_gbl as ig on il.seq = ig.invoice_list_seq "+
 				"left join invoice_gbl_collection as igc on ig.seq = igc.invoice_gbl_seq "+
@@ -1809,6 +1821,8 @@ public class CL_DAO_DB_Mysql implements IT_DAO{
 				ifb.setNet(checkAmountsNull(getDoubleRoundValue(rs.getString("sumAmount"))));
 				double diffTemp=Double.parseDouble(ifb.getInvoicedAmounts())-Double.parseDouble(ifb.getNet());
 				if(diffTemp<0){
+					System.out.println("이런일이 발생해?????");
+					System.out.println("INVOIE NO : "+ifb.getInvoiceNo());
 					diffTemp *= -1;
 				}
 				ifb.setUnCollectedAmounts(diffTemp+"");
@@ -1962,7 +1976,7 @@ public class CL_DAO_DB_Mysql implements IT_DAO{
 					String code1 = rs.getString("code");
 					String tempCode = "out_"+code1;
 					String tempArea = rs.getString("area");
-						if(code1.equals("3")||code1.equals("4")||code1.equals("5")||code1.equals("T")||code1.equals("t")){
+						if(code1.equals("3")||code1.equals("4")||code1.equals("5")||code1.equals("6")||code1.equals("T")||code1.equals("t")){
 							 tempWeight = sm.checkMinimumValue(rs.getString("netWeight"), "HHG");
 						}
 						else if(code1.equals("J")||code1.equals("j")||code1.equals("7")||code1.equals("8")){
@@ -2214,9 +2228,9 @@ public class CL_DAO_DB_Mysql implements IT_DAO{
 		return wvs1;
 	}
 	public WorkVolumeStat2Beans getOutboundWorkVolumeStat2(String scac,String area,String hhgUb,String code,String begin,String end,String type){
-		String[][] str = new String[ROW_LENGTH][20];
-		String[][] cuftStr = new String[ROW_LENGTH][20];
-		String[][] denStr = new String[ROW_LENGTH][20];
+		String[][] str = new String[ROW_LENGTH][22];
+		String[][] cuftStr = new String[ROW_LENGTH][22];
+		String[][] denStr = new String[ROW_LENGTH][22];
 		String sql="";
 		String condition="";
 		String qr="";
@@ -2281,7 +2295,7 @@ public class CL_DAO_DB_Mysql implements IT_DAO{
 						String tempGblNo = rs.getString("no");
 						String tempCuft = rs.getString("cuft");
 						 if(tempWeight!=null){
-							if(tempCode.equals("3")||tempCode.equals("4")||tempCode.equals("5")||tempCode.equals("T")||tempCode.equals("t")){
+							if(tempCode.equals("3")||tempCode.equals("4")||tempCode.equals("5")||tempCode.equals("T")||tempCode.equals("t")||tempCode.equals("6")){
 									tempWeight= sm.checkMinimumValue(tempNet, "HHG");
 								}
 							else if(tempCode.equals("J")||tempCode.equals("7")||tempCode.equals("8")||tempCode.equals("j")){
@@ -2624,9 +2638,9 @@ public class CL_DAO_DB_Mysql implements IT_DAO{
 	return str;
 }
 	public WorkVolumeStat2Beans getInboundWorkVolumeStat2(String scac,String area,String hhgUb,String code,String begin,String end,String type){
-		String[][] str = new String[ROW_LENGTH][20];
-		String[][] cuftStr = new String[ROW_LENGTH][20];
-		String[][] denStr = new String[ROW_LENGTH][20];
+		String[][] str = new String[ROW_LENGTH][22];
+		String[][] cuftStr = new String[ROW_LENGTH][22];
+		String[][] denStr = new String[ROW_LENGTH][22];
 		String gblno="";
 		int whereflag=0;
 		String sql="";
@@ -2943,7 +2957,7 @@ public class CL_DAO_DB_Mysql implements IT_DAO{
 					"il.process as process, "+
 					"il.invoice_date as invoiceDate, "+ 
 					"igcf.state as state, "+
-					"sum(igcf.amount) as collectedAmount "+ 
+					"sum(round(igcf.amount,2)) as collectedAmount "+ 
 					"from invoice_list as il "+
 					"left join invoice_gbl as ig on il.seq = ig.invoice_list_seq "+
 					"left join invoice_gbl_collection as igc on ig.seq = igc.invoice_gbl_seq "+
@@ -2956,7 +2970,7 @@ public class CL_DAO_DB_Mysql implements IT_DAO{
 		}
 		condition+="group by il.tsp, igcf.state ";
 		sql+=condition;
-		System.out.println(sql);
+		System.out.println("sql1 : "+sql);
 		try {
 			connect();
 			rs = stmt.executeQuery(sql);
@@ -2977,24 +2991,16 @@ public class CL_DAO_DB_Mysql implements IT_DAO{
 					asticbList.add(bean);
 					System.out.println("CREATE LIST : "+tsp+" state : "+state+" amount : "+collectedAmount);
 				}
-//				String net = checkAmountsNull(rs.getString("net"));
-//				String diff = checkAmountsNull(rs.getString("difference"));
-//				double diffTemp = Double.parseDouble(diff);
-//				if(diffTemp<0){
-//					diffTemp*=-1;
-//					diff=diffTemp+"";
-//				}
-//				if(net.equals("0.0") && diff.equals("0.0")){
-//					diff = invoicedAmounts;
-//				}
-//				atib.setValue(tsp, invoicedAmounts, net, diff, "0.0", "0.0", net);
+				else{
+					System.out.println("Error");
+				}
 			}
 			disconnect();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		whereFlag=0;
-		String sql2="select il.tsp as tsp,sum(il.amount) as totalAmount from invoice_list as il group by tsp;";
+		String sql2="select il.tsp as tsp,sum(round(il.amount,2)) as totalAmount from invoice_list as il group by tsp;";
 //		condition="";
 //		if(!begin.equals("") && !end.equals("")){
 //			condition = " and date(invoice_list.write_date) >= date_format('"+begin+"','%y-%m-%d') and date(invoice_list.write_date) <= date_format('"+end+"','%y-%m-%d') ";
@@ -3006,12 +3012,21 @@ public class CL_DAO_DB_Mysql implements IT_DAO{
 			rs = stmt.executeQuery(sql2);
 			while(rs.next()){
 				String tsp = rs.getString("tsp");
-				String totlaAmount = rs.getString("totalAmount");
+				String totalAmount = rs.getString("totalAmount");
 				int index = getIndexOfTsp(asticbList, tsp);
 				if(index!=-1){
-					asticbList.get(index).setValue("TOTAL", totlaAmount);
-					System.out.println("UPDATE LIST : "+tsp+" state : TOTAL amount : "+totlaAmount);
+					asticbList.get(index).setValue("TOTAL", totalAmount);
+					System.out.println("UPDATE LIST : "+tsp+" state : TOTAL amount : "+totalAmount);
 					asticbList.get(index).calcurateValue();
+				}
+				else if(index==-1){
+					bean = new AllScacTotalInvoiceCollectionBeans();
+					bean.setCarrier(tsp);
+					bean.setValue("TOTAL", totalAmount);
+					asticbList.add(bean);
+					int index2 = asticbList.size()-1;
+					asticbList.get(index2).calcurateValue();
+					System.out.println("CREATE LIST : "+tsp+"state : Total  amount : "+totalAmount);
 				}
 //				String tsp = rs.getString("tsp");
 //				String state = rs.getString("state");
@@ -3301,6 +3316,83 @@ public class CL_DAO_DB_Mysql implements IT_DAO{
 		}
 		return list;
 	}
+	
+	public ArrayList<InvoiceCollectionStatusByPaidBeans> getInvoiceCollectionStatusByPaid(String begin,String end, String scac, String gbl_No){
+		String sql="SELECT invoice_list.invoice_no as invoiceNo,invoice_list.invoice_date as invoiceDate, invoice_list.tsp as tsp, invoice_gbl.gbl_no as gblNo, invoice_gbl.amount as totalAmount, invoice_gbl_collection_flow.amount as inAmount,invoice_gbl_collection_flow.date as date "+
+					"from invoice_list "+
+					"left join invoice_gbl on invoice_list.seq = invoice_gbl.invoice_list_seq "+
+					"left join invoice_gbl_collection on invoice_gbl.seq = invoice_gbl_collection.invoice_gbl_seq "+
+					"left join invoice_gbl_collection_flow on invoice_gbl_collection.seq = invoice_gbl_collection_flow.invoice_gbl_collection_seq "+
+					"where invoice_gbl_collection_flow.date != 'null' ";
+		if(!begin.equals("") && !end.equals("")){
+			sql+="and date >= date('"+begin+"') and date<=date('"+end+"') ";
+		}
+		if(!scac.equals("ALL")){
+			sql+="and tsp = '"+scac+"' ";
+		}
+		if(!gbl_No.equals("")){
+			sql+="and invoice_gbl.gbl_no ='"+gbl_No+"' ";
+		}
+		sql+="order by date";
+		System.out.println(sql);
+		ArrayList<InvoiceCollectionStatusByPaidBeans> invoiceList = new ArrayList<InvoiceCollectionStatusByPaidBeans>();
+		InvoiceCollectionStatusByPaidBeans icsp;
+		InvoiceCollectionStatusByPaidGblBeans icspg;
+		ArrayList<String> checkList = new ArrayList<>();
+		try {
+			connect();
+			rs = stmt.executeQuery(sql);
+			while(rs.next()){
+				String invoiceNo = rs.getString("invoiceNo");
+				String tsp = rs.getString("tsp");
+				String gblNo = rs.getString("gblNo");
+				String totalAmount = rs.getString("inAmount");
+				String date = rs.getString("date");
+				String invoiceDate = rs.getString("invoiceDate");
+				String paidAmount = rs.getString("inAmount");
+				int index = checkList.indexOf(date+"@"+invoiceNo);
+				if(index==-1){//there is no matching
+					checkList.add(date+"@"+invoiceNo);
+					icsp = new InvoiceCollectionStatusByPaidBeans();
+					icspg = new InvoiceCollectionStatusByPaidGblBeans();
+					icsp.setDate(date);
+					icsp.setTsp(tsp);
+					icsp.setInvoiceDate(invoiceDate);
+					icsp.setInvoiceNo(invoiceNo);
+					/*********gbl setting*********/
+					icspg = getICSPG(gblNo, totalAmount, paidAmount);
+					/*****************************/
+					icsp.addGbl(icspg);
+					invoiceList.add(icsp);
+				}
+				else{//already exist this matching
+					icspg = new InvoiceCollectionStatusByPaidGblBeans();
+					/*********gbl setting*********/
+					icspg = getICSPG(gblNo, totalAmount, paidAmount);
+					/*****************************/
+					invoiceList.get(index).addGbl(icspg);
+				}
+			}
+			disconnect();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return invoiceList;
+//		for(int i=0;i<invoiceList.size();i++){
+//			System.out.println("------------------------------------");
+//			System.out.println("INVOICE NO : "+invoiceList.get(i).getInvoiceNo()+" INVOICE DATE : "+invoiceList.get(i).getInvoiceDate()+" PAID DATE : "+invoiceList.get(i).getDate());
+//			for(int j=0;j<invoiceList.get(i).getGblList().size();j++){
+//				System.out.println("GBL NO : "+invoiceList.get(i).getGblList().get(j).getGblNo()+" TOTAL AMOUNT : "+invoiceList.get(i).getGblList().get(j).getAmount()+" Paid : "+invoiceList.get(i).getGblList().get(j).getPaidAmount());
+//			}
+//		}
+	}
+	public InvoiceCollectionStatusByPaidGblBeans getICSPG(String gblNo,String total,String paid){
+		InvoiceCollectionStatusByPaidGblBeans icspg = new InvoiceCollectionStatusByPaidGblBeans();
+		icspg.setAmount(total);
+		icspg.setGblNo(gblNo);
+		icspg.setPaidAmount(paid);
+		return icspg;
+	}
 //	public Boolean inventoryInput(){
 //		
 //	}
@@ -3338,6 +3430,9 @@ public class CL_DAO_DB_Mysql implements IT_DAO{
 			
 		}
 	}
+	
+	
+	
 	/**
 	public void writeMessage(String board,CL_DataBean data) throws Exception{
 		String sql,columnString,valueString;

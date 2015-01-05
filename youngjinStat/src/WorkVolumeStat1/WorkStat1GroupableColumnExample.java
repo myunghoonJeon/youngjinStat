@@ -16,7 +16,7 @@ import TableOption.GroupableTableHeader;
 
 public class WorkStat1GroupableColumnExample extends JFrame {
 	JTable table = new JTable( /*dm, new GroupableTableColumnModel()*/);
-	String[][] test= new String[23][20];
+	String[][] test= new String[25][20];
 //			new String[][]{
 //            {"119","Finbar", "John","Saunders","ja","ko","zh"},
 //            {"911","Roger", "Peter","Melly","en","fr","pt"},

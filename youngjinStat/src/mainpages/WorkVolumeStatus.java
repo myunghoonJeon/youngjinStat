@@ -1,6 +1,7 @@
 package mainpages;
 
 import java.awt.BorderLayout;
+
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
@@ -27,7 +28,14 @@ import javax.swing.table.TableColumnModel;
 import javax.swing.table.TableRowSorter;
 
 public class WorkVolumeStatus extends JFrame implements ActionListener{
+	
+	JTable table;
+	JTable printTable = new JTable();
+	DefaultTableModel model;
 	CL_DAO_DB_Mysql dao = new CL_DAO_DB_Mysql();
+	String title="";
+	
+	
 	JComboBox itemsCombo = new JComboBox(dao.getInventoryFilteringItemsList().toArray());
 	JComboBox areaCombo = new JComboBox(dao.getAreaList2().toArray());
 	JComboBox scacCombo = new JComboBox(dao.getScacListWork().toArray());
@@ -243,7 +251,7 @@ public class WorkVolumeStatus extends JFrame implements ActionListener{
 				String colName[] = {"PUD","RDD","SCAC","CODE","GBL NO","NAME","US NO","AREA","PCS","GROSS","NET","CUFT","DENSITY"};
 				DefaultTableCellRenderer dtcr = new DefaultTableCellRenderer();
 				DefaultTableModel model = new DefaultTableModel(colName,0);
-				JTable table = new JTable(model);
+				table = new JTable(model);
 				dtcr.setHorizontalAlignment(SwingConstants.CENTER);
 				table.setRowSorter(new TableRowSorter<DefaultTableModel>(model));
 	            table.setFont(new Font( "" , Font.PLAIN, 10 ));
@@ -287,7 +295,7 @@ public class WorkVolumeStatus extends JFrame implements ActionListener{
 					}
 					model.addRow(insertRow);
 				}
-				String[] totalRow = {"TOTAL","","","",totalCount+"건","","","",totalPcs+"",totalGross+"",totalNet+"",totalCuft+"",""};
+				String[] totalRow = {"TOTAL","","","",getRoundValue("",totalCount+"",1)+"건","","","",getRoundValue("",totalPcs+"",1)+"",getRoundValue("",totalGross+"",1),getRoundValue("",totalNet+"",1),getRoundValue("",totalCuft+"",1),""};
 				model.addRow(totalRow);
 				setTableColumnSize(table, 2,-15);
 				setTableColumnSize(table, 3,-25);
@@ -302,6 +310,7 @@ public class WorkVolumeStatus extends JFrame implements ActionListener{
 				setTableColumnSize(table, 12,-15);
 				center.add(scrollpane);
 				southMessageLabel.setText("");
+				title="-Work Volume Status- [SCAC : "+scacCombo.getSelectedItem()+"] [PROCESS : "+inoutCombo.getSelectedItem()+"] [CODE : "+codeCombo.getSelectedItem()+"] [AREA : "+areaCombo.getSelectedItem()+"] [PUD : "+pudStartPeriod.getText()+" ~ "+pudEndPeriod.getText()+"]";
 				validate();
 			}//out if
 		else if(inoutCombo.getSelectedItem().equals("IN")){
@@ -319,8 +328,8 @@ public class WorkVolumeStatus extends JFrame implements ActionListener{
 			String onhandEnd = onhandEndPeriod.getText();
 			String colName[] = {"PUD","RDD","SCAC","CODE","GBL NO","NAME","AREA","PCS","GROSS","NET","CUFT","DEN","ON HAND","SIT IN","SIT OUT","SIT NO"};
 			DefaultTableCellRenderer dtcr = new DefaultTableCellRenderer();
-			DefaultTableModel model = new DefaultTableModel(colName,0);
-			JTable table = new JTable(model);
+			model = new DefaultTableModel(colName,0);
+			table = new JTable(model);
 			table.setRowSorter(new TableRowSorter<DefaultTableModel>(model));
             table.setFont(new Font( "" , Font.PLAIN, 10 ));
             table.getTableHeader().setFont( new Font( "" , Font.PLAIN, 10 ));
@@ -396,13 +405,24 @@ public class WorkVolumeStatus extends JFrame implements ActionListener{
 			setTableColumnSize(table, 11,-30);
 			setTableColumnSize(table, 12,-15);
 			center.add(scrollpane);
+			title="-Work Volume Status- [SCAC : "+scacCombo.getSelectedItem()+"] [PROCESS : "+inoutCombo.getSelectedItem()+"] [CODE : "+codeCombo.getSelectedItem()+"]"
+					+ " [AREA : "+areaCombo.getSelectedItem()+"] [RDD : "+rddStartPeriod.getText()+"~"+rddEndPeriod.getText()+"] [DEL : "+pudStartPeriod.getText()+"~"+pudEndPeriod.getText()+"][ONHAND : "+onhandEndPeriod.getText()+"~"+onhandEndPeriod.getText()+"]"; 	
+			System.out.println(title);
 			validate();
 		}
+			printTable = table;
+			System.out.println("mine : "+table.getRowCount());
 		}//if
 		else if(e.getSource() == printBtn){
-			PrintSolution ps = new PrintSolution();
-		
-			ps.print(this);
+//			PrintSolution ps = new PrintSolution();
+//			ps.print(this);
+			ArrayList<JTable> tableArr = new ArrayList<>();
+			ArrayList<String> headers = new ArrayList<>();
+			headers.add("");
+			System.out.println(title);
+			tableArr.add(printTable);
+//			PrintSolution ps = new PrintSolution();
+			PrintSolution.print(title,tableArr,headers);
 		}
 		
 	}//method

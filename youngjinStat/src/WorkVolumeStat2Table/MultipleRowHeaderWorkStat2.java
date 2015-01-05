@@ -52,8 +52,8 @@ public class MultipleRowHeaderWorkStat2 extends JFrame {
   JScrollPane scroll = null;
   String[][] val;
   CL_DAO_DB_Mysql dao = new CL_DAO_DB_Mysql();
-  int INBOUND_COLUMN_SIZE=22;
-  int OUTBOUND_COLUMN_SIZE=22;
+  int INBOUND_COLUMN_SIZE=24;
+  int OUTBOUND_COLUMN_SIZE=24;
   
   public MultipleRowHeaderWorkStat2(String[][] resultStr,String type) {
     val = resultStr;

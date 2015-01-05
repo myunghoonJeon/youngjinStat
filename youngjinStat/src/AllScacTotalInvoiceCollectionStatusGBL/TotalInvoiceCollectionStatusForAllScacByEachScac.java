@@ -391,7 +391,17 @@ public class TotalInvoiceCollectionStatusForAllScacByEachScac extends JFrame imp
 			}
 //			try{
 				System.out.println("CODE : "+tempCode);
-				index = Integer.parseInt(map.get(tempCode));
+				if(map.get(tempCode)==null){
+					if(process.equals("inbound")){
+						index = 3;
+					}
+					else{
+						index = 14;
+					}
+				}
+				else{
+					index = Integer.parseInt(map.get(tempCode));
+				}
 //			}
 //			catch(Exception e){
 //				System.out.println("ERROR : "+e.getStackTrace()+" , CODE : "+tempCode);

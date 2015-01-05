@@ -344,7 +344,9 @@ public class UncollectedPeriodStatusForAllScacByEachScacInvoice extends JFrame i
 		scrollpane.setBorder(BorderFactory.createLineBorder(Color.DARK_GRAY));
 		initTotalValue(); // init Total Parameter
 		int flag = 0;
+		double testValue=0;
 		for(int i=0;i<esic.size();i++){
+			testValue += Double.parseDouble(esic.get(i).getInvoicedAmounts());
     	    String date ="";
     	    String invoiceNo="";
     	    String quantity="";
@@ -367,10 +369,11 @@ public class UncollectedPeriodStatusForAllScacByEachScacInvoice extends JFrame i
 			quantity = esic.get(i).getGblQuantity()+"";
 			if(esic.get(i).getDatediff()!=null){
     	   int diff = Integer.parseInt(esic.get(i).getDatediff());
+    	   
     	   if(criteria.equals("15")){
     		   if(diff<=15){
     			   flag ++;
-    			   System.out.println("[[[[ CRITERIA  : "+criteria+" DETECTED -- INVOICE NO : : "+invoiceNo+" ]]]]]");
+//    			   System.out.println("[[[[ CRITERIA  : "+criteria+" DETECTED -- INVOICE NO : : "+invoiceNo+" ]]]]]");
     			   model.addRow(new String[]{date,invoiceNo,quantity,getRoundValue(getDoubleValue(invoiceAmounts)),
     					   getRoundValue(getDoubleValue(collectedAmounts)),getRoundValue(getDoubleValue(uncollectedAmounts)),getRoundValue(getDoubleValue(shortPaid)),getRoundValue(getDoubleValue(accepted)),getRoundValue(getDoubleValue(claimed)),getRoundValue(getDoubleValue(net))});
     			   calcTotal(quantity,invoiceAmounts,collectedAmounts,uncollectedAmounts,shortPaid,accepted,claimed,net);
@@ -378,7 +381,7 @@ public class UncollectedPeriodStatusForAllScacByEachScacInvoice extends JFrame i
     	   }
     	   else if(criteria.equals("1530")){
     		   if(diff>15 && diff <= 30){
-    			   System.out.println("[[[[ CRITERIA  : "+criteria+" DETECTED -- INVOICE NO : : "+invoiceNo+" ]]]]]");
+//    			   System.out.println("[[[[ CRITERIA  : "+criteria+" DETECTED -- INVOICE NO : : "+invoiceNo+" ]]]]]");
     			   flag ++;
     			   model.addRow(new String[]{date,invoiceNo,quantity,getRoundValue(getDoubleValue(invoiceAmounts)),
     					   getRoundValue(getDoubleValue(collectedAmounts)),getRoundValue(getDoubleValue(uncollectedAmounts)),getRoundValue(getDoubleValue(shortPaid)),getRoundValue(getDoubleValue(accepted)),getRoundValue(getDoubleValue(claimed)),getRoundValue(getDoubleValue(net))});
@@ -388,7 +391,7 @@ public class UncollectedPeriodStatusForAllScacByEachScacInvoice extends JFrame i
     	   else if(criteria.equals("3045")){
     		   
     		   if(diff>30 && diff<=45){
-    			   System.out.println("[[[[ CRITERIA  : "+criteria+" DETECTED -- INVOICE NO : : "+invoiceNo+" ]]]]]");
+//    			   System.out.println("[[[[ CRITERIA  : "+criteria+" DETECTED -- INVOICE NO : : "+invoiceNo+" ]]]]]");
     			   flag ++;
     			   model.addRow(new String[]{date,invoiceNo,quantity,getRoundValue(getDoubleValue(invoiceAmounts)),
     					   getRoundValue(getDoubleValue(collectedAmounts)),getRoundValue(getDoubleValue(uncollectedAmounts)),getRoundValue(getDoubleValue(shortPaid)),getRoundValue(getDoubleValue(accepted)),getRoundValue(getDoubleValue(claimed)),getRoundValue(getDoubleValue(net))});
@@ -397,7 +400,7 @@ public class UncollectedPeriodStatusForAllScacByEachScacInvoice extends JFrame i
     	   }
     	   else if(criteria.equals("45")){
     		   if(diff>45){
-    			   System.out.println("[[[[ CRITERIA  : "+criteria+" DETECTED -- INVOICE NO : : "+invoiceNo+" ]]]]]");
+//    			   System.out.println("[[[[ CRITERIA  : "+criteria+" DETECTED -- INVOICE NO : : "+invoiceNo+" ]]]]]");
     			   flag ++;
     			   model.addRow(new String[]{date,invoiceNo,quantity,getRoundValue(getDoubleValue(invoiceAmounts)),
     					   getRoundValue(getDoubleValue(collectedAmounts)),getRoundValue(getDoubleValue(uncollectedAmounts)),getRoundValue(getDoubleValue(shortPaid)),getRoundValue(getDoubleValue(accepted)),getRoundValue(getDoubleValue(claimed)),getRoundValue(getDoubleValue(net))});
@@ -406,39 +409,18 @@ public class UncollectedPeriodStatusForAllScacByEachScacInvoice extends JFrame i
     	   }
     	   
        }
-//		if(criteria.equals("total")){
-//				System.out.println("[[[[ CRITERIA  : "+criteria+" DETECTED ]]]]]");
-//				System.out.println("<<<<<<<<<<<<< total Click >>>>?>>");
-//				System.out.println(gtQ+" "+gtIa);
-//				model.addRow(new String[]{"","",getRoundValue(gtQ),getRoundValue(gtIa),
-//					   getRoundValue(gtC),getRoundValue(gtUc),getRoundValue(gtS),getRoundValue(gtA),getRoundValue(gtCl),getRoundValue(gtNu)});
-//	   }
-		
-		
-//		setTableColumnSize(table, 0,-25);
-//		setTableColumnSize(table, 4,-25);
-//		setTableColumnSize(table, 5,-20);
-//		setTableColumnSize(table, 6,-20);
-//		setTableColumnSize(table, 7,-30);
-//		setTableColumnSize(table, 8,-30);
-//		setTableColumnSize(table, 9,-20);
-//		setTableColumnSize(table, 4,30);
-//		setTableColumnSize(table, 5,65);
-//		setTableColumnSize(table, 6,-25);
-//		setTableColumnSize(table, 7,-15);
-//		MultipleRowHeaderEachUncollectedStatus mreu = new MultipleRowHeaderEachUncollectedStatus(esic,title,a);
-//		GroupableColumnEachscacUncollectedStatus ge = new GroupableColumnEachscacUncollectedStatus(esic, a);
-//		jsp.add(ge.getTable());
-//		jsp = mreu.getEachScacUncollectedStatusTable();
-//		center.removeAll();
+			else{
+				System.out.println("DATE DIFF NULL !! : "+invoiceNo);
+			}
 		}
+//		System.out.println("TEST VALUE : "+testValue);
 		if(flag !=0){
 			model.addRow(new String[]{"Total","",(int)tQ+"",getRoundValue(tIa),getRoundValue(tC),getRoundValue(tUc),getRoundValue(tS),getRoundValue(tA),getRoundValue(tCl),getRoundValue(tNu)});
 		}
 		if(criteria.equals("total")){
-			System.out.println("[[[[ CRITERIA  : "+criteria+" DETECTED ]]]]]");
-			System.out.println("<<<<<<<<<<<<< total Click >>>>?>>");
-			System.out.println("totalQuantity : "+gtQ+" "+gtIa);
+//			System.out.println("[[[[ CRITERIA  : "+criteria+" DETECTED ]]]]]");
+//			System.out.println("<<<<<<<<<<<<< total Click >>>>?>>");
+//			System.out.println("totalQuantity : "+gtQ+" "+gtIa);
 			String totalQuantity = (int)gtQ+"";
 			model.addRow(new String[]{"","",totalQuantity+"",getRoundValue(gtIa),
 				   getRoundValue(gtC),getRoundValue(gtUc),getRoundValue(gtS),getRoundValue(gtA),getRoundValue(gtCl),getRoundValue(gtNu)});
@@ -452,6 +434,7 @@ public class UncollectedPeriodStatusForAllScacByEachScacInvoice extends JFrame i
 			gtA += tA;
 			gtCl += tCl;
 			gtNu += tNu;
+//			System.out.println("LAST GTIA : "+gtIa);
 		}
 		return scrollpane;
 	}
@@ -465,6 +448,7 @@ public class UncollectedPeriodStatusForAllScacByEachScacInvoice extends JFrame i
 		   tA += getDoubleValue(accepted);
 		   tCl += getDoubleValue(claimed);
 		   tNu += getDoubleValue(net);
+//		   System.out.println("last TIA : "+tIa);
 	   }
 	   public double getDoubleValue(String str){
 			double d=0.0;

@@ -26,10 +26,10 @@ public class ScacWorkStatus extends JFrame implements ActionListener{
 	CL_DAO_DB_Mysql dao = new CL_DAO_DB_Mysql();
 	SharedMethod sm = new SharedMethod();
 	////////////////////////////////////////////////////////////////
-	int superWide = 1200;
+	int superWide = 1400;
 	int superHeight = 650;
 	int ROW_LENGTH = dao.getScacList().size()+1;
-	int COLUM_LENGTH = 22;
+	int COLUM_LENGTH = 24;
 ////////////////////////////////////////////////////////////////
 	
 	JComboBox areaCombo = new JComboBox(dao.getAreaList2().toArray());
@@ -159,7 +159,7 @@ JButton printBtn = new JButton("PRINT");
 		JScrollPane js = new JScrollPane();
 		MultipleRowHeaderWorkStat2 frame = new MultipleRowHeaderWorkStat2(str,inoutCombo.getSelectedItem().toString());
 		js = frame.getWorkVolumeStat2Table();
-		js.setPreferredSize(new Dimension(1150,480));
+		js.setPreferredSize(new Dimension(1300,480));
 		js.setAlignmentY(CENTER_ALIGNMENT);
 		return js;
 	}
@@ -168,7 +168,7 @@ JButton printBtn = new JButton("PRINT");
 		JScrollPane js;
 		MultipleRowHeaderWorkStat2 frame = new MultipleRowHeaderWorkStat2(str,inoutCombo.getSelectedItem().toString());
 		js = frame.getWorkVolumeStat2Table();
-		js.setPreferredSize(new Dimension(1150,480));
+		js.setPreferredSize(new Dimension(1340,480));
 		js.setAlignmentY(CENTER_ALIGNMENT);
 		return js;
 	}
@@ -322,19 +322,19 @@ JButton printBtn = new JButton("PRINT");
 				int totalWeight = 0;
 				for(int j=0;j<COLUM_LENGTH;j++){
 					total[i][j] = new String();
-					if(j==8 || j==9){//hhg total
+					if(j==10 || j==11){//hhg total
 						pushHhgUbTotal(i, j, total, arr, type);
 					}
-					else if(j==18 || j== 19){//ub total
+					else if(j==20 || j== 21){//ub total
 						pushHhgUbTotal(i, j, total, arr, type);
 					}
-					else if(j==20){//total - job
-						pushTotal(8, 18, i, j, total, arr, type);
+					else if(j==22){//total - job
+						pushTotal(10, 20, i, j, total, arr, type);
 					}
-					else if(j==21){// total - weight
-						pushTotal(9, 19, i, j, total, arr, type);
+					else if(j==23){// total - weight
+						pushTotal(11, 21, i, j, total, arr, type);
 					}
-					else if(j==0||j==1 || j==10 ||j==11){//total - normal
+					else if(j==0||j==1 || j==14 ||j==15){//total - normal
 						pushArr(j,i, j, total, arr, type);
 					}
 					else{
@@ -351,19 +351,19 @@ JButton printBtn = new JButton("PRINT");
 				double totalWeight = 0.0;
 				for(int j=0;j<COLUM_LENGTH;j++){
 					total[i][j] = new String();
-					if(j==8 || j==9){//hhg total
+					if(j==10 || j==11){//hhg total
 						pushHhgUbTotal(i, j, total, arr, type);
 					}
-					else if(j==18 || j== 19){//ub total
+					else if(j==20 || j== 21){//ub total
 						pushHhgUbTotal(i, j, total, arr, type);
 					}
-					else if(j==20){//total - job
+					else if(j==22){//total - job
 						pushTotal(8, 18, i, j, total, arr, type);
 					}
-					else if(j==21){// total - weight
+					else if(j==23){// total - weight
 						pushTotal(9, 19, i, j, total, arr, type);
 					}
-					else if(j==0||j==1 || j==10 ||j==11){//total - normal
+					else if(j==0||j==1 || j==14 ||j==15){//total - normal
 						pushArr(j,i, j, total, arr, type);
 					}
 					else{

@@ -146,8 +146,8 @@ public class BranchWorkStatus extends JFrame implements ActionListener{
 				bcn.setLayout(new FlowLayout(FlowLayout.LEFT));
 				bcn.setPreferredSize(new Dimension(0,25));
 			bigCenter.add("Center",center);
-			String[][] initStr = new String[23][20];
-			for(int i=0;i<23;i++){
+			String[][] initStr = new String[25][20];
+			for(int i=0;i<25;i++){
 				for(int k=0;k<20;k++){
 					initStr[i][k] = new String();
 					initStr[i][k] = "";
@@ -160,8 +160,8 @@ public class BranchWorkStatus extends JFrame implements ActionListener{
 		super.add(jp);
 	}
 	public String[][] combine(String[][] ib,String[][] ob){
-		String[][] result = new String[23][20];
-		for(int i=0;i<23;i++){
+		String[][] result = new String[25][20];
+		for(int i=0;i<25;i++){
 			for(int j=0;j<20;j++){
 				if(i<11){
 					result[i][j] = ib[i][j];
@@ -177,11 +177,11 @@ public class BranchWorkStatus extends JFrame implements ActionListener{
 		center.removeAll();
 		WorkVolumeStat1Beans WorkVolumeStat1BeansIn = new WorkVolumeStat1Beans();
 		WorkVolumeStat1Beans WorkVolumeStat1BeansOut = new WorkVolumeStat1Beans();
-		String[][] inboundStr = new String[23][20];
-		String[][] outboundStr = new String[23][20];
-		String[][] finalStr = new String[23][20];
-		String[][] finalCuft = new String[23][20];
-		String[][] tempArr = new String[23][20];
+		String[][] inboundStr = new String[25][20];
+		String[][] outboundStr = new String[25][20];
+		String[][] finalStr = new String[25][20];
+		String[][] finalCuft = new String[25][20];
+		String[][] tempArr = new String[25][20];
 		String scac = scacCombo.getSelectedItem().toString();
 		String area = areaCombo.getSelectedItem().toString();
 		String hhgUb = hhgUbCombo.getSelectedItem().toString();
@@ -372,9 +372,9 @@ public class BranchWorkStatus extends JFrame implements ActionListener{
 		}//for(i)
 	}
 	public void calcurationTotal(String[][] arr,String type){
-		String[][] total = new String[23][20];
+		String[][] total = new String[25][20];
 		if(type.equals("WEIGHT")){
-			for(int i=0;i<23;i++){
+			for(int i=0;i<25;i++){
 				int totalJob=0;
 				int totalWeight = 0;
 				for(int j=0;j<20;j++){
@@ -401,38 +401,38 @@ public class BranchWorkStatus extends JFrame implements ActionListener{
 								arr[i][j] = totalWeight+"";
 							}
 						}
-						if(i>=0 && i<=3  ){
+						if(i>=0 && i<=4  ){
 							pushArr(0, i, j, total, arr, type);
 						}
-						else if(i==4  ){//hhg total
+						else if(i==5  ){//hhg total
 							pushHhgUbTotal(i, j, total, arr, type);
 						}
-						else if(i>=5 && i<=8){
-							pushArr(5, i, j, total, arr, type);
+						else if(i>=6 && i<=9){
+							pushArr(6, i, j, total, arr, type);
 						}
-						else if(i==9){//ub total
+						else if(i==10){//ub total
 							pushHhgUbTotal(i, j, total, arr, type);
 						}
-						else if(i==10){//in total
-							pushTotal(4, 9, i, j, total, arr, type);
+						else if(i==11){//in total
+							pushTotal(5, 10, i, j, total, arr, type);
 						}
-						else if(i>=11 && i<=14  ){
-							pushArr(11, i, j, total, arr, type);
+						else if(i>=12 && i<=16  ){
+							pushArr(12, i, j, total, arr, type);
 						}
-						else if(i==15){//hhg total
+						else if(i==17){//hhg total
 							pushHhgUbTotal(i, j, total, arr, type);
 						}
-						else if(i>=16 && i<=19){
-							pushArr(16, i, j, total, arr, type);
+						else if(i>=18 && i<=21){
+							pushArr(18, i, j, total, arr, type);
 						}
-						else if(i==20){//ub total
+						else if(i==22){//ub total
 							pushHhgUbTotal(i, j, total, arr, type);
 						}
-						else if(i==21){//out total
-							pushTotal(15, 20, i, j, total, arr, type);
+						else if(i==23){//out total
+							pushTotal(17, 22, i, j, total, arr, type);
 						}
-						else if(i==22){//all total
-							pushTotal(10, 21, i, j, total, arr, type);
+						else if(i==24){//all total
+							pushTotal(11, 23, i, j, total, arr, type);
 						}
 				}//for (j)
 			}//for(i)

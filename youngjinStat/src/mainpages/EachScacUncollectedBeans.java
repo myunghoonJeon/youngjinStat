@@ -74,42 +74,42 @@ public class EachScacUncollectedBeans {
 		this.process = process;
 	}
 	public void showInvoiceNo(){
-		System.out.println("[ Invoice No : "+getInvoiceNo()+" ]");
+//		System.out.println("[ Invoice No : "+getInvoiceNo()+" ]");
 	}
 	public void addUncollectedAmount(String money){
 		showInvoiceNo();
-		System.out.println("[ Set Uncollected Amounts : "+money+" ]");
+//		System.out.println("[ Set Uncollected Amounts : "+money+" ]");
 		double temp = Double.parseDouble(checkAmountsNull(getUncollectedAmounts()));
 		temp+=Double.parseDouble(checkAmountsNull(money));
 		setUncollectedAmounts(temp+"");
-		System.out.println("[ Set Uncollected Amounts : "+temp+" ]");
+//		System.out.println("[ Set Uncollected Amounts : "+temp+" ]");
 	}
 	public void addGblQuantity(){
 		gblQuantity++;
 	}
 	public void addShortPaid(String money){
 		showInvoiceNo();
-		System.out.println("[ Input ShortPaid Amounts : "+money+" ]");
+//		System.out.println("[ Input ShortPaid Amounts : "+money+" ]");
 		double temp = Double.parseDouble(checkAmountsNull(getShortpaidAmounts()));
 		temp+=Double.parseDouble(checkAmountsNull(money));
 		setShortpaidAmounts(temp+"");
-		System.out.println("[ Set ShortPaid Amounts : "+temp+" ]");
+//		System.out.println("[ Set ShortPaid Amounts : "+temp+" ]");
 	}
 	public void addAcceptPaid(String money){
 		showInvoiceNo();
-		System.out.println("[ Input AcceptPaid Amounts : "+money+" ]");
+//		System.out.println("[ Input AcceptPaid Amounts : "+money+" ]");
 		double temp = Double.parseDouble(checkAmountsNull(getAcceptedAmounts()));
 		temp+=Double.parseDouble(checkAmountsNull(money));
 		setAcceptedAmounts(temp+"");
-		System.out.println("[ Set AcceptPaid Amounts : "+temp+" ]");
+//		System.out.println("[ Set AcceptPaid Amounts : "+temp+" ]");
 	}
 	public void addClaimPaid(String money){
 		showInvoiceNo();
-		System.out.println("[ Input ClaimPaid Amounts : "+money+" ]");
+//		System.out.println("[ Input ClaimPaid Amounts : "+money+" ]");
 		double temp = Double.parseDouble(checkAmountsNull(getClaimedAmounts()));
 		temp+=Double.parseDouble(checkAmountsNull(money));
 		setClaimedAmounts(temp+"");
-		System.out.println("[ Set ClaimedPaid Amounts : "+temp+" ]");
+//		System.out.println("[ Set ClaimedPaid Amounts : "+temp+" ]");
 	}
 	public String checkAmountsNull(String str){
 		String result;

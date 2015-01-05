@@ -5,24 +5,28 @@ import java.awt.Component;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
+import java.awt.print.Book;
 import java.awt.print.PageFormat;
 import java.awt.print.Paper;
 import java.awt.print.Printable;
 import java.awt.print.PrinterException;
 import java.awt.print.PrinterJob;
+import java.text.MessageFormat;
+import java.util.ArrayList;
 
 import javax.print.attribute.HashPrintRequestAttributeSet;
 import javax.print.attribute.PrintRequestAttributeSet;
 import javax.print.attribute.standard.PrintQuality;
+import javax.swing.JTable;
 
 
 public class PrintSolution {
-
+	
 	protected static BufferedImage printPage;
 	public static BufferedImage getPrintPage() {return printPage;}
 	public static void print(Component frame) {
 		print(0,0,frame,0);	
-	}
+	}	
 	public static void print(int width, int height, Component frame, int orientation) {	
 		
 		PrinterJob printerJob = PrinterJob.getPrinterJob();
@@ -32,22 +36,18 @@ public class PrintSolution {
 		
 		PageFormat format = printerJob.defaultPage();
 		//format = printerJob.pageDialog(format);
-				
-//		System.out.printf("Param Size : %d %d\n", width, height);
-//		System.out.printf("Component Size : %d %d\n", frame.getWidth(), frame.getHeight());
-//		System.out.printf("Format Size : %f %f\n", format.getWidth(), format.getHeight());
-//		System.out.printf("Page Size : %f %f\n", paper.getWidth(), paper.getHeight());
-		
+	
 		format.setOrientation(orientation);
 		format.setPaper(paper);
 		
 		printPage = new BufferedImage(frame.getWidth(), frame.getHeight(), BufferedImage.TYPE_INT_RGB);
-		frame.paint(printPage.getGraphics());
+		frame.printAll(printPage.getGraphics());
 		
 		printerJob.setPrintable(new Printable() {			
 			@Override
 			public int print(Graphics graphics, PageFormat format, int index)
 					throws PrinterException {
+				System.out.println(" index " + index);
 				graphics.translate((int)(format.getImageableX()), (int)(format.getImageableY()));
 				
 				if(index == 0){										
@@ -88,12 +88,111 @@ public class PrintSolution {
 			printAttributes.add(PrintQuality.HIGH);
 			
 			if(printerJob.printDialog(printAttributes)) {
-				printerJob.print(printAttributes);
+				printerJob.print(printAttributes);				
 			}
 		}catch(Exception pe){
 			System.out.println("Printingfailed : "+pe.getMessage());
 		}
 	}
-	
-}
+	public static boolean print(String header, ArrayList<JTable> tables, ArrayList<String> names)// Create the PrintJob object    
+	   { 
+	      if(tables.size() > 0 && tables.size() != names.size()) {      
+	         // parameter error         
+	         return false;
+	      }
+	      
+	      MessageFormat headerMSG = null; 
+	      
+	      MessageFormat footerMSG = null;
+	      
+	      JTable.PrintMode printMode = JTable.PrintMode.FIT_WIDTH;
+	      
+	      boolean showDialog = true; 
+	      
+	      PrinterJob job = PrinterJob.getPrinterJob();
+	      
+	      PageFormat pageFormat = new PageFormat();
+	      pageFormat = job.defaultPage(pageFormat);
+	      pageFormat.setOrientation(PageFormat.LANDSCAPE);
+	      
+	      PrintRequestAttributeSet attr = new HashPrintRequestAttributeSet();
+	      
+	      //job.printDialog(attr);
+	      
+	      Book book = new Book();
+	      Printable printable = null;
+	      
+	      if(job.printDialog(attr))
+	      
+	      try {         
+	         for(int i = 0; i < tables.size(); i++) {
+	            // Print Tables... at each Page..         
+	            headerMSG  = new MessageFormat(header + " " + names.get(i));
+	            System.out.println(header);
+	            System.out.println(names.get(i));
+	            printable = tables.get(i).getPrintable(printMode, headerMSG, footerMSG);
+	            System.out.println("awepfoijaweiofpjaweiof");
+	            System.out.println(tables.get(i).getRowCount());
+//	            job.setPrintable(printable, pageFormat);            
+	            job.setPrintable(printable);
+	            job.print(attr);
+	         }         
 
+	      }
+	      catch(Exception ex) 
+	      {
+	    	 System.out.println(ex.toString());
+	         return false;
+	      }
+	      return true;
+	   }
+//	public static boolean print(String header, ArrayList<JTable> tables, ArrayList<String> names)// Create the PrintJob object    
+//	{ 
+//		if(tables.size() > 0 && tables.size() != names.size()) {		
+//			// parameter error			
+//			return false;
+//		}
+//		
+//		MessageFormat headerMSG = null; 
+//		
+//		MessageFormat footerMSG = null;
+//		
+//		JTable.PrintMode printMode = JTable.PrintMode.FIT_WIDTH;
+//		
+//		boolean showDialog = true; 
+//		
+//		PrinterJob job = PrinterJob.getPrinterJob();
+//		
+//		PageFormat pageFormat = new PageFormat();
+//		pageFormat = job.defaultPage(pageFormat);
+//		pageFormat.setOrientation(PageFormat.LANDSCAPE);
+//		
+//		PrintRequestAttributeSet attr = new HashPrintRequestAttributeSet();
+//		
+//		//job.printDialog(attr);
+//		
+//		Book book = new Book();
+//		Printable printable = null;
+//		
+//		if(job.printDialog(attr))
+//		
+//		try {			
+//			for(int i = 0; i < tables.size(); i++) {
+//				// Print Tables... at each Page..		
+//
+//				System.out.println("print test");
+//				headerMSG  = new MessageFormat(header + " " + names.get(i));
+//				printable = tables.get(i).getPrintable(printMode, headerMSG, footerMSG);
+//							
+//				job.setPrintable(printable);
+//				job.print(attr);
+//				
+//			}			
+//		}
+//		catch(Exception ex) 
+//		{
+//			return false;
+//		}
+//		return true;
+//	}	
+}

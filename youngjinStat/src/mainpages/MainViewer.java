@@ -77,6 +77,7 @@ public class MainViewer extends JFrame implements ActionListener,Printable{
 	private JButton totalInvoiceCollectionStatusForAllScacByEachScac =  new JButton("[ TOTAL (IN/OUT) INVOICE & COLLECTION STATUS FOR ALL SCAC & BY EACH SCAC (GBL BASE) ]");
 	private JButton uncollectedPeriodStatusForAllScacByEachScacGbl = new JButton("[ UNCOLLECTED PERIOD STATUS FOR ALL SCAC & BY EACH SCAC  (GBL BASE) ]");
 	private JButton acceptedAmountsStatusForAllScacByEachScacGblBtn = new JButton("[ ACCEPTED AMOUNTS STATUS FOR ALL SCAC & BY EACH SCAC  (GBL BASE)  ]");
+	private JButton invoiceCollectionStatusByPaidBtn = new JButton("[ INVOICE COLLECTION STATUS ( PAID ) ]");
 	private JButton adminBtn = new JButton("[ ADMIN PAGE ]");
 	/*************************[ INVENTORY INPUT ]*****************************/
 	private JPanel inventoryMainPanel;
@@ -311,7 +312,7 @@ public class MainViewer extends JFrame implements ActionListener,Printable{
 		levelCenterPanel = new JPanel();
 		autoCreateBorderLayout(jp, 150, 150 , 10, 50);
 		jp.add("Center",levelCenterPanel);
-		levelCenterPanel.setLayout(new GridLayout(9,0,10,10));
+		levelCenterPanel.setLayout(new GridLayout(10,0,10,10));
 		JLabel level1InformationLabel = new JLabel("[ SELECT MENU ]");
 		levelCenterPanel.add(level1InformationLabel);
 		levelCenterPanel.add(invoiceCollectionStatusBtn);
@@ -321,6 +322,7 @@ public class MainViewer extends JFrame implements ActionListener,Printable{
 		levelCenterPanel.add(uncollectedPeriodStatusForAllScacByEachScacInvoiceBtn);
 		levelCenterPanel.add(uncollectedPeriodStatusForAllScacByEachScacGbl);		
 		levelCenterPanel.add(acceptedAmountsStatusForAllScacByEachScacGblBtn);
+		levelCenterPanel.add(invoiceCollectionStatusByPaidBtn);
 		levelCenterPanel.add(adminBtn);
 		validate();
 	}
@@ -515,6 +517,7 @@ public class MainViewer extends JFrame implements ActionListener,Printable{
 		totalInvoiceCollectionStatusForAllScacByEachScac.addActionListener(this);
 		uncollectedPeriodStatusForAllScacByEachScacGbl.addActionListener(this);
 		acceptedAmountsStatusForAllScacByEachScacGblBtn.addActionListener(this);
+		invoiceCollectionStatusByPaidBtn.addActionListener(this);
 		adminBtn.addActionListener(this);
 		printBtn.addActionListener(this);
 	}
@@ -567,6 +570,9 @@ public class MainViewer extends JFrame implements ActionListener,Printable{
 	}
 	public void adminPage(){
 		AdminPage ap = new AdminPage();
+	}
+	public void InvoiceCollectionStatusByPaid(){
+		InvoiceCollectionStatusByPaid icsp = new InvoiceCollectionStatusByPaid();
 	}
 	public void print(){
 		frameToPrint = (JFrame)super.getFrames()[0];
@@ -729,6 +735,9 @@ public class MainViewer extends JFrame implements ActionListener,Printable{
 		}
 		else if(e.getSource() == acceptedAmountsStatusForAllScacByEachScacGblBtn){
 			eachScacAcceptedAmountStatusGblBtn();
+		}
+		else if(e.getSource() == invoiceCollectionStatusByPaidBtn){
+			InvoiceCollectionStatusByPaid();
 		}
 		else if(e.getSource() == adminBtn){
 			adminPage();

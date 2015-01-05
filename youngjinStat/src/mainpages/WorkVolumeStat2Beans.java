@@ -5,7 +5,7 @@ import java.util.HashMap;
 
 public class WorkVolumeStat2Beans {
 	/******************[define parameter]************************/
-	int COLUM_LENGTH = 22;
+	int COLUM_LENGTH = 24;
 	CL_DAO_DB_Mysql dao = new CL_DAO_DB_Mysql();
 	ArrayList<String> scacList = dao.getScacList();
 	int rowSize = scacList.size()+1;
@@ -33,6 +33,7 @@ public class WorkVolumeStat2Beans {
 	}
 	
 	public String setWeightData(String gblno,String code,String scac,String jobValue,String weightValue,String cuft){
+		System.out.println("code : "+code+"  scac : "+scac+"  glbno : "+gblno);
 		String column = hashMapColumn.get(code);
 		int job = Integer.parseInt(column)-1;
 		int weight = Integer.parseInt(column);
@@ -94,10 +95,11 @@ public class WorkVolumeStat2Beans {
 			hsm.put("3","1");
 			hsm.put("4","1");
 			hsm.put("5","3");
-			hsm.put("T","5");
-			hsm.put("7","11");
-			hsm.put("8","13");
-			hsm.put("J","15");
+			hsm.put("6", "5");
+			hsm.put("T","7");
+			hsm.put("7","13");
+			hsm.put("8","15");
+			hsm.put("J","17");
 		}
 		else{
 			String scac="";

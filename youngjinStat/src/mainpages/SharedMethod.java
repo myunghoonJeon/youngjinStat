@@ -32,6 +32,8 @@ public class SharedMethod {
 			return "0";
 		}
 	}
+	//Could not get JDBC Connection; nested exception is org.apache.commons.dbcp.SQLNestedException: Cannot create PoolableConnectionFactory 
+	//(null, message from server: "Host '203.249.22.70' is not allowed to connect to this MySQL server")
 	//*************************************************************************//
 	public String getRoundValue(String str,int flag){
 		String result ="";
@@ -69,4 +71,5 @@ public class SharedMethod {
 	public int whereflagChange(int flag){
 		return 1;
 	}
+	
 }

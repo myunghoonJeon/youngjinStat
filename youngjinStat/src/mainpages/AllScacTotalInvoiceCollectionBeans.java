@@ -4,12 +4,12 @@ import java.text.DecimalFormat;
 
 public class AllScacTotalInvoiceCollectionBeans {
 	private String carrier="";
-	private String totalAmount="";
-	private String DepositAmount="";
-	private String AcceptAmount="";
-	private String ClaimeAmount="";
-	private String unCollectedAmount="";
-	private String netCollectedAmount="";
+	private String totalAmount="0";
+	private String DepositAmount="0";
+	private String AcceptAmount="0";
+	private String ClaimeAmount="0";
+	private String unCollectedAmount="0";
+	private String netCollectedAmount="0";
 	public String getUnCollectedAmount() {
 		return unCollectedAmount;
 	}
@@ -52,37 +52,63 @@ public class AllScacTotalInvoiceCollectionBeans {
 	public void setAcceptAmount(String acceptAmount) {
 		AcceptAmount = acceptAmount;
 	}
-	public void setValue(String state,String collect){
-		if(state.equals("ACCEPT")){
-			double origin = getRoundValue(getAcceptAmount());
-			origin+=getRoundValue(collect);
-			setAcceptAmount(origin+"");
+	public void setValue(String totalAmount,String state,String collect,String minus){
+		if(state==null){
+//			System.out.println("이거되??");
+			double unOrigin = getRoundValue(getUnCollectedAmount());
+			unOrigin+=getRoundValue(totalAmount);
+			setUnCollectedAmount(unOrigin+"");
 		}
-		else if(state.equals("DEPOSIT")){
-			double origin = getRoundValue(getDepositAmount());
-			origin+=getRoundValue(collect);
-			setDepositAmount(origin+"");
+		else{
+			if(state.equals("ACCEPT")){
+				double origin = getRoundValue(getAcceptAmount());
+				origin+=getRoundValue(collect);
+				setAcceptAmount(origin+"");
+				double unOrigin = getRoundValue(getUnCollectedAmount());
+				if(getRoundValue(collect)<0){
+					
+				}
+				else{
+					unOrigin-=getRoundValue(collect);
+				}
+				setUnCollectedAmount(unOrigin+"");
+			}
+			else if(state.equals("DEPOSIT")){
+				double origin = getRoundValue(getDepositAmount());
+				origin+=getRoundValue(collect);
+				setDepositAmount(origin+"");
+				if(getRoundValue(minus)>0){
+					double unOrigin = getRoundValue(getUnCollectedAmount());
+					unOrigin+=getRoundValue(minus);
+					setUnCollectedAmount(unOrigin+"");
+				}
+			}
+			else if(state.equals("CLAIME")){
+				double origin = getRoundValue(getClaimeAmount());
+				origin+=getRoundValue(collect);
+				setClaimeAmount(origin+"");
+			}
+			else if(state.equals("TOTAL")){
+				double origin = getRoundValue(getTotalAmount());
+				origin+=getRoundValue(collect);
+				setTotalAmount(origin+"");
+			}	
 		}
-		else if(state.equals("CLAIME")){
-			double origin = getRoundValue(getClaimeAmount());
-			origin+=getRoundValue(collect);
-			setClaimeAmount(origin+"");
-		}
-		else if(state.equals("TOTAL")){
-			double origin = getRoundValue(getTotalAmount());
-			origin+=getRoundValue(collect);
-			setTotalAmount(origin+"");
-		}
+		
 	}
 	public void calcurateValue(){
 		double net;
-		double unCollectedAmount;
+		double unCollectedAmount = getRoundValue(getUnCollectedAmount());
 		double total = getRoundValue(getTotalAmount());
 		double deposit = getRoundValue(getDepositAmount());
 		double accept = getRoundValue(getAcceptAmount());
 		double claime = getRoundValue(getClaimeAmount());
-		unCollectedAmount = total - deposit;
-		setUnCollectedAmount(unCollectedAmount+"");
+		
+		if(deposit==0 && unCollectedAmount==0){
+			System.out.println("이건??? : "+getCarrier());
+			setUnCollectedAmount(totalAmount);
+			unCollectedAmount =total;
+		}
 		net = total-unCollectedAmount - accept - claime;
 		setNetCollectedAmount(net+"");
 //		net = total-deposit-accept-claime;

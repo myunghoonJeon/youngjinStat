@@ -11,11 +11,20 @@ package mainpages;
 public class InvoiceFilteringBeans {
 	String invoiceNo="";
 	String invoicedDate="";
-	String invoicedAmounts="";
+	String invoicedAmounts="0.0";
 	String collectedAmounts="0.0";
-	String unCollectedAmounts="";
+	String unCollectedAmounts="0.0";
 	String net="0.0";
-	
+	String state="";
+	public String getState() {
+		return state;
+	}
+	public void setState(String state) {
+		if(state==null){
+			this.state="";
+		}
+		this.state = state;
+	}
 	public String getNet() {
 		return net;
 	}
@@ -39,7 +48,6 @@ public class InvoiceFilteringBeans {
 	}
 	public void setInvoicedAmounts(String invoicedAmounts) {
 		this.invoicedAmounts = invoicedAmounts;
-		this.unCollectedAmounts = invoicedAmounts;
 	}
 	public String getCollectedAmounts() {
 		return collectedAmounts;

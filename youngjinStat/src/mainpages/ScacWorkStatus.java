@@ -74,8 +74,6 @@ JButton printBtn = new JButton("PRINT");
 	public void addActionListner(){
 		searchBtn.addActionListener(this);
 		printBtn.addActionListener(this);
-		printBtn.addActionListener(this);
-		
 	}
 	
 	public void autoCreateBorderLayout(JPanel a,int wx, int ex, int ny, int sy){
@@ -491,10 +489,10 @@ JButton printBtn = new JButton("PRINT");
 			getResult();
 		}//if
 		else if(e.getSource() == printBtn){
+			System.out.println("print call");
 			PrintSolution ps = new PrintSolution();
 			ps.print(this);
 		}
-		
 	}//method
 	
 	public void setTableColumnSize(JTable table,int colNum, int size){

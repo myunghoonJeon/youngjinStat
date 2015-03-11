@@ -155,7 +155,7 @@ public class WorkVolumeStat1Beans {
 			hsm.put("TDC","7");
 			hsm.put("UJB","9");
 			hsm.put("TG","11");
-			hsm.put("BS","13");
+			hsm.put("PS","13");
 			hsm.put("KS","15");
 			hsm.put("OTHER","17");
 		}

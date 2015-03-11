@@ -74,9 +74,9 @@ public class WorkStat1GroupableColumnExample extends JFrame {
             ColumnGroup tg = new ColumnGroup("TG");
             tg.add(cm.getColumn(10));
             tg.add(cm.getColumn(11));
-            ColumnGroup bs = new ColumnGroup("BS");
-            bs.add(cm.getColumn(12));
-            bs.add(cm.getColumn(13));
+            ColumnGroup ps = new ColumnGroup("PS");
+            ps.add(cm.getColumn(12));
+            ps.add(cm.getColumn(13));
             ColumnGroup ks = new ColumnGroup("KS");
             ks.add(cm.getColumn(14));
             ks.add(cm.getColumn(15));
@@ -93,7 +93,7 @@ public class WorkStat1GroupableColumnExample extends JFrame {
             cm.addColumnGroup(tdc);
             cm.addColumnGroup(ujb);
             cm.addColumnGroup(tg);
-            cm.addColumnGroup(bs);
+            cm.addColumnGroup(ps);
             cm.addColumnGroup(ks);
             cm.addColumnGroup(other);
             cm.addColumnGroup(total);

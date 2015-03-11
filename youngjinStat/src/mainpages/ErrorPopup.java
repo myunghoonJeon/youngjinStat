@@ -22,8 +22,8 @@ public class ErrorPopup extends JFrame implements ActionListener{
 	public ErrorPopup(String title,String msg){
 		super(title);
 		super.setVisible(true);
-		super.setResizable(false);
-		super.setSize(500,700);
+		super.setResizable(true);
+		super.setSize(800,500);
 		Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
 		Dimension frm = super.getSize();
 		int y = (int)(screen.height/2 - frm.height/2);

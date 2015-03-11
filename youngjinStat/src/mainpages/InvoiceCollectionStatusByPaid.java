@@ -28,11 +28,15 @@ import javax.swing.table.TableRowSorter;
 
 public class InvoiceCollectionStatusByPaid extends JFrame implements ActionListener {
 	////////////////////////////////////////////////////////////////
+	JTable printTable=new JTable();
+	String title="";
+	ArrayList<JTable> printArr = new ArrayList<>();
+	ArrayList<String> nameArr = new ArrayList<>();
 	ArrayList<InvoiceCollectionStatusByPaidBeans> list;
 	////////////////////////////////////////////////////////////////
 	int superWide = 1200;
 	int superHeight = 700;
-
+	
 	// //////////////////////////////////////////////////////////////
 	CL_DAO_DB_Mysql dao = new CL_DAO_DB_Mysql();
 //	JComboBox areaCombo = new JComboBox(dao.getAreaList2().toArray());
@@ -156,7 +160,7 @@ public class InvoiceCollectionStatusByPaid extends JFrame implements ActionListe
 		autoCreateBorderLayout(jp, 10, 10, 30, 30);
 		JScrollPane js = new JScrollPane();
 		ArrayList<InvoiceCollectionStatusByPaidBeans> ifb = new ArrayList<>();
-		js = getTable(ifb);
+		js = getTable(ifb,0);
 		jp.add("Center",js);
 		validate();
 	}
@@ -176,14 +180,14 @@ public class InvoiceCollectionStatusByPaid extends JFrame implements ActionListe
    		result = new DecimalFormat("#,##0.00").format(d);
    		return result;
    	}
-	public JScrollPane getTable(ArrayList<InvoiceCollectionStatusByPaidBeans> arr){
+	public JScrollPane getTable(ArrayList<InvoiceCollectionStatusByPaidBeans> arr,int flag){
 //		InvoiceCollectionStatusByPaid icsp = new InvoiceCollectionStatusByPaid();
 		InvoiceCollectionStatusByPaidBeans paidBean = new InvoiceCollectionStatusByPaidBeans();
 		InvoiceCollectionStatusByPaidGblBeans gBean = new InvoiceCollectionStatusByPaidGblBeans();
 		double ta=0;
 		double tc=0;
 		double tuc=0;
-		String colName[] = {"PAID DATE","SCAC","INVOICE DATE","INVOICE NO","GBL NO","AMOUNT","PAID AMOUNT"};
+		String colName[] = {"PAID DATE","SCAC","INVOICE DATE","INVOICE NO","INVOICE AMOUNT","GBL NO","GBL AMOUNT","PAID AMOUNT"};
 		DefaultTableCellRenderer dtcr = new DefaultTableCellRenderer();
 		DefaultTableModel model;
 		if(arr.size()==0){
@@ -205,12 +209,12 @@ public class InvoiceCollectionStatusByPaid extends JFrame implements ActionListe
 //			}
 			for(int i=0;i<arr.size();i++){
 				paidBean = arr.get(i);
-				String[] row = {paidBean.getDate(),paidBean.getTsp(),paidBean.getInvoiceDate(),paidBean.getInvoiceNo(),paidBean.getGblList().get(0).getGblNo(),
+				String[] row = {paidBean.getDate(),paidBean.getTsp(),paidBean.getInvoiceDate(),paidBean.getInvoiceNo(),paidBean.getInvoiceAmount(),paidBean.getGblList().get(0).getGblNo(),
 						getRoundValue(paidBean.getGblList().get(0).getAmount()),getRoundValue(paidBean.getGblList().get(0).getPaidAmount())};
 				model.addRow(row);
 				for(int j=1;j<paidBean.getGblList().size();j++){
 					gBean = paidBean.getGblList().get(j);
-					String[] gblRow ={"-","-","-","-",gBean.getGblNo(),getRoundValue(gBean.getAmount()),getRoundValue(gBean.getPaidAmount())};
+					String[] gblRow ={"-","-","-","-","-",gBean.getGblNo(),getRoundValue(gBean.getAmount()),getRoundValue(gBean.getPaidAmount())};
 					model.addRow(gblRow);
 				}
 			}
@@ -229,6 +233,14 @@ public class InvoiceCollectionStatusByPaid extends JFrame implements ActionListe
 		for(int i=0;i<colName.length;i++){
 			tcm.getColumn(i).setCellRenderer(dtcr);
 		}
+		if(flag==1){
+			printArr.clear();
+			nameArr.clear();
+			printTable = table;
+			printArr.add(printTable);
+			System.out.println(printTable.getRowCount());
+			nameArr.add("");
+		}
 		validate();
 		return scrollpane;
 	}
@@ -242,7 +254,7 @@ public class InvoiceCollectionStatusByPaid extends JFrame implements ActionListe
 		list = dao.getInvoiceCollectionStatusByPaid(begin,end,scac,gbl);
 		center.removeAll();
 		autoCreateBorderLayout(center, 10, 10, 30, 30);
-		center.add("Center",getTable(list));
+		center.add("Center",getTable(list,1));
 		validate();
 	}
 	
@@ -250,11 +262,11 @@ public class InvoiceCollectionStatusByPaid extends JFrame implements ActionListe
 	public void actionPerformed(ActionEvent e) {
 		if(e.getSource()==searchBtn){
 			cutoffLabel.setText(endPeriod.getText());
+			title = "INVOICE COLLECTION (PAID) [SCAC : "+scacCombo.getSelectedItem()+"][PERIOD:"+startPeriod.getText()+"~"+endPeriod.getText()+"]";
 			setFilteringInformation();
 		}
 		else if(e.getSource() == printBtn){
-			PrintSolution ps = new PrintSolution();
-			ps.print(this);
+			PrintSolution.print(title,printArr,nameArr);
 		}
 	}
 	

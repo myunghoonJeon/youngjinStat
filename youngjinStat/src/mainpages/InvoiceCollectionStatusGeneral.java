@@ -31,7 +31,8 @@ import javax.swing.table.TableRowSorter;
 import WorkVolumeStat1.MultipleRowHeaderExample;
 
 public class InvoiceCollectionStatusGeneral extends JFrame implements ActionListener{
-
+	JTable printTabnle = new JTable();
+	String title="";
 	// //////////////////////////////////////////////////////////////
 	int superWide = 1200;
 	int superHeight = 700;
@@ -44,12 +45,13 @@ public class InvoiceCollectionStatusGeneral extends JFrame implements ActionList
 //	JComboBox codeCombo = new JComboBox(dao.getCodeList().toArray());
 	JComboBox hhgUbCombo = new JComboBox(dao.getHhgUbList().toArray());
 	JComboBox dateCombo = new JComboBox(dao.getDateList().toArray());
-	JComboBox statusCombo = new JComboBox(dao.getStatusList().toArray());
+//	JComboBox statusCombo = new JComboBox(dao.getStatusList().toArray());
 	JButton searchBtn = new JButton("SEARCH");
 	JButton printBtn = new JButton("PRINT");
 	JTextField startPeriod = new JTextField("", 8);
 	JTextField endPeriod = new JTextField("", 8);
 	JPanel center;
+	
 	// //////////////////////////////////////////////////////////////
 	JPanel mainCenter = new JPanel();
 	JPanel north = new JPanel();
@@ -130,8 +132,8 @@ public class InvoiceCollectionStatusGeneral extends JFrame implements ActionList
 //		northUp.add(codeCombo);
 //		northUp.add(new JLabel("DATE:"));
 //		northUp.add(dateCombo);
-		northUp.add(new JLabel("STATUS"));
-		northUp.add(statusCombo);
+//		northUp.add(new JLabel("STATUS"));
+//		northUp.add(statusCombo);
 		northUp.add(new JLabel("Period:"));
 		northUp.add(startPeriod);
 		northUp.add(new JLabel("~"));
@@ -188,12 +190,13 @@ public class InvoiceCollectionStatusGeneral extends JFrame implements ActionList
 		else{
 			model = new DefaultTableModel(colName,0);
 			for(int i=0;i<arr.size();i++){
+
 				InvoiceFilteringBeans ifb = arr.get(i);
+				
 				String tempAmounts = getRoundValue(getDoubleValue(ifb.getInvoicedAmounts()+""));
 				String tempNet= getRoundValue(getDoubleValue(ifb.getNet()+""));
 				String tempUncollected = getRoundValue(getDoubleValue(ifb.getUnCollectedAmounts()+""));
 				String[] row = {ifb.getInvoiceNo(),ifb.getInvoicedDate(),tempAmounts,tempNet,tempUncollected};
-				
 				model.addRow(row);
 				ta+=getDoubleValue(ifb.getInvoicedAmounts());
 				tc+=getDoubleValue(ifb.getNet());
@@ -216,6 +219,7 @@ public class InvoiceCollectionStatusGeneral extends JFrame implements ActionList
 		for(int i=0;i<colName.length;i++){
 			tcm.getColumn(i).setCellRenderer(dtcr);
 		}
+		printTabnle = table;
 		validate();
 		return scrollpane;
 	}
@@ -229,12 +233,13 @@ public class InvoiceCollectionStatusGeneral extends JFrame implements ActionList
 //		String date = "ALL";
 		String begin = startPeriod.getText();
 		String end = endPeriod.getText();
-		String status = statusCombo.getSelectedItem().toString();
+//		String status = statusCombo.getSelectedItem().toString();
 //		String status="ALL";
-		arr = dao.getInvoiceCollectionFiltering(scac, inOut, begin, end, status);
+		arr = dao.getInvoiceCollectionFiltering(scac, inOut, begin, end, "ALL");
 		center.removeAll();
 		autoCreateBorderLayout(center, 10, 10, 30, 30);
 		center.add("Center",getTable(arr));
+		title="INVOICE & COLLECTION STATUS(GENERAL) [SCAC : "+scacCombo.getSelectedItem()+"][PROCESS : "+inoutCombo.getSelectedItem()+"][PERIOD : "+startPeriod.getText()+"~"+endPeriod.getText()+"]";
 		validate();
 	}
 	
@@ -245,8 +250,14 @@ public class InvoiceCollectionStatusGeneral extends JFrame implements ActionList
 			setFilteringInformation();
 		}
 		else if(e.getSource() == printBtn){
-			PrintSolution ps = new PrintSolution();
-			ps.print(this);
+			System.out.println(title);
+			ArrayList<String> headersArr = new ArrayList<>();
+			ArrayList<JTable> tableArr = new ArrayList<>();
+			tableArr.add(printTabnle);
+			headersArr.add("");
+			PrintSolution.print(title, tableArr, headersArr);
+//			PrintSolution ps = new PrintSolution();
+//			PrintSolution.print(title,)
 		}
 	}
 	

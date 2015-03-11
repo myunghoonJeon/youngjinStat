@@ -9,6 +9,7 @@ import java.awt.GridLayout;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.lang.reflect.Array;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 
@@ -30,7 +31,10 @@ import javax.swing.table.TableRowSorter;
 import EachScacInvoiceCollection.GroupableColumnEachscacInvoice;
 
 public class InvoiceCollectionStatusByEachScacOnly extends JFrame implements ActionListener{
+	String title;
 	CL_DAO_DB_Mysql dao = new CL_DAO_DB_Mysql();
+	JTable printTable = new JTable();
+	SharedPrint sp = new SharedPrint();
 	////////////////////////////////////////////////////////////////
 	int superWide = 1200;
 	int superHeight = 700;
@@ -242,6 +246,9 @@ public class InvoiceCollectionStatusByEachScacOnly extends JFrame implements Act
 		setTableColumnWidth(tcm);
 		js.setPreferredSize(new Dimension(1150,550));
 		center.add(js);
+//		sp.setPrintTable(table);
+		printTable = table;
+		sp.addName("");
 		validate();
 		return js;
 	}
@@ -283,6 +290,7 @@ public class InvoiceCollectionStatusByEachScacOnly extends JFrame implements Act
 		String inOut = inoutCombo.getSelectedItem().toString();
 		list.clear();
 		list = dao.getEachScacInvoiceCollection(scac, inOut, code, begin, end);
+		title = "INVOICE & COLLECTION STATUS BY EACH SCAC ONLY [SCAC : "+scacCombo.getSelectedItem()+"][PROCESS : "+inoutCombo.getSelectedItem()+"][PERIOD : "+begin+"~"+end+"]";
 		tableLayout(js,list);
 		validate();
 	}
@@ -296,8 +304,12 @@ public class InvoiceCollectionStatusByEachScacOnly extends JFrame implements Act
 			validate();
 		}//if
 		else if(e.getSource() == printBtn){
-			PrintSolution ps = new PrintSolution();
-			ps.print(this);
+			ArrayList<JTable> printArr = new ArrayList<>();
+			ArrayList<String> nameArr = new ArrayList<>();
+			nameArr.add("");
+			printArr.add(printTable);
+			PrintSolution.print(title,printArr ,nameArr);
+			
 		}
 	}//method
 	

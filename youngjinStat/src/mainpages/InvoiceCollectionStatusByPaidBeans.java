@@ -7,6 +7,14 @@ public class InvoiceCollectionStatusByPaidBeans {
 	private String tsp;
 	private String invoiceDate;
 	private String invoiceNo;
+	private String invoiceAmount;
+	public String getInvoiceAmount() {
+		return invoiceAmount;
+	}
+
+	public void setInvoiceAmount(String invoiceAmount) {
+		this.invoiceAmount = invoiceAmount;
+	}
 	private ArrayList<InvoiceCollectionStatusByPaidGblBeans> gblList;
 	
 	public InvoiceCollectionStatusByPaidBeans() {
@@ -47,4 +55,5 @@ public class InvoiceCollectionStatusByPaidBeans {
 	public void addGbl(InvoiceCollectionStatusByPaidGblBeans gbl){
 		gblList.add(gbl);
 	}
+	
 }

@@ -1,7 +1,6 @@
 package mainpages;
 
 import java.awt.BorderLayout;
-
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
@@ -32,6 +31,15 @@ import EachScacUncollectedStatus.GroupableColumnEachscacUncollectedStatus;
 public class UncollectedPeriodStatusForAllScacByEachScacInvoice extends JFrame implements ActionListener {
 	GroupableColumnEachscacUncollectedStatus geus;
 	CL_DAO_DB_Mysql dao = new CL_DAO_DB_Mysql();
+	SharedPrint sp = new SharedPrint();
+	JTable printTable1=new JTable();
+	JTable printTable2=new JTable();
+	JTable printTable3=new JTable();
+	JTable printTable4=new JTable();
+	JTable printTable5=new JTable();
+	String title="";
+	ArrayList<JTable> printArr = new ArrayList<>();
+	ArrayList<String> nameArr = new ArrayList<>();
 	////////////////////////////////////////////////////////////////
 	int superWide = 1200;
 	int superHeight = 800;
@@ -319,7 +327,7 @@ public class UncollectedPeriodStatusForAllScacByEachScacInvoice extends JFrame i
 		 gtCl=0.0;
 		 gtNu=0.0;
 	}
-	public JScrollPane getJscrollPane(ArrayList<EachScacUncollectedBeans> esic,String criteria){
+	public JScrollPane getJscrollPane(ArrayList<EachScacUncollectedBeans> esic,String criteria,int checksum){
 		JScrollPane jsp = new JScrollPane();
 		String colName[] = {"Date","Invoice No","Quantity(GBL)","Invoiced Amount","Collected","Uncollected","Short Paid","Accepted","Claimed","Net Uncollected"};
 		DefaultTableCellRenderer dtcr = new DefaultTableCellRenderer();
@@ -412,7 +420,7 @@ public class UncollectedPeriodStatusForAllScacByEachScacInvoice extends JFrame i
 			else{
 				System.out.println("DATE DIFF NULL !! : "+invoiceNo);
 			}
-		}
+		}//for
 //		System.out.println("TEST VALUE : "+testValue);
 		if(flag !=0){
 			model.addRow(new String[]{"Total","",(int)tQ+"",getRoundValue(tIa),getRoundValue(tC),getRoundValue(tUc),getRoundValue(tS),getRoundValue(tA),getRoundValue(tCl),getRoundValue(tNu)});
@@ -435,6 +443,39 @@ public class UncollectedPeriodStatusForAllScacByEachScacInvoice extends JFrame i
 			gtCl += tCl;
 			gtNu += tNu;
 //			System.out.println("LAST GTIA : "+gtIa);
+		}
+		if(criteria.equals("15") && checksum==1){
+			printTable1 = table;
+			printArr.add(printTable1);
+			sp.addTable(table);
+			nameArr.add("P <= 15");
+		}
+		else if(criteria.equals("1530") && checksum==1){
+			printTable2 = table;
+			printArr.add(printTable2);
+			sp.addTable(table);
+			nameArr.add("15 < p <=30");
+		}
+		else if(criteria.equals("3045") && checksum==1){
+			printTable3 = table;
+			printArr.add(printTable3);
+			sp.addTable(table);
+			nameArr.add("30 < p <=45");
+		}
+		else if(criteria.equals("45") && checksum==1){
+			printTable4 = table;
+			printArr.add(printTable4);
+			sp.addTable(table);
+			nameArr.add("45 < p");
+		}
+		else if(criteria.equals("total") && checksum==1){
+			printTable5 = table;
+			printArr.add(printTable5);
+			sp.addTable(table);
+			nameArr.add("total");
+		}
+		else{
+			System.out.println("??????");
 		}
 		return scrollpane;
 	}
@@ -495,11 +536,11 @@ public class UncollectedPeriodStatusForAllScacByEachScacInvoice extends JFrame i
 //		GroupableColumnEachscacUncollectedStatus ge = new GroupableColumnEachscacUncollectedStatus(esub15, "15");
 //		table1515.setPreferredSize(new Dimension(800,100));
 //		System.out.println("table15 reset");
-		p15Table.add(getJscrollPane(esub15,"15"));
-		p1530Table.add(getJscrollPane(esub15,"1530"));
-		p3045Table.add(getJscrollPane(esub15,"3045"));
-		p45Table.add(getJscrollPane(esub15,"45"));
-		totalPanelc.add(getJscrollPane(esub15, "total"));
+		p15Table.add(getJscrollPane(esub15,"15",0));
+		p1530Table.add(getJscrollPane(esub15,"1530",0));
+		p3045Table.add(getJscrollPane(esub15,"3045",0));
+		p45Table.add(getJscrollPane(esub15,"45",0));
+		totalPanelc.add(getJscrollPane(esub15, "total",0));
 //		p15Table.add(table1515);
 //		tableLayout(js,esub);
 		
@@ -526,11 +567,11 @@ public class UncollectedPeriodStatusForAllScacByEachScacInvoice extends JFrame i
 //		GroupableColumnEachscacUncollectedStatus ge = new GroupableColumnEachscacUncollectedStatus(esub15, "15");
 //		table1515.setPreferredSize(new Dimension(800,100));
 //		System.out.println("table15 reset");
-		p15Table.add(getJscrollPane(esub15,"15"));
-		p1530Table.add(getJscrollPane(esub15,"1530"));
-		p3045Table.add(getJscrollPane(esub15,"3045"));
-		p45Table.add(getJscrollPane(esub15,"45"));
-		totalPanelc.add(getJscrollPane(esub15,"total"));
+		p15Table.add(getJscrollPane(esub15,"15",1));
+		p1530Table.add(getJscrollPane(esub15,"1530",1));
+		p3045Table.add(getJscrollPane(esub15,"3045",1));
+		p45Table.add(getJscrollPane(esub15,"45",1));
+		totalPanelc.add(getJscrollPane(esub15,"total",1));
 //		p15Table.add(table1515);
 //		tableLayout(js,esub);
 		
@@ -545,6 +586,8 @@ public class UncollectedPeriodStatusForAllScacByEachScacInvoice extends JFrame i
 	public void actionPerformed(ActionEvent e) {
 		ArrayList<GblBeans> list = new ArrayList<>();
 		if(e.getSource() == searchBtn){
+			printArr.clear();
+			nameArr.clear();
 			cutOffDate.setText(endPeriod.getText());
 			if(inoutCombo.getSelectedItem().equals("IN")){
 				informationLabel.setText("EACH SCAC INBOUND UNCOLLECTION STATUS (invoice base) 　　　　cut off date : ");
@@ -562,8 +605,8 @@ public class UncollectedPeriodStatusForAllScacByEachScacInvoice extends JFrame i
 		}//if
 		else if(e.getSource() == printBtn){
 			System.out.println("print CLICK");
-			PrintSolution ps = new PrintSolution();
-			ps.print(this);
+			title = "UNCOLLECTED PERIOD STATUS FOR ALL SCAC & BY EACH SCAC(INVOICE BASE) [SCAC : "+scacCombo.getSelectedItem()+"][PROCESS : "+inoutCombo.getSelectedItem()+"][CODE:"+codeCombo.getSelectedItem()+"][PERIOD:"+beginPeriod.getText()+"~"+endPeriod.getText()+"]";
+			PrintSolution.print(title,printArr,nameArr);
 		}
 	}//method
 	

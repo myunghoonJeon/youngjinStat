@@ -75,7 +75,7 @@ public class TotalInvoiceCollectionStatusForAllScacByEachScac extends JFrame imp
 	}
 	
 	public void initHash(){
-		inboundMap.put("3", "0");
+		/*inboundMap.put("3", "0");
 		inboundMap.put("4", "0");
 		inboundMap.put("5", "1");
 		inboundMap.put("T", "2");
@@ -101,6 +101,35 @@ public class TotalInvoiceCollectionStatusForAllScacByEachScac extends JFrame imp
 		outboundMap.put("totalUb", "20");
 		outboundMap.put("totalOut", "21");
 		outboundMap.put("total", "22");
+		*/
+		inboundMap.put("3", "0");
+		inboundMap.put("4", "0");
+		inboundMap.put("5", "1");
+		inboundMap.put("6", "2");
+		inboundMap.put("T", "3");
+		inboundMap.put("otherHhg", "4");
+		inboundMap.put("total", "5");
+		inboundMap.put("7", "6");
+		inboundMap.put("8", "7");
+		inboundMap.put("J", "8");
+		inboundMap.put("otherUb", "9");
+		inboundMap.put("totalUb", "10");
+		inboundMap.put("totalIn", "11");
+		////////////////////////////////
+		outboundMap.put("3", "12");
+		outboundMap.put("4", "12");
+		outboundMap.put("5", "13");
+		outboundMap.put("6", "14");
+		outboundMap.put("T", "15");
+		outboundMap.put("otherHhg", "16");
+		outboundMap.put("totalHhg", "17");
+		outboundMap.put("7", "18");
+		outboundMap.put("8", "19");
+		outboundMap.put("J", "20");
+		outboundMap.put("otherUb", "21");
+		outboundMap.put("totalUb", "22");
+		outboundMap.put("totalOut", "23");
+		outboundMap.put("total", "24");
 	}
 	
 	public void addActionListner(){
@@ -194,7 +223,7 @@ public class TotalInvoiceCollectionStatusForAllScacByEachScac extends JFrame imp
 		center.removeAll();
 //		String[][] inboundStr = new String[23][20];
 //		String[][] outboundStr = new String[23][20];
-		String[][] finalStr = new String[23][8];
+		String[][] finalStr = new String[25][8];
 		String scac = scacCombo.getSelectedItem().toString();
 //		String area = areaCombo.getSelectedItem().toString();
 //		String hhgUb = hhgUbCombo.getSelectedItem().toString();
@@ -206,31 +235,31 @@ public class TotalInvoiceCollectionStatusForAllScacByEachScac extends JFrame imp
 //			inboundStr = dao.getInboundWorkVolumeStat1(scac, area, hhgUb, code, begin, end,type);
 //			outboundStr = dao.getOutboundWorkVolumeStat1(scac, area, hhgUb, code, begin, end,type);
 //			finalStr = combine(inboundStr,outboundStr);
-			System.out.println("[[[ ALL CASE scac : "+scac+" code : "+code+" begin : "+begin+" end : "+end+" ]]]]");
+//			System.out.println("[[[ ALL CASE scac : "+scac+" code : "+code+" begin : "+begin+" end : "+end+" ]]]]");
 			inboundList = dao.getInboundAllScacTotalInvoiceCollcetionStatusGbl(scac, code, begin, end);
-			System.out.println("[[[ COMPLETE GET INBOUND DATA ]]]");
+//			System.out.println("[[[ COMPLETE GET INBOUND DATA ]]]");
 			String[][] inboundStr = getStringInput(inboundList, "inbound");
-			System.out.println("[[[ COMPLETE GET INBOUND STRING ARRAY ]]]");
+//			System.out.println("[[[ COMPLETE GET INBOUND STRING ARRAY ]]]");
 			outboundList = dao.getOutboundAllScacTotalInvoiceCollcetionStatusGbl(scac, code, begin, end);
-			System.out.println("[[[ COMPLETE GET OUTBOUND DATA ]]]");
+//			System.out.println("[[[ COMPLETE GET OUTBOUND DATA ]]]");
 			String[][] outboundStr = getStringInput(outboundList, "outbound");
-			System.out.println("[[[ COMPLETE GET OUTBOUND STRING ARRAY ]]]");
+//			System.out.println("[[[ COMPLETE GET OUTBOUND STRING ARRAY ]]]");
 			finalStr = combineStrList(inboundStr, outboundStr);
 		}
 		else if(inoutCombo.getSelectedItem().toString().equals("IN")){
-			System.out.println("[[[ INBOUND CASE scac : "+scac+" code : "+code+" begin : "+begin+" end : "+end+" ]]]");
+//			System.out.println("[[[ INBOUND CASE scac : "+scac+" code : "+code+" begin : "+begin+" end : "+end+" ]]]");
 			inboundList = dao.getInboundAllScacTotalInvoiceCollcetionStatusGbl(scac, code, begin, end);
-			System.out.println("[[[ COMPLETE GET DATA ]]]");
+//			System.out.println("[[[ COMPLETE GET DATA ]]]");
 			String[][] inboundStr = getStringInput(inboundList, "inbound");
-			String[][] outboundStr = getStringArr(23, 8);
+			String[][] outboundStr = getStringArr(25, 8);
 			finalStr = combineStrList(inboundStr,outboundStr);
 //			inboundStr = dao.getInboundWorkVolumeStat1(scac, area, hhgUb, code, begin, end,type);
 //			finalStr = inboundStr;
 		}
 		else if(inoutCombo.getSelectedItem().toString().equals("OUT")){
-			System.out.println("[[[ OUTBOUND CASE scac : "+scac+" code : "+code+" begin : "+begin+" end : "+end+" ]]]");
+//			System.out.println("[[[ OUTBOUND CASE scac : "+scac+" code : "+code+" begin : "+begin+" end : "+end+" ]]]");
 			outboundList = dao.getOutboundAllScacTotalInvoiceCollcetionStatusGbl(scac, code, begin, end);
-			System.out.println("[[[ COMPLETE GET DATA ]]]");
+//			System.out.println("[[[ COMPLETE GET DATA ]]]");
 			String[][] outboundStr = getStringInput(outboundList, "outbound");
 			String[][] inboundStr = getStringArr(23, 8);
 			finalStr = combineStrList(inboundStr,outboundStr);
@@ -255,8 +284,8 @@ public class TotalInvoiceCollectionStatusForAllScacByEachScac extends JFrame imp
 	}
 	
 	public String[][] combineStrList(String[][] a,String[][] b){
-		String[][] result= new String[23][8];
-		for(int i=0;i<23;i++){
+		String[][] result= new String[25][8];
+		for(int i=0;i<25;i++){
 			for(int k=0;k<8;k++){
 				if(i>=0 && i<=10){
 					result[i][k] = a[i][k];
@@ -267,40 +296,40 @@ public class TotalInvoiceCollectionStatusForAllScacByEachScac extends JFrame imp
 			}
 		}
 		String[] total = {"0","0","0","0","0","0","0","0"};
-		for(int i=0;i<4;i++){
+		for(int i=0;i<5;i++){
 			for(int k=0;k<8;k++){
 				total[k] = getDoubleValue(a[i][k])+getDoubleValue(total[k])+"";
 			}
 		}
-		result[4] = copyArray(total);
+		result[5] = copyArray(total);
 		initTotal(total);
-		for(int i=5;i<9;i++){
+		for(int i=6;i<10;i++){
 			for(int k=0;k<8;k++){
 				total[k] = getDoubleValue(a[i][k])+getDoubleValue(total[k])+"";
 			}
 		}
-		result[9] = copyArray(total);
+		result[10] = copyArray(total);
 		initTotal(total);
 		
-		for(int i=11;i<15;i++){
+		for(int i=12;i<17;i++){
 			for(int k=0;k<8;k++){
 				total[k] = getDoubleValue(b[i][k])+getDoubleValue(total[k])+"";
 			}
 		}
-		result[15]=copyArray(total);
+		result[17]=copyArray(total);
 		initTotal(total);
 		
-		for(int i=16;i<20;i++){
+		for(int i=18;i<21;i++){
 			for(int k=0;k<8;k++){
 				total[k] = getDoubleValue(b[i][k])+getDoubleValue(total[k])+"";
 			}
 		}
-		result[20]=copyArray(total);
+		result[22]=copyArray(total);
 		initTotal(total);
 		for(int k=0;k<8;k++){
-			result[10][k] = getDoubleValue(result[4][k])+getDoubleValue(result[9][k])+"";
-			result[21][k] = getDoubleValue(result[15][k])+getDoubleValue(result[20][k])+"";
-			result[22][k] = getDoubleValue(result[10][k])+getDoubleValue(result[21][k])+"";
+			result[11][k] = getDoubleValue(result[5][k])+getDoubleValue(result[10][k])+"";
+			result[23][k] = getDoubleValue(result[17][k])+getDoubleValue(result[22][k])+"";
+			result[24][k] = getDoubleValue(result[11][k])+getDoubleValue(result[23][k])+"";
 		}
 		
 		return result;
@@ -318,7 +347,8 @@ public class TotalInvoiceCollectionStatusForAllScacByEachScac extends JFrame imp
 		return k;
 	}
 	public String[][] arrangementStrList(String[][] strList){
-		for(int i=0;i<23;i++){
+//		System.out.println(strList.length);
+		for(int i=0;i<25;i++){
 			for(int k=0;k<8;k++){
 //				strList[i][k].equals("0")||strList[i][k].equals(".00")||strList[i][k].equals("0.0")
 //				||strList[i][k].equals(".0")||strList[i][k].equals(".000")
@@ -359,8 +389,8 @@ public class TotalInvoiceCollectionStatusForAllScacByEachScac extends JFrame imp
 	
 	public String[][] getStringInput(ArrayList<AllScacTotalInvoiceCollectionStatusGblBeans> list,String process){
 		ArrayList<String> idList = new ArrayList<>();
-		String[][] strList = new String[23][8];
-		for(int i=0;i<23;i++){
+		String[][] strList = new String[25][8];
+		for(int i=0;i<25;i++){
 			for(int k=0;k<8;k++){
 				strList[i][k] = "0";
 			}
@@ -381,22 +411,22 @@ public class TotalInvoiceCollectionStatusForAllScacByEachScac extends JFrame imp
 			tempCode = tempBean.getCode();
 			int flag=0;
 			if(idList.contains(tempBean.getGblNo())){
-				System.out.println("EXIST GBL NO : "+tempBean.getGblNo());
+//				System.out.println("EXIST GBL NO : "+tempBean.getGblNo());
 				flag=1;
 			}
 			else{
-				System.out.println("NOT EXIST GBL NO : "+tempBean.getGblNo());
+//				System.out.println("NOT EXIST GBL NO : "+tempBean.getGblNo());
 				idList.add(tempBean.getGblNo());
 				flag=0;
 			}
 //			try{
-				System.out.println("CODE : "+tempCode);
+//				System.out.println("CODE : "+tempCode);
 				if(map.get(tempCode)==null){
 					if(process.equals("inbound")){
-						index = 3;
+						index = 4;
 					}
 					else{
-						index = 14;
+						index = 16;
 					}
 				}
 				else{
@@ -438,33 +468,33 @@ public class TotalInvoiceCollectionStatusForAllScacByEachScac extends JFrame imp
 			//////////////////////////////////[4] ShortPaid
 			origin = getDoubleValue(strList[index][4]);
 			if(flag == 0){//포함되어있지 않으면 더해라
-				System.out.println("[[ ShortPaid Amount - index : "+index+" code : "+tempCode +" value : "+origin+" GBL NO : "+tempBean.getGblNo()+" ]]");
+//				System.out.println("[[ ShortPaid Amount - index : "+index+" code : "+tempCode +" value : "+origin+" GBL NO : "+tempBean.getGblNo()+" ]]");
 				origin += getDoubleValue(tempBean.getDifference());
-				System.out.println(strList[index][4]);
+//				System.out.println(strList[index][4]);
 //				System.out.println("tempBean.difference() : "+tempBean.getDifference());
 //				System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ : "+origin);
 				strList[index][4] = new DecimalFormat("######.00").format(origin);
 			}
 			//////////////////////////////////[5] Accepted
 			origin = getDoubleValue(strList[index][5]);
-			System.out.println("[[ Accepted Amount - index : "+index+" code : "+tempCode +" value : "+origin+" ]]");
+//			System.out.println("[[ Accepted Amount - index : "+index+" code : "+tempCode +" value : "+origin+" ]]");
 			origin += getDoubleValue(tempBean.getAcceptAmount());
 			strList[index][5] = new DecimalFormat("######.00").format(origin);
 			//////////////////////////////////[6] Claimed
 			origin = getDoubleValue(strList[index][6]);
-			System.out.println("[[ Claimed Amount - index : "+index+" code : "+tempCode +" value : "+origin+" ]]");
+//			System.out.println("[[ Claimed Amount - index : "+index+" code : "+tempCode +" value : "+origin+" ]]");
 			origin += getDoubleValue(tempBean.getClaimeAmount());
 			strList[index][6] = new DecimalFormat("######.00").format(origin);
 			//////////////////////////////////[7] Net
 			origin = getDoubleValue(strList[index][7]);
-			System.out.println("[[ Net Amount - index : "+index+" code : "+tempCode +" value : "+origin+" ]]");
+//			System.out.println("[[ Net Amount - index : "+index+" code : "+tempCode +" value : "+origin+" ]]");
 			double tempAmount = getDoubleValue(strList[index][1]);
 			double tempUncollected = getDoubleValue(strList[index][3]);
 			double tempShortPaid = getDoubleValue(strList[index][4]);
 			double tempAccepted = getDoubleValue(strList[index][5]);
 			double tempClaimed = getDoubleValue(strList[index][6]);
 			double tempNet = tempAmount - tempUncollected - tempShortPaid - tempAccepted - tempClaimed;
-			System.out.println("[[ Change NET : "+tempNet+"]]");
+//			System.out.println("[[ Change NET : "+tempNet+"]]");
 			strList[index][7] =  new DecimalFormat("######.00").format(getDoubleValue(tempNet+""));
 //			double
 		}

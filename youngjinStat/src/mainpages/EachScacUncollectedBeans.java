@@ -84,9 +84,11 @@ public class EachScacUncollectedBeans {
 		setUncollectedAmounts(temp+"");
 //		System.out.println("[ Set Uncollected Amounts : "+temp+" ]");
 	}
+	
 	public void addGblQuantity(){
 		gblQuantity++;
 	}
+	
 	public void addShortPaid(String money){
 		showInvoiceNo();
 //		System.out.println("[ Input ShortPaid Amounts : "+money+" ]");
@@ -95,6 +97,7 @@ public class EachScacUncollectedBeans {
 		setShortpaidAmounts(temp+"");
 //		System.out.println("[ Set ShortPaid Amounts : "+temp+" ]");
 	}
+	
 	public void addAcceptPaid(String money){
 		showInvoiceNo();
 //		System.out.println("[ Input AcceptPaid Amounts : "+money+" ]");

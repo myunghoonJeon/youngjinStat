@@ -29,7 +29,15 @@ import AllScacTotalInvoiceCollectionStatusGBL.AllScacTotalInvoiceCollectionStatu
 import EachScacUncollectedStatus.GroupableColumnEachscacUncollectedStatus;
 
 public class AcceptedAmountsStatusForAllScacByEachScacGbl extends JFrame implements ActionListener{
-
+	JTable printTable1=new JTable();
+	JTable printTable2=new JTable();
+	JTable printTable3=new JTable();
+	JTable printTable4=new JTable();
+	JTable printTable5=new JTable();
+	JTable printTable6=new JTable();
+	String title="";
+	ArrayList<JTable> printArr = new ArrayList<>();
+	ArrayList<String> nameArr = new ArrayList<>();
 	GroupableColumnEachscacUncollectedStatus geus;
 	CL_DAO_DB_Mysql dao = new CL_DAO_DB_Mysql();
 	////////////////////////////////////////////////////////////////
@@ -207,42 +215,42 @@ public class AcceptedAmountsStatusForAllScacByEachScacGbl extends JFrame impleme
 							code34.setBorder(BorderFactory.createLineBorder(Color.DARK_GRAY));
 							code34.add("North",new JLabel("  CODE 3,4"));
 							code34.add("Center",code34c);
-								code34c.add(getTable(esubOut));
+								code34c.add(getTable(esubOut,0));
 						innerCenter.add(code5);
 							code5.setLayout(new BorderLayout());
 							code5.setBorder(BorderFactory.createLineBorder(Color.DARK_GRAY));
 							code5.add("North",new JLabel("  CODE 5"));
 							code5.add("Center",code5c);
-								code5c.add(getTable(esubOut));
+								code5c.add(getTable(esubOut,0));
 						innerCenter.add(codeT);
 							codeT.setLayout(new BorderLayout());
 							codeT.setBorder(BorderFactory.createLineBorder(Color.DARK_GRAY));
 							codeT.add("North",new JLabel("  CODE T"));
 							codeT.add("Center",codeTc);
-								codeTc.add(getTable(esubOut));
+								codeTc.add(getTable(esubOut,0));
 						innerCenter.add(code7);
 							code7.setLayout(new BorderLayout());
 							code7.setBorder(BorderFactory.createLineBorder(Color.DARK_GRAY));
 							code7.add("North",new JLabel("  CODE 7"));
 							code7.add("Center",code7c);
-								code7c.add(getTable(esubOut));
+								code7c.add(getTable(esubOut,0));
 						innerCenter.add(code8);
 							code8.setLayout(new BorderLayout());
 							code8.setBorder(BorderFactory.createLineBorder(Color.DARK_GRAY));
 							code8.add("North",new JLabel("  CODE 8"));
 							code8.add("Center",code8c);
-								code8c.add(getTable(esubOut));
+								code8c.add(getTable(esubOut,0));
 						innerCenter.add(codeJ);
 							codeJ.setLayout(new BorderLayout());
 							codeJ.setBorder(BorderFactory.createLineBorder(Color.DARK_GRAY));
 							codeJ.add("North",new JLabel("  CODE J"));
 							codeJ.add("Center",codeJc);
-								codeJc.add(getTable(esubOut));
+								codeJc.add(getTable(esubOut,0));
 			super.add(jp);
 			validate();
 	}
 	
-	public JScrollPane getTable(ArrayList<EachScacAcceptedAmountStatusGblBean> bean){
+	public JScrollPane getTable(ArrayList<EachScacAcceptedAmountStatusGblBean> bean,int flag){
 		JScrollPane jsp = new JScrollPane();
 		String colName[] = {"Invoice Date","GBL No","Invoiced Amounts","Accepted Amounts","Accepted(%)","Reason for Accepted Amounts"};
 		DefaultTableCellRenderer dtcr = new DefaultTableCellRenderer();
@@ -274,6 +282,42 @@ public class AcceptedAmountsStatusForAllScacByEachScacGbl extends JFrame impleme
 //		tcm.getColumn(3).setPreferredWidth(15);
 //		tcm.getColumn(4).setPreferredWidth(15);
 //		tcm.getColumn(5).setPreferredWidth(200);
+		if(flag==1){
+			
+			printTable1 = table;
+			printArr.add(printTable1);
+			nameArr.add("CODE 3,4");
+		}
+		else if(flag ==2){
+			
+			printTable2 = table;
+			printArr.add(printTable2);
+			nameArr.add("CODE 5");
+		}
+		else if(flag ==3){
+		
+			printTable3 = table;
+			printArr.add(printTable3);
+			nameArr.add("CODE T");
+		}
+		else if(flag ==4){
+		
+			printTable4 = table;
+			printArr.add(printTable4);
+			nameArr.add("CODE 7");
+		}
+		else if(flag ==5){
+		
+			printTable5 = table;
+			printArr.add(printTable5);
+			nameArr.add("CODE 8");
+		}
+		else if(flag ==6){
+		
+			printTable6 = table;
+			printArr.add(printTable6);
+			nameArr.add("CODE J");
+		}
 		return scrollpane;
 	}
 	 public double getDoubleValue(String str){
@@ -358,17 +402,19 @@ public class AcceptedAmountsStatusForAllScacByEachScacGbl extends JFrame impleme
 				beanJ.add(tempBean);
 			}
 		}
-		code34c.add(getTable(bean34));
-		code5c.add(getTable(bean5));
-		codeTc.add(getTable(beanT));
-		code7c.add(getTable(bean7));
-		code8c.add(getTable(bean8));
-		codeJc.add(getTable(beanJ));
+		code34c.add(getTable(bean34,1));
+		code5c.add(getTable(bean5,2));
+		codeTc.add(getTable(beanT,3));
+		code7c.add(getTable(bean7,4));
+		code8c.add(getTable(bean8,5));
+		codeJc.add(getTable(beanJ,6));
 		validate();
 	}
 	
 	public void actionPerformed(ActionEvent e) {
 		if(e.getSource() == searchBtn){
+			printArr.clear();
+			nameArr.clear();
 			if(!scacCombo.getSelectedItem().equals("ALL")){
 				scacValueLabel.setText("[ "+scacCombo.getSelectedItem().toString()+" ]");
 				validate();
@@ -402,8 +448,9 @@ public class AcceptedAmountsStatusForAllScacByEachScacGbl extends JFrame impleme
 			validate();
 		}
 		else if(e.getSource() == printBtn){
-			PrintSolution ps = new PrintSolution();
-			ps.print(this);
+			title = "ACCEPTED AMOUNTS STATUS FOR ALL SCAC & BY EACH SCAC(GBL BASE)[SCAC : "+scacCombo.getSelectedItem()+"][PROCESS : "+inoutCombo.getSelectedItem()+"][PERIOD:"+beginPeriod.getText()+"~"+endPeriod.getText()+"]";
+			System.out.println("ARR size : "+printArr.size());
+			PrintSolution.print(title,printArr,nameArr);
 		}
 	}
 }

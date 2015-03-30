@@ -509,6 +509,7 @@ public class CL_DAO_DB_Mysql implements IT_DAO{
 			while(rs.next()){
 				areaList.add(rs.getString("name"));
 			}
+			System.out.println("@@@@@@@@@@@@@areaList size : "+areaList.size());
 			disconnect();
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -852,14 +853,25 @@ public class CL_DAO_DB_Mysql implements IT_DAO{
 			System.out.println("SQL : "+sql);
 			
 			rs = stmt.executeQuery(sql);
+			
 			while(rs.next()){
 				if(rs.getString("id")!=null){
+					/*
+					 * id가 널이 아니면 로그인 제대로 됬다는 뜻
+					 * 
+					 * */
 					System.out.println("[EXISTED USER INFORMATION]");
 					flag+=1;
 					ub.setId(rs.getString("id"));
 					ub.setPw(rs.getString("pw"));
 					ub.setLevel(rs.getInt("level"));
 				}
+				
+				/*
+				 * null이면???? 
+				 * 없은 사용자니깐 그냥 아무작동 안하게 구현
+				 * 
+				 * */
 			}
 			disconnect();
 			

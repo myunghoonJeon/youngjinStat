@@ -1,16 +1,18 @@
 package WorkVolumeStat1;
-import TableOption.*;
-
 import java.awt.Color;
 import java.awt.Component;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
 
-import javax.swing.*;
+import javax.swing.JFrame;
+import javax.swing.JTable;
+import javax.swing.SwingConstants;
+import javax.swing.UIManager;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
-import javax.tools.DiagnosticCollector;
+
+import TableOption.ColumnGroup;
+import TableOption.GroupableTableColumnModel;
+import TableOption.GroupableTableHeader;
 
 // Steve Webb 16/09/04 swebb99_uk@hotmail.com
 

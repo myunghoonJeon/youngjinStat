@@ -16,10 +16,8 @@ public class TestCase {
 	
 	@Test
 	public void test() {
-		testUserBean = dao.userAccessValidateCheck("1", "1");
-		assertThat(null,is(not(testUserBean)) );
-//		ArrayList<String> areaList = dao.getAreaList();
-//		assertThat(areaList.size(), is(5));
+		ArrayList<String> areaList = dao.getAreaList();
+		assertThat(areaList.size(), is(5));
 	}
 
 }

@@ -229,8 +229,8 @@ public class BranchWorkStatus extends JFrame implements ActionListener{
 		validate();
 	}
 	public String[][] calcurationDensity(String[][] weight,String[][] cuft){
-		String[][] result = new String[23][20];
-		for(int i=0;i<23;i++){
+		String[][] result = new String[25][20];
+		for(int i=0;i<25;i++){
 			for(int j=0;j<20;j++){
 				result[i][j]="-";
 			}
@@ -238,7 +238,7 @@ public class BranchWorkStatus extends JFrame implements ActionListener{
 		double tempWeight=0;
 		double tempCuft=0;
 		double density;
-		for(int i=0;i<23;i++){
+		for(int i=0;i<25;i++){
 			for(int j=0;j<20;j++){
 				if(j%2==1){//weight case
 					if(!weight[i][j].equals("-")&&!weight[i][j].equals("")&&weight[i][j]!=null&&!cuft[i][j].equals("-")&&!cuft[i][j].equals("")&&cuft[i][j]!=null){
@@ -311,9 +311,9 @@ public class BranchWorkStatus extends JFrame implements ActionListener{
 		return result;
 	}
 	public void calcaurationTotalCuft(String[][] arr){
-		String[][] total = new String[23][20];
+		String[][] total = new String[25][20];
 		String type="WEIGHT";
-		for(int i=0;i<23;i++){
+		for(int i=0;i<25;i++){
 			int totalJob=0;
 			int totalWeight = 0;
 			for(int j=0;j<20;j++){
@@ -335,37 +335,37 @@ public class BranchWorkStatus extends JFrame implements ActionListener{
 					if(j==19){
 						arr[i][j] = totalWeight+"";
 					}
-					if(i>=0 && i<=3  ){
+					if(i>=0 && i<=4  ){
 						pushArr(0, i, j, total, arr, type);
 					}
-					else if(i==4  ){//hhg total
+					else if(i==5  ){//hhg total
 						pushHhgUbTotal(i, j, total, arr, type);
 					}
-					else if(i>=5 && i<=8){
+					else if(i>=6 && i<=9){
 						pushArr(5, i, j, total, arr, type);
 					}
-					else if(i==9){//ub total
+					else if(i==10){//ub total
 						pushHhgUbTotal(i, j, total, arr, type);
 					}
-					else if(i==10){//in total
+					else if(i==11){//in total
 						pushTotal(4, 9, i, j, total, arr, type);
 					}
-					else if(i>=11 && i<=14  ){
+					else if(i>=12 && i<=16  ){
 						pushArr(11, i, j, total, arr, type);
 					}
-					else if(i==15){//hhg total
+					else if(i==17){//hhg total
 						pushHhgUbTotal(i, j, total, arr, type);
 					}
-					else if(i>=16 && i<=19){
+					else if(i>=16 && i<=21){
 						pushArr(16, i, j, total, arr, type);
 					}
-					else if(i==20){//ub total
+					else if(i==22){//ub total
 						pushHhgUbTotal(i, j, total, arr, type);
 					}
-					else if(i==21){//out total
+					else if(i==23){//out total
 						pushTotal(15, 20, i, j, total, arr, type);
 					}
-					else if(i==22){//all total
+					else if(i==24){//all total
 						pushTotal(10, 21, i, j, total, arr, type);
 					}
 			}//for (j)

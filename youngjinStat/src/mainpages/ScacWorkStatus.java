@@ -332,7 +332,7 @@ JButton printBtn = new JButton("PRINT");
 					else if(j==23){// total - weight
 						pushTotal(11, 21, i, j, total, arr, type);
 					}
-					else if(j==0||j==1 || j==14 ||j==15){//total - normal
+					else if(j==0||j==1|| j==12||j==13){//total - normal
 						pushArr(j,i, j, total, arr, type);
 					}
 					else{

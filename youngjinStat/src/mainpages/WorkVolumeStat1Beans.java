@@ -23,7 +23,7 @@ public class WorkVolumeStat1Beans {
 		return input;
 	}
 	
-	public void setWeightData(String area,String code,String jobValue,String weightValue){
+	public void setWeightData(String area,String code,String jobValue,String weightValue,String gblno){
 		String column = hashMapColumn.get(area);
 		int job;
 		int weight;
@@ -33,6 +33,7 @@ public class WorkVolumeStat1Beans {
 		}
 		else{
 			column="17";
+			System.out.println("COLUMN L: "+area+" code : "+code+" gblNo : "+gblno);
 			job = Integer.parseInt(column)-1;
 			weight = Integer.parseInt(column);
 		}

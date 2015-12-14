@@ -20,6 +20,15 @@ public class AllScacTotalInvoiceCollectionStatusGblBeans {
 	private String shortPaid;
 	private String dateDiff;
 	private String invoiceDate;
+	private String errorMsg="";
+	public String getErrorMsg() {
+		return errorMsg;
+	}
+
+	public void setErrorMsg(String errorMsg) {
+		this.errorMsg = errorMsg;
+	}
+
 	public String getInvoiceDate() {
 		return invoiceDate;
 	}

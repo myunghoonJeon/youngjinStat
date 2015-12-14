@@ -897,10 +897,11 @@ public class CL_DAO_DB_Mysql implements IT_DAO{
 		}
 		return result;
 	}
-	public ArrayList<AllScacTotalInvoiceCollectionStatusGblBeans> getOutboundEachScacUncollectedGbl(String scac,String code,String begin,String end){
+	public ArrayList<AllScacTotalInvoiceCollectionStatusGblBeans> getOutboundEachScacUncollectedGbl(String scac,String code,String begin,String end,String flag){
+		String errMsg="<html>";
 		ArrayList<AllScacTotalInvoiceCollectionStatusGblBeans> list = new ArrayList<>();
 		AllScacTotalInvoiceCollectionStatusGblBeans bean = new AllScacTotalInvoiceCollectionStatusGblBeans();
-		String sql="select	invoice_gbl.gbl_no as gblNo, round(invoice_gbl.amount,2) as amount, invoice_list.start_date as start, invoice_list.end_date as end,"+
+		String sql="select	invoice_list.invoice_no as invoiceNo,invoice_gbl.gbl_no as gblNo, round(invoice_gbl.amount,2) as amount, invoice_list.start_date as start, invoice_list.end_date as end,"+
 				   "invoice_gbl.name as name,gbl.code as code,gbl.scac as scac, round(invoice_gbl_collection.difference,2) as difference,"+
 				   "invoice_gbl_collection.state as state, invoice_gbl_collection_flow.state as collectionState, round(invoice_gbl_collection_flow.amount,2) as collectionAmount,"+
 				   "invoice_list.invoice_date as invoiceDate, DATEDIFF(DATE_FORMAT(SYSDATE(), '%Y%m%d'), DATE_FORMAT(CONVERT(invoice_list.invoice_date, DATE), '%Y%m%d')) as datediff"
@@ -922,11 +923,14 @@ public class CL_DAO_DB_Mysql implements IT_DAO{
 		try {
 			System.out.println("[[SQL QUERRY EXECUTE]]");
 			connect();
+			double testAmount=0.0;
 			rs = stmt.executeQuery(sql);
 			while(rs.next()){
 				String scac1 = rs.getString("scac");
 				String gblNo = rs.getString("gblNo");
 				String amount = rs.getString("amount");
+				String invoiceNo = rs.getString("invoiceNo");
+				testAmount+=Double.parseDouble(amount);
 				String name = rs.getString("name");
 				String code1 = rs.getString("code");
 				String difference = rs.getString("difference");
@@ -934,6 +938,9 @@ public class CL_DAO_DB_Mysql implements IT_DAO{
 				String collectionState = rs.getString("collectionState");
 				String collectionAmount = rs.getString("collectionAmount");
 				String dateDiff = rs.getString("datediff");
+				if(dateDiff==null || dateDiff.equals("")){
+					errMsg+="[ invoice : "+invoiceNo+"GBL : "+gblNo+" - DATE ERROR ]<br>";
+				}
 				String invoiceDate = rs.getString("invoiceDate");
 				bean = new AllScacTotalInvoiceCollectionStatusGblBeans();
 				double tempDiff = getDoubleValue(difference);
@@ -973,16 +980,22 @@ public class CL_DAO_DB_Mysql implements IT_DAO{
 				}
 				list.add(bean);
 			}
+			errMsg+="</html>";
+			if(!errMsg.equals("<html></html>") && flag.equals("1")){
+				ErrorPopup ep = new ErrorPopup("OUTBOUND INVOICE DATE ERROR POPUP", errMsg);
+			}
+			System.out.println("result : "+testAmount);
 			disconnect();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		return list;
 	}
-	public ArrayList<AllScacTotalInvoiceCollectionStatusGblBeans> getInboundEachScacUncollectedGbl(String scac,String code,String begin,String end){
+	public ArrayList<AllScacTotalInvoiceCollectionStatusGblBeans> getInboundEachScacUncollectedGbl(String scac,String code,String begin,String end,String flag){
 		ArrayList<AllScacTotalInvoiceCollectionStatusGblBeans> list = new ArrayList<>();
 		AllScacTotalInvoiceCollectionStatusGblBeans bean = new AllScacTotalInvoiceCollectionStatusGblBeans();
-		String sql="select	invoice_gbl.gbl_no as gblNo, round(invoice_gbl.amount,2) as amount, invoice_list.start_date as start, invoice_list.end_date as end,"+
+		String errMsg="<html>";
+		String sql="select	invoice_list.invoice_no as invoiceNo,invoice_gbl.gbl_no as gblNo, round(invoice_gbl.amount,2) as amount, invoice_list.start_date as start, invoice_list.end_date as end,"+
 				   "invoice_gbl.name as name,gbl_ib.code as code,gbl_ib.tsp as scac, round(invoice_gbl_collection.difference,2) as difference,"+
 				   "invoice_gbl_collection.state as state, invoice_gbl_collection_flow.state as collectionState, round(invoice_gbl_collection_flow.amount,2) as collectionAmount,"+
 				   "invoice_list.invoice_date as invoiceDate,DATEDIFF(DATE_FORMAT(SYSDATE(), '%Y%m%d'), DATE_FORMAT(CONVERT(invoice_list.invoice_date, DATE), '%Y%m%d')) as datediff "
@@ -1006,6 +1019,7 @@ public class CL_DAO_DB_Mysql implements IT_DAO{
 			rs = stmt.executeQuery(sql);
 			while(rs.next()){
 				String scac1 = rs.getString("scac");
+				String invoiceNo = rs.getString("invoiceNo");
 				String gblNo = rs.getString("gblNo");
 				String amount = rs.getString("amount");
 				String name = rs.getString("name");
@@ -1024,6 +1038,9 @@ public class CL_DAO_DB_Mysql implements IT_DAO{
 				bean.setName(name);
 				bean.setCode(code1);
 				bean.setInvoiceDate(invoiceDate);
+				if(dateDiff==null || dateDiff.equals("")){
+					errMsg+="[ invoice : "+invoiceNo+"GBL : "+gblNo+" - DATE ERROR ]<br>";
+				}
 				double tempDiff = getDoubleValue(difference);
 				if(tempDiff <0){
 					tempDiff *= -1;
@@ -1053,7 +1070,12 @@ public class CL_DAO_DB_Mysql implements IT_DAO{
 //					System.out.println("COLLECTED AMOUNT : "+collectionAmount);
 					bean.setCollectionAmount(collectionAmount);
 				}
+				
 				list.add(bean);
+			}
+			errMsg+="</html>";
+			if(!errMsg.equals("<html></html>")){
+				ErrorPopup ep = new ErrorPopup("INBOUND INVOICE DATE ERROR POPUP", errMsg);
 			}
 			disconnect();
 		} catch (Exception e) {
@@ -1063,6 +1085,8 @@ public class CL_DAO_DB_Mysql implements IT_DAO{
 	}
 	
 	public ArrayList<EachScacUncollectedBeans> getEachScacUncollected(String scac,String inOut,String code,String begin,String end){
+		ErrorPopup ep; 
+		String errMsg="<html>";
 		ArrayList<EachScacUncollectedBeans> list = new ArrayList<>();
 		EachScacUncollectedBeans esub = new EachScacUncollectedBeans();		
 		int whereFlag=0;
@@ -1130,6 +1154,7 @@ public class CL_DAO_DB_Mysql implements IT_DAO{
 //		String alpha = " group by invoice_list.seq ";
 		System.out.println("1sql : "+sql);
 		rs = getResultSet(sql);
+		
 		int index=0;
 		try {
 			while(rs.next()){
@@ -1151,8 +1176,13 @@ public class CL_DAO_DB_Mysql implements IT_DAO{
 //				System.out.println("invoiceSeq : "+rs.getString("invoiceSeq"));
 //				System.out.println("date diff : "+rs.getString("datediff"));
 //				System.out.println("==================================");
+				if(esub.getDatediff()==null){
+					errMsg += "[ invoice : "+esub.getInvoiceNo() +" DATE ERROR ] <br>";
+					System.out.println("invoice NO : "+esub.getInvoiceNo() +" date difference : "+esub.getDatediff());
+				}
 				list.add(esub);
 			}
+			errMsg+="</html>";
 			try {
 				disconnect();
 			} catch (Exception e) {
@@ -1162,6 +1192,10 @@ public class CL_DAO_DB_Mysql implements IT_DAO{
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+		}
+		if(!errMsg.equals("<html></html>"))
+		{
+			ep = new ErrorPopup("ERROR", errMsg);
 		}
 		//////////////////////////////////////////////////////////////2st querry start//////////////////////////////////////
 		sql="select invoice_gbl.gbl_no as gblNo,gbl_ib.code as gblibcode,gbl.code as gblobcode,invoice_gbl.invoice_list_seq as list_seq,"
@@ -1639,6 +1673,9 @@ public class CL_DAO_DB_Mysql implements IT_DAO{
 				if(tempShortPaid<0){
 					tempShortPaid*=-1;
 				}
+				else{ // 돈이 더들어오면???
+					tempShortPaid = 0;
+				}
 				double tempCollectedAmount = getDoubleValue(collectedAmount);
 				if(index!=-1){
 					list.get(index).addCollectedAmount(tempCollectedAmount+"");
@@ -2072,10 +2109,10 @@ public class CL_DAO_DB_Mysql implements IT_DAO{
 					if(code1!=null){
 						if(tempWeight == null){
 							tempWeight="0";
-							wvs1.setWeightData(tempArea, tempCode, 1+"",tempWeight );
+							wvs1.setWeightData(tempArea, tempCode, 1+"",tempWeight, rs.getString("no") );
 						}
 						else{
-							wvs1.setWeightData(tempArea, tempCode, 1+"",tempWeight );
+							wvs1.setWeightData(tempArea, tempCode, 1+"",tempWeight, rs.getString("no") );
 						}
 					}
 //					else{
@@ -2106,7 +2143,7 @@ public class CL_DAO_DB_Mysql implements IT_DAO{
 					String tempCuft = rs.getString("cuft");
 					String tempWeight="";
 					String tempDensity = getDensity(tempGross, tempNet, tempCuft, rs.getString("code"));
-					if(code1.equals("3")||code1.equals("4")||code1.equals("5")||code1.equals("T")||code1.equals("t")){
+					if(code1.equals("3")||code1.equals("4")||code1.equals("5")||code1.equals("T")||code1.equals("t")||code1.equals("6")){
 						 tempWeight = sm.checkMinimumValue(rs.getString("netWeight"), "HHG");
 					}
 					else if(code1.equals("J")||code1.equals("j")||code1.equals("7")||code1.equals("8")){
@@ -2208,7 +2245,7 @@ public class CL_DAO_DB_Mysql implements IT_DAO{
 		if(!hhgUb.equals("")){
 			if(hhgUb.equals("HHG")){
 				if(whereflag==0){
-					condition+=" wehere (gbl_ib.code = '3' or gbl_ib.code = '4' or gbl_ib.code = '5' or gbl_ib.code='T' or gbl_ib.code='t' or gbl_ib.code='6')";
+					condition+=" where (gbl_ib.code = '3' or gbl_ib.code = '4' or gbl_ib.code = '5' or gbl_ib.code='T' or gbl_ib.code='t' or gbl_ib.code='6')";
 					whereflag=1;
 				}
 				else{
@@ -2252,7 +2289,7 @@ public class CL_DAO_DB_Mysql implements IT_DAO{
 							System.out.println("what code??");
 							System.out.println("gblNo : "+rs.getString("gblNo"));
 						}
-						wvs1.setWeightData(tempArea, tempCode, 1+"",tempWeight );
+						wvs1.setWeightData(tempArea, tempCode, 1+"",tempWeight,rs.getString("gblNo"));
 					}
 					disconnect();
 				} catch (Exception e) {
@@ -2289,8 +2326,8 @@ public class CL_DAO_DB_Mysql implements IT_DAO{
 							System.out.println("what code??");
 							System.out.println("gblNo : "+rs.getString("gblNo"));
 						}
-						if(tempCuft.equals("")||tempCuft==null){
-							ErrorPopup ep = new ErrorPopup("WORK STAT1 INBOUND ERROR", gblNo+" Cuft ERROR");
+						if(tempCuft==null){
+							ErrorPopup ep = new ErrorPopup("WORK STAT1 INBOUND ERROR", gblNo+" Cuft - Null");
 						}
 						else{
 							wvs1.setNewDensity(tempArea, tempCode, "1", tempWeight, tempCuft);
@@ -2423,13 +2460,16 @@ public class CL_DAO_DB_Mysql implements IT_DAO{
 						String tempNet = rs.getString("netWeight");
 						String tempScac = rs.getString("scac");
 						String tempCuft = rs.getString("cuft");
+//						if(tempScac.equals("UVLN")){
+//							System.out.println("gbl : "+gblno+"cuft : "+tempCuft);
+//						}
 //						String tempDensity = getDensity(tempGross, tempNet, tempCuft, tempCode);
 						String tempDensity = "";
 						String tempWeight="";
 //						System.out.println("getOundBound-Density-code : "+tempCode+" gross : "+tempGross+" Net : "+tempNet+" SCAC : "+tempScac+" cuft : "+tempCuft);
 						if(tempCode.equals("3")||tempCode.equals("4")||tempCode.equals("5")||tempCode.equals("T")||tempCode.equals("t")||tempCode.equals("6")){
 							tempWeight = sm.checkMinimumValue(rs.getString("netWeight"), "HHG");
-							if(tempCuft==null){
+							if(tempCuft==null & !tempWeight.equals("0")){
 								if(!tempErrorMsg.equals("")){
 									errorMessage+="[ GBL NO : "+gblno+" ] [ CUFT ERROR ]"+"\n";
 									errorflag = true;
@@ -2441,7 +2481,7 @@ public class CL_DAO_DB_Mysql implements IT_DAO{
 						}
 						else if(tempCode.equals("7")||tempCode.equals("8")||tempCode.equals("J")||tempCode.equals("j")){
 							tempWeight = sm.checkMinimumValue(rs.getString("grossWeight"), "UB");
-							if(tempCuft==null){
+							if(tempCuft==null & !tempWeight.equals("0")){
 								if(!tempErrorMsg.equals("")){
 									errorMessage+="[ GBL NO : "+gblno+" ] [ CUFT ERROR ]"+"\n";
 									errorflag = true;
@@ -2823,8 +2863,8 @@ public class CL_DAO_DB_Mysql implements IT_DAO{
 						String tempGblNo = rs.getString("gblNo");
 						String tempCode = rs.getString("code").toUpperCase();
 						String tempArea = rs.getString("area");
-						System.out.println("code : "+tempCode);
-						System.out.println("area : "+tempArea);
+//						System.out.println("code : "+tempCode);
+//						System.out.println("area : "+tempArea);
 						String tempGross = rs.getString("grossWeight");
 						String tempNet = rs.getString("netWeight");
 						String tempCuft = rs.getString("cuft");
@@ -2833,9 +2873,9 @@ public class CL_DAO_DB_Mysql implements IT_DAO{
 //						String tempDensity = getDensity(tempGross, tempNet, tempCuft, rs.getString("code"));
 						if(tempCode.equals("3")||tempCode.equals("4")||tempCode.equals("5")||tempCode.equals("T")||tempCode.equals("t")||tempCode.equals("6")){
 							tempWeight = sm.checkMinimumValue(rs.getString("netWeight"), "HHG");
-							if(tempCuft==null){
+							if(tempCuft==null & !tempWeight.equals("0")){
 								if(!tempErrorMsg.equals("")){
-									errorMessage+="[ GBL NO : "+tempGblNo+" ] [ CUFT NULL ]"+"\n";
+									errorMessage+="[ GBL NO : "+tempGblNo+" ][ CUFT NULL ]"+"\n";
 									errorflag = true;
 								}
 							}
@@ -2845,7 +2885,7 @@ public class CL_DAO_DB_Mysql implements IT_DAO{
 						}
 						else if(tempCode.equals("7")||tempCode.equals("8")||tempCode.equals("J")||tempCode.equals("j")){
 							tempWeight = sm.checkMinimumValue(rs.getString("grossWeight"), "UB");
-							if(tempCuft==null){
+							if(tempCuft==null & !tempWeight.equals("0")){
 								if(!tempErrorMsg.equals("")){
 									errorMessage+="[ GBL NO : "+tempGblNo+" ] [ CUFT NULL ]"+"\n";
 									errorflag = true;
@@ -2861,7 +2901,6 @@ public class CL_DAO_DB_Mysql implements IT_DAO{
 								errorflag = true;
 							}
 						}
-						
 					}
 					if(errorflag==true){
 						System.out.println("aef "+errorMessage);
@@ -2901,27 +2940,29 @@ public class CL_DAO_DB_Mysql implements IT_DAO{
 		for(int i=0;i<ROW_LENGTH;i++){
 			int totalCuft=0;
 			for(int j=0;j<22;j++){
-				if(j==9){//hhg total
+				if(j==11){//hhg total
 					input[i][j] = Integer.parseInt(input[i][1])+Integer.parseInt(input[i][3])+Integer.parseInt(input[i][5])+Integer.parseInt(input[i][7])+"";
 				}
-				else if(j== 19){//ub total
-					input[i][j] = Integer.parseInt(input[i][11])+Integer.parseInt(input[i][13])+Integer.parseInt(input[i][15])+Integer.parseInt(input[i][17])+"";
+				else if(j== 21 ){//ub total
+					input[i][j] = Integer.parseInt(input[i][13])+Integer.parseInt(input[i][15])+Integer.parseInt(input[i][17])+Integer.parseInt(input[i][19])+"";
 				}
-				else if(j==21){//total - job
-					input[i][j] = Integer.parseInt(input[i][9])+Integer.parseInt(input[i][19])+"";
-				}
+//				else if(j==21){//total - job
+//					input[i][j] = Integer.parseInt(input[i][9])+Integer.parseInt(input[i][19])+"";
+//				}
 			}//for (j)
 		}//for(i)
-		for(int i=0;i<22;i++){
-			for(int j=0;j<18;j++){
-				input[18][i] = Integer.parseInt(input[j][i])+Integer.parseInt(input[18][i])+"";
-			}
-		}
+//		for(int i=0;i<22;i++){
+//			for(int j=0;j<18;j++){
+//				input[18][i] = Integer.parseInt(input[j][i])+Integer.parseInt(input[18][i])+"";
+//			}
+//		}
 		return input;
 	}
 	public String[][] calcDensity(String[][] weight,String[][] cuft){
 		System.out.println("CALCULATION DENSITY");
 		String[][] result = new String[ROW_LENGTH][24];
+		int totalTempWeight=0;
+		int totalTempCuft=0;
 		int w;
 		int c;
 		String d;
@@ -2931,7 +2972,7 @@ public class CL_DAO_DB_Mysql implements IT_DAO{
 				result[i][j]="-";
 				if(j%2!=0){
 //					System.out.println("cuft : "+cuft[i][j]);
-					if(weight[i][j].equals("-") || cuft[i][j].equals("0")){
+					if(weight[i][j].equals("-") || cuft[i][j]==null || cuft[i][j].equals("0")){
 					}
 					else{
 						w = Integer.parseInt(weight[i][j]);
@@ -2940,9 +2981,29 @@ public class CL_DAO_DB_Mysql implements IT_DAO{
 						result[i][j] = d;
 					}
 				}
-				System.out.print(result[i][j]+" ");
+//				System.out.print(result[i][j]+" ");
 			}
+//			if(totalTempWeight != 0 & totalTempCuft !=0){
+//				totalDensity = df.format((double)totalTempWeight/(double)totalTempCuft);
+//			}
 			System.out.println();
+		}
+		for(int col=0;col<22;col++){
+			if(col%2!=0){
+				totalTempCuft=0;
+				totalTempWeight=0;
+				for(int row=0;row<ROW_LENGTH;row++){
+					if(weight[row][col].equals("-") || cuft[row][col]==null || cuft[row][col].equals("0")){
+					}
+					else{
+						totalTempWeight += Integer.parseInt(weight[row][col]);
+						totalTempCuft += Integer.parseInt(cuft[row][col]);
+					}
+				}
+				System.out.println("COL : "+col +" weight : "+totalTempWeight +"cuft : "+totalTempCuft);
+				result[ROW_LENGTH-1][col] = df.format((double)totalTempWeight/(double)totalTempCuft);
+			}
+			
 		}
 		return result;
 	}
@@ -3438,7 +3499,7 @@ public class CL_DAO_DB_Mysql implements IT_DAO{
 		return list;
 	}
 	
-	public ArrayList<InvoiceCollectionStatusByPaidBeans> getInvoiceCollectionStatusByPaid(String begin,String end, String scac, String gbl_No){
+	public ArrayList<InvoiceCollectionStatusByPaidBeans> getInvoiceCollectionStatusByPaid(String begin,String end, String scac, String gbl_No, String invoice_No){
 		String sql="SELECT invoice_list.invoice_no as invoiceNo,invoice_list.invoice_date as invoiceDate,round(invoice_list.amount,2) as invoiceAmount, invoice_list.tsp as tsp, invoice_gbl.gbl_no as gblNo, invoice_gbl.amount as totalAmount, invoice_gbl_collection_flow.amount as inAmount,invoice_gbl_collection_flow.date as date "+
 					"from invoice_list "+
 					"left join invoice_gbl on invoice_list.seq = invoice_gbl.invoice_list_seq "+
@@ -3454,6 +3515,9 @@ public class CL_DAO_DB_Mysql implements IT_DAO{
 		if(!gbl_No.equals("")){
 			sql+="and invoice_gbl.gbl_no ='"+gbl_No+"' ";
 		}
+		if(!invoice_No.equals("")){
+			sql+="and invoice_list.invoice_no='"+invoice_No+"' ";
+		}
 		sql+="order by date";
 		System.out.println(sql);
 		ArrayList<InvoiceCollectionStatusByPaidBeans> invoiceList = new ArrayList<InvoiceCollectionStatusByPaidBeans>();
@@ -3463,6 +3527,46 @@ public class CL_DAO_DB_Mysql implements IT_DAO{
 		try {
 			connect();
 			rs = stmt.executeQuery(sql);
+//			while(rs.next()){
+//				String invoiceNo = rs.getString("invoiceNo").trim();
+//				String tsp = rs.getString("tsp").trim();
+//				String gblNo = rs.getString("gblNo").trim();
+//				String invoiceAmount = rs.getString("invoiceAmount").trim();
+//				String gblAmount = rs.getString("totalAmount").trim();
+//				String date = rs.getString("date").trim();
+//				String invoiceDate = rs.getString("invoiceDate").trim();
+//				String paidAmount = rs.getString("inAmount").trim();
+//				int index = checkList.indexOf(date+"@"+invoiceNo);
+//				if(index==-1){//there is no matching
+//					checkList.add(date+"@"+invoiceNo);
+//					icsp = new InvoiceCollectionStatusByPaidBeans();
+//					icspg = new InvoiceCollectionStatusByPaidGblBeans();
+//					icsp.setDate(date);
+//					icsp.setInvoiceAmount(invoiceAmount);
+//					icsp.setTsp(tsp);
+//					icsp.setInvoiceDate(invoiceDate);
+//					icsp.setInvoiceNo(invoiceNo);
+//					/*********gbl setting*********/
+//					if(invoiceNo.equals("CRWV-4OH-0859")){
+//						System.out.println("gbl NO : "+gblNo+" gblAmount : "+gblAmount+" paidAmount : "+paidAmount);
+//					}
+//					icspg = getICSPG(gblNo, gblAmount, paidAmount);
+//					/*****************************/
+//					icsp.addGbl(icspg);
+//					invoiceList.add(icsp);
+//				}
+//				else{//already exist this matching
+//					if(invoiceNo.equals("CRWV-4OH-0859")){
+//						System.out.println("gbl NO : "+gblNo+" gblAmount : "+gblAmount+" paidAmount : "+paidAmount+" invoiceNo : "+invoiceList.get(index).getInvoiceNo());
+//						
+//					}
+////					icspg = new InvoiceCollectionStatusByPaidGblBeans();
+//					/*********gbl setting*********/
+////					icspg = getICSPG(gblNo, gblAmount, paidAmount);
+//					/*****************************/
+//					invoiceList.get(index).addGbl(getICSPG(gblNo, gblAmount, paidAmount));
+//				}
+//			}
 			while(rs.next()){
 				String invoiceNo = rs.getString("invoiceNo").trim();
 				String tsp = rs.getString("tsp").trim();
@@ -3472,35 +3576,21 @@ public class CL_DAO_DB_Mysql implements IT_DAO{
 				String date = rs.getString("date").trim();
 				String invoiceDate = rs.getString("invoiceDate").trim();
 				String paidAmount = rs.getString("inAmount").trim();
-				int index = checkList.indexOf(date+"@"+invoiceNo);
+				int index = checkList.indexOf(invoiceNo);
 				if(index==-1){//there is no matching
-					checkList.add(date+"@"+invoiceNo);
+					checkList.add(invoiceNo);
 					icsp = new InvoiceCollectionStatusByPaidBeans();
 					icspg = new InvoiceCollectionStatusByPaidGblBeans();
-					icsp.setDate(date);
 					icsp.setInvoiceAmount(invoiceAmount);
 					icsp.setTsp(tsp);
 					icsp.setInvoiceDate(invoiceDate);
 					icsp.setInvoiceNo(invoiceNo);
-					/*********gbl setting*********/
-					if(invoiceNo.equals("CRWV-4OH-0859")){
-						System.out.println("gbl NO : "+gblNo+" gblAmount : "+gblAmount+" paidAmount : "+paidAmount);
-					}
-					icspg = getICSPG(gblNo, gblAmount, paidAmount);
-					/*****************************/
+					icspg = getICSPG(date, gblNo, gblAmount, paidAmount);
 					icsp.addGbl(icspg);
 					invoiceList.add(icsp);
 				}
 				else{//already exist this matching
-					if(invoiceNo.equals("CRWV-4OH-0859")){
-						System.out.println("gbl NO : "+gblNo+" gblAmount : "+gblAmount+" paidAmount : "+paidAmount+" invoiceNo : "+invoiceList.get(index).getInvoiceNo());
-						
-					}
-//					icspg = new InvoiceCollectionStatusByPaidGblBeans();
-					/*********gbl setting*********/
-//					icspg = getICSPG(gblNo, gblAmount, paidAmount);
-					/*****************************/
-					invoiceList.get(index).addGbl(getICSPG(gblNo, gblAmount, paidAmount));
+					invoiceList.get(index).addGbl(getICSPG(date,gblNo, gblAmount, paidAmount));
 				}
 			}
 			disconnect();
@@ -3516,8 +3606,9 @@ public class CL_DAO_DB_Mysql implements IT_DAO{
 //			}
 //		}
 	}
-	public InvoiceCollectionStatusByPaidGblBeans getICSPG(String gblNo, String gblAmount,String paid){
+	public InvoiceCollectionStatusByPaidGblBeans getICSPG(String paidDate, String gblNo, String gblAmount,String paid){
 		InvoiceCollectionStatusByPaidGblBeans icspg = new InvoiceCollectionStatusByPaidGblBeans();
+		icspg.setPaidDate(paidDate);
 		icspg.setAmount(gblAmount);
 		icspg.setGblNo(gblNo);
 		icspg.setPaidAmount(paid);

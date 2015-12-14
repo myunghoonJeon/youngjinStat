@@ -201,6 +201,7 @@ JButton printBtn = new JButton("PRINT");
 		center.removeAll();
 		WorkVolumeStat2Beans wvs2In = new WorkVolumeStat2Beans();
 		WorkVolumeStat2Beans wvs2Out = new WorkVolumeStat2Beans();
+		String[][] densityStr = new String[ROW_LENGTH][COLUM_LENGTH];
 		String[][] finalCuftStr = new String[ROW_LENGTH][COLUM_LENGTH];
 		String[][] finalWeightStr = new String[ROW_LENGTH][COLUM_LENGTH];
 		String scac = scacCombo.getSelectedItem().toString();
@@ -228,7 +229,7 @@ JButton printBtn = new JButton("PRINT");
 		}
 		calcuration2Total(finalWeightStr,"WEIGHT");
 		if(type.equals("DENSITY")){
-			finalCuftStr = dao.calcDensity(finalWeightStr, finalCuftStr);
+			densityStr = dao.calcDensity(finalWeightStr, finalCuftStr);
 		}
 		for(int i=0;i<finalWeightStr.length;i++){
 			for(int j=0;j<finalWeightStr[i].length;j++){
@@ -252,7 +253,7 @@ JButton printBtn = new JButton("PRINT");
 			 js = tableLayout(finalWeightStr,type);
 		}
 		else{
-			js = tableLayout(finalCuftStr,type);
+			js = tableLayout(densityStr,type);
 		}
 		center.add(js);
 		validate();
@@ -316,8 +317,6 @@ JButton printBtn = new JButton("PRINT");
 		String[][] total = new String[ROW_LENGTH][COLUM_LENGTH];
 		if(type.equals("WEIGHT")){
 			for(int i=0;i<ROW_LENGTH;i++){
-				int totalJob=0;
-				int totalWeight = 0;
 				for(int j=0;j<COLUM_LENGTH;j++){
 					total[i][j] = new String();
 					if(j==10 || j==11){//hhg total
@@ -345,8 +344,6 @@ JButton printBtn = new JButton("PRINT");
 		
 		else if(type.equals("DENSITY")){
 			for(int i=0;i<ROW_LENGTH;i++){
-				int totalJob=0;
-				double totalWeight = 0.0;
 				for(int j=0;j<COLUM_LENGTH;j++){
 					total[i][j] = new String();
 					if(j==10 || j==11){//hhg total

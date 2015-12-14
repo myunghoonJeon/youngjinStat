@@ -33,20 +33,28 @@ public class WorkVolumeStat2Beans {
 	}
 	
 	public String setWeightData(String gblno,String code,String scac,String jobValue,String weightValue,String cuft){
-		System.out.println("code : "+code+"  scac : "+scac+"  glbno : "+gblno);
+//		System.out.println("code : "+code+"  scac : "+scac+"  glbno : "+gblno);
 		String column = hashMapColumn.get(code);
 		int job = Integer.parseInt(column)-1;
 		int weight = Integer.parseInt(column);
 		String scacStr = hashMapRow.get(scac);
 		if(scacStr!=null){// not scac and not cuft
+			
 			int row = Integer.parseInt(scacStr);
 			int originJob;
 			int originWeight;
-			
 			int tempCuft = Integer.parseInt(cuftInput[row][weight]);
+			if(cuft!=null){
 			tempCuft+=Integer.parseInt(cuft);
+			}
+//			if(scac.equals("UVLN")){
+//				if(scac.equals("UVLN")){
+//					System.out.println("origin : "+cuftInput[row][weight]);
+//					System.out.println("UVNL cuft : "+cuft);
+//				}
+//			}
 			cuftInput[row][weight] = tempCuft+"";
-			
+
 			if(input[row][job].equals("-")){
 				originJob = 0;
 			}

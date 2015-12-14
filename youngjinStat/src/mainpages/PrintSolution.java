@@ -122,58 +122,88 @@ public class PrintSolution {
 			System.out.println("Printingfailed : "+pe.getMessage());
 		}
 	}
-	
 	public static boolean print(String header, ArrayList<JTable> tables, ArrayList<String> names)// Create the PrintJob object    
-	{ 
-		if(tables.size() > 0 && tables.size() != names.size()) {		
-			// parameter error			
-			return false;
-		}
-		
-		MessageFormat headerMSG = null; 
-		
-		MessageFormat footerMSG = null;
-		
-		JTable.PrintMode printMode = JTable.PrintMode.FIT_WIDTH;
-		
-		boolean showDialog = true; 
-		
-		PrinterJob job = PrinterJob.getPrinterJob();
-		
-		PageFormat pageFormat = new PageFormat();
-		pageFormat = job.defaultPage(pageFormat);
-		pageFormat.setOrientation(PageFormat.LANDSCAPE);
-		
-		PrintRequestAttributeSet attr = new HashPrintRequestAttributeSet();
-		
-		//job.printDialog(attr);
-		
-		Book book = new Book();
-		Printable printable = null;
-		
-		if(job.printDialog(attr))
-		
-		try {			
-			for(int i = 0; i < tables.size(); i++) {
-				// Print Tables... at each Page..			
-				headerMSG  = new MessageFormat(header + splitMaker + names.get(i));
-				
-				//printable = tables.get(i).getPrintable(printMode, headerMSG, footerMSG);
-				printable = new TablePrintable(tables.get(i), printMode, headerMSG, footerMSG);
-				
-//				job.setPrintable(printable, pageFormat);				
-				job.setPrintable(printable);
-				job.print(attr);
-			}			
-
-		}
-		catch(Exception ex) 
-		{
-			return false;
-		}
-		return true;
-	}
-	
+	   { 
+	      if(tables.size() > 0 && tables.size() != names.size()) {      
+	         // parameter error         
+	         return false;
+	      }
+	      
+	      MessageFormat headerMSG = null; 
+	      
+	      MessageFormat footerMSG = null;
+	      
+	      JTable.PrintMode printMode = JTable.PrintMode.FIT_WIDTH;
+	      
+	      boolean showDialog = true; 
+	      
+	      PrinterJob job = PrinterJob.getPrinterJob();
+	      
+	      PageFormat pageFormat = new PageFormat();
+	      pageFormat = job.defaultPage(pageFormat);
+	      pageFormat.setOrientation(PageFormat.LANDSCAPE);
+	      
+	      PrintRequestAttributeSet attr = new HashPrintRequestAttributeSet();
+	      
+	      //job.printDialog(attr);
+	      
+	      Book book = new Book();
+	      Printable printable = null;
+	      
+	      if(job.printDialog(attr))
+	      
+	      try {         
+	         for(int i = 0; i < tables.size(); i++) {
+	            // Print Tables... at each Page..         
+	            headerMSG  = new MessageFormat(header + " " + names.get(i));
+	            printable = tables.get(i).getPrintable(printMode, headerMSG, footerMSG);
+	            
+	            
+//	            job.setPrintable(printable, pageFormat);            
+	            job.setPrintable(printable);
+	            job.getPageFormat(attr).setOrientation(PageFormat.LANDSCAPE);
+	            job.print(attr);
+	            //book.append(printable, pageFormat,6);
+	            //System.out.println(book.getNumberOfPages());
+	            //   printable = tables.get(i).getPrintable(printMode, headerMSG, footerMSG);                  
+	            
+	            
+	            //job.setPrintable(printable, pageFormat);
+	            //job.printDialog(attr);
+	            //job.print();
+	            
+	         }         
+	         
+//	         job.setPageable(book);
+//	         job.printDialog(attr);
+//	         job.print();
+//	         headerMSG  = new MessageFormat(header);
+	         
+	         //tables.get(0).print(printMode, headerMSG, footerMSG, true, null, true, null);
+	         /*boolean complete = tables.get(0).print(printMode, headerMSG, footerMSG, true, null, true, null);
+	         if (complete) {
+	            JOptionPane.showMessageDialog(null, "Printing Complete", "Printing Result", JOptionPane.INFORMATION_MESSAGE);
+	         } else {
+	             show a message indicating that printing was cancelled 
+	            JOptionPane.showMessageDialog(null, "Printing Cancelled", "Printing Result", JOptionPane.INFORMATION_MESSAGE);
+	         }*/
+//	         tables.get(0).print(printMode, headerMSG, footerMSG, true, attr, true, job.getPrintService());
+	         
+	      }
+	      catch(Exception ex) 
+	      {
+	         return false;
+	      }
+	      return true;
+	            //Printable printable = tables.get(i).getPrintable(printMode, new MessageFormat(header + " " + names.get(i)), footerMSG);
+	            
+//	            System.out.println("Print Pages : " + book.getNumberOfPages());            
+	            //job.setPrintable(printable);
+	                        //book.append(printable, job.getPageFormat(attr), book.getNumberOfPages());
+//	            book.append(printable, job.getPageFormat(attr));
+	            //tables.get(i).print(printMode,  new MessageFormat(header + "\n" + names.get(i)), footerMSG, true, attr, true, job.getPrintService());
+	            //showDialog = false;
+	   }
 	public static void print2(int width, int height, Component frame, int orientation) {	
 		
 		PrinterJob printerJob = PrinterJob.getPrinterJob();

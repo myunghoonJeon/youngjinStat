@@ -29,10 +29,13 @@ import javax.swing.table.TableRowSorter;
 public class InvoiceCollectionStatusByPaid extends JFrame implements ActionListener {
 	////////////////////////////////////////////////////////////////
 	JTable printTable=new JTable();
+	JTable printTable2 = new JTable();
 	String title="";
 	ArrayList<JTable> printArr = new ArrayList<>();
 	ArrayList<String> nameArr = new ArrayList<>();
 	ArrayList<InvoiceCollectionStatusByPaidBeans> list;
+	////////////////////////////////////////////////////////////////
+	ArrayList<InvoiceCollectionStatusByPaidBeans> ifb = new ArrayList<>();
 	////////////////////////////////////////////////////////////////
 	int superWide = 1200;
 	int superHeight = 700;
@@ -51,7 +54,9 @@ public class InvoiceCollectionStatusByPaid extends JFrame implements ActionListe
 	JTextField startPeriod = new JTextField("", 8);
 	JTextField endPeriod = new JTextField("", 8);
 	JTextField gblNo = new JTextField("", 12);
+	JTextField invoiceNo = new JTextField("",15);
 	JPanel center;
+	JPanel bottom;
 	// //////////////////////////////////////////////////////////////
 	JPanel mainCenter = new JPanel();
 	JPanel north = new JPanel();
@@ -106,7 +111,7 @@ public class InvoiceCollectionStatusByPaid extends JFrame implements ActionListe
 		a.add("North", j[2]);
 		a.add("West", j[0]);
 		a.add("East", j[1]);
-		a.add("South", j[3]);
+//		a.add("South", j[3]);
 		validate();
 	}
 
@@ -140,6 +145,8 @@ public class InvoiceCollectionStatusByPaid extends JFrame implements ActionListe
 		northUp.add(endPeriod);
 		northUp.add(new JLabel("GBL NO:"));
 		northUp.add(gblNo);
+		northUp.add(new JLabel("INVOICE NO : "));
+		northUp.add(invoiceNo);
 		northUp.add(searchBtn);
 		northUp.add(printBtn);
 		searchBtn.setPreferredSize(new Dimension(90, 30));
@@ -152,18 +159,27 @@ public class InvoiceCollectionStatusByPaid extends JFrame implements ActionListe
 		bcn.add(cutoffLabel);
 		bcn.setPreferredSize(new Dimension(0, 25));
 		bigCenter.add("Center",center);
-		beginLayout(center);
+		centerLayout(center,1,ifb);
 		super.add(jp);
 	}
 	
-	public void beginLayout(JPanel jp){
-		autoCreateBorderLayout(jp, 10, 10, 30, 30);
+	public void centerLayout(JPanel jp,int flag,ArrayList<InvoiceCollectionStatusByPaidBeans> tt){
+		autoCreateBorderLayout(jp, 10, 10, 10, 10);
 		JScrollPane js = new JScrollPane();
-		ArrayList<InvoiceCollectionStatusByPaidBeans> ifb = new ArrayList<>();
-		js = getTable(ifb,0);
-		jp.add("Center",js);
+		JScrollPane js2 = new JScrollPane();
+		js = getTable(tt,flag).get(0);
+		js2 = getTable(tt,flag).get(1);
+//		js.setBorder(BorderFactory.createLineBorder(Color.DARK_GRAY));
+//		js2.setBorder(BorderFactory.createLineBorder(Color.DARK_GRAY));
+		
+		JPanel temp = new JPanel();
+		jp.add("Center",temp);
+		temp.setLayout(new BorderLayout(0,20));
+		temp.add("Center",js);
+		temp.add("South",js2);
 		validate();
 	}
+	
 	public double getDoubleValue(String str){
 		double d=0.0;
 		if(str==null || str.equals("")){
@@ -180,21 +196,35 @@ public class InvoiceCollectionStatusByPaid extends JFrame implements ActionListe
    		result = new DecimalFormat("#,##0.00").format(d);
    		return result;
    	}
-	public JScrollPane getTable(ArrayList<InvoiceCollectionStatusByPaidBeans> arr,int flag){
+   	public int checkIndexPaidGbl(ArrayList<PaidGblCheckBean> arr,String gblNo){
+   		int index=-1;
+   		for(int i=0;i<arr.size();i++){
+   			if(arr.get(i).getGblNo().equals(gblNo)){
+   				return i;
+   			}
+   		}
+   		return index;
+   	}
+	public ArrayList<JScrollPane> getTable(ArrayList<InvoiceCollectionStatusByPaidBeans> arr,int flag){
 //		InvoiceCollectionStatusByPaid icsp = new InvoiceCollectionStatusByPaid();
 		InvoiceCollectionStatusByPaidBeans paidBean = new InvoiceCollectionStatusByPaidBeans();
 		InvoiceCollectionStatusByPaidGblBeans gBean = new InvoiceCollectionStatusByPaidGblBeans();
 		double ta=0;
-		double tc=0;
-		double tuc=0;
-		String colName[] = {"PAID DATE","SCAC","INVOICE DATE","INVOICE NO","INVOICE AMOUNT","GBL NO","GBL AMOUNT","PAID AMOUNT"};
+		double tpa=0;
+		double td=0;
+	
+		String colName[] = {"PAID DATE","SCAC","INVOICE DATE","INVOICE NO","INVOICE AMOUNT","GBL NO","GBL AMOUNT","PAID AMOUNT","DIFFERENCE"};
 		DefaultTableCellRenderer dtcr = new DefaultTableCellRenderer();
 		DefaultTableModel model;
+		String colName2[] = {"TOTAL INVOICE AMOUNT","TOTAL PAID AMOUNT","DIFFERENCE"};
+		DefaultTableModel model2;
 		if(arr.size()==0){
-			model = new DefaultTableModel(colName,20);
+			model = new DefaultTableModel(colName,25);
+			model2 = new DefaultTableModel(colName2,1);
 		}
 		else{
 			model = new DefaultTableModel(colName,0);
+			model2 = new DefaultTableModel(colName2,0);
 //			for(int i=0;i<arr.size();i++){
 //				InvoiceFilteringBeans ifb = arr.get(i);
 //				String tempAmounts = getRoundValue(getDoubleValue(ifb.getInvoicedAmounts()+""));
@@ -207,42 +237,143 @@ public class InvoiceCollectionStatusByPaid extends JFrame implements ActionListe
 //				tc+=getDoubleValue(ifb.getNet());
 //				tuc+=getDoubleValue(ifb.getUnCollectedAmounts());
 //			}
+			String same = "\"";
+			String paidSame = "";
+			PaidGblCheckBean pgcb;
 			for(int i=0;i<arr.size();i++){
+				ArrayList<PaidGblCheckBean> checkArr = new ArrayList<PaidGblCheckBean>();
+				String tempGbl="";
+				Double tempMoney=0.0; 
 				paidBean = arr.get(i);
-				String[] row = {paidBean.getDate(),paidBean.getTsp(),paidBean.getInvoiceDate(),paidBean.getInvoiceNo(),paidBean.getInvoiceAmount(),paidBean.getGblList().get(0).getGblNo(),
-						getRoundValue(paidBean.getGblList().get(0).getAmount()),getRoundValue(paidBean.getGblList().get(0).getPaidAmount())};
+				tempGbl = paidBean.getGblList().get(0).getGblNo();
+				Double totalGblMoney=getDoubleValue(paidBean.getInvoiceAmount());
+				Double totalPaidMoney=0.0;
+				Double totalDiffMoney = 0.0;
+				Double fullMoney=Double.parseDouble(paidBean.getGblList().get(0).getAmount());
+				Double paidMoney=Double.parseDouble(paidBean.getGblList().get(0).getPaidAmount());
+				Double statusMoney=getDoubleValue(paidMoney+"")-getDoubleValue(fullMoney+"");
+				Double tm=0.0;
+//				totalDiffMoney += statusMoney;
+				totalPaidMoney += paidMoney;
+				String paidDate = paidBean.getGblList().get(0).getPaidDate();
+				String paidDate2="";
+				if(checkIndexPaidGbl(checkArr, tempGbl)==-1){
+					pgcb = new PaidGblCheckBean();
+					pgcb.setGblNo(tempGbl);
+					pgcb.setMoney(statusMoney+"");
+					System.out.println(statusMoney+" GBL : "+tempGbl);
+					checkArr.add(pgcb);
+				}
+//				totalGblMoney += fullMoney;
+				if(getRoundValue(statusMoney+"").equals("-0.00")){
+					statusMoney = 0.0;
+				}
+				
+				tempMoney = statusMoney;
+				String[] row = {paidBean.getGblList().get(0).getPaidDate(),paidBean.getTsp(),paidBean.getInvoiceDate(),paidBean.getInvoiceNo(),paidBean.getInvoiceAmount(),paidBean.getGblList().get(0).getGblNo(),
+						getRoundValue(paidBean.getGblList().get(0).getAmount()),getRoundValue(paidBean.getGblList().get(0).getPaidAmount()),getRoundValue(statusMoney+"")};
 				model.addRow(row);
 				for(int j=1;j<paidBean.getGblList().size();j++){
 					gBean = paidBean.getGblList().get(j);
-					String[] gblRow ={"-","-","-","-","-",gBean.getGblNo(),getRoundValue(gBean.getAmount()),getRoundValue(gBean.getPaidAmount())};
+					tempGbl = gBean.getGblNo();
+					fullMoney = getDoubleValue(gBean.getAmount());
+					paidMoney = getDoubleValue(gBean.getPaidAmount());
+					statusMoney = paidMoney-fullMoney;
+					int indexPaid = checkIndexPaidGbl(checkArr, tempGbl);
+					if(indexPaid == -1){
+						pgcb = new PaidGblCheckBean();
+						pgcb.setGblNo(tempGbl);
+						System.out.println(statusMoney+" GBL : "+tempGbl);
+						pgcb.setMoney(statusMoney+"");
+						checkArr.add(pgcb);
+					}
+					else{
+						tm = getDoubleValue(checkArr.get(indexPaid).getMoney());
+						tm += paidMoney;
+						statusMoney = tm;
+						System.out.println(statusMoney+" GBL : "+tempGbl);
+						checkArr.get(indexPaid).setMoney(tm+"");
+					}
+					tempMoney = statusMoney;
+//					totalDiffMoney += statusMoney;
+					totalPaidMoney += paidMoney;
+					paidDate2 = gBean.getPaidDate();
+					
+					if(paidDate.equals(paidDate2)){
+						 paidSame ="\"";
+					}
+					else{
+						paidSame = paidDate2;
+						paidDate = paidDate2;
+					}
+//					totalGblMoney += fullMoney;
+					if(getRoundValue(statusMoney+"").equals("-0.00")){
+						statusMoney = 0.0;
+					}
+					if(getRoundValue(tempMoney+"").equals("-0.00")){
+						tempMoney = 0.0;
+					}					
+					String[] gblRow ={paidSame,same,same,same,same,gBean.getGblNo(),getRoundValue(gBean.getAmount()),getRoundValue(gBean.getPaidAmount()),getRoundValue(tempMoney+"")};
 					model.addRow(gblRow);
 				}
+				String mamuri = "──────────";
+				totalDiffMoney = getDoubleValue(totalPaidMoney+"")-getDoubleValue(totalGblMoney+"");
+				if(getRoundValue(totalDiffMoney+"").equals("-0.00")){
+					totalDiffMoney = 0.00;
+				}
+				
+				String[] totalRow = {mamuri,mamuri,mamuri,mamuri,mamuri,"[　TOTAL　]",getRoundValue(totalGblMoney+""),getRoundValue(totalPaidMoney+""),getRoundValue(totalDiffMoney+"")};
+				model.addRow(totalRow);
+				
+				ta+=getDoubleValue(paidBean.getInvoiceAmount());
+				tpa+=totalPaidMoney;
+				td+=totalDiffMoney;
+				
 			}
+			String[] tr = {getRoundValue(ta+""),getRoundValue(tpa+""),getRoundValue(td+"")};
+			model2.addRow(tr);
 		}
 		JTable table = new JTable(model);
-		table.setRowSorter(new TableRowSorter<DefaultTableModel>(model));
+		JTable table2 = new JTable(model2);
+//		table.setRowSorter(new TableRowSorter<DefaultTableModel>(model));
 		dtcr.setHorizontalAlignment(SwingConstants.CENTER);
 		TableColumnModel tcm = table.getColumnModel();
+		TableColumnModel tcm2 = table2.getColumnModel();
 		JScrollPane scrollpane = new JScrollPane(table);
-		scrollpane.setPreferredSize(new Dimension(800,430));
-		table.setRowHeight(18);
+		JScrollPane scrollpane2 = new JScrollPane(table2);
+		scrollpane.setPreferredSize(new Dimension(800,450));
+		scrollpane2.setPreferredSize(new Dimension(800,70));
+		table.setRowHeight(20);
+		
 		scrollpane.setBorder(BorderFactory.createEmptyBorder());
+		scrollpane2.setBorder(BorderFactory.createEmptyBorder());
 		table.setBorder(BorderFactory.createLineBorder(Color.DARK_GRAY));
 		table.getTableHeader().setBorder(BorderFactory.createLineBorder(Color.DARK_GRAY));
 		table.getTableHeader().setBackground(Color.LIGHT_GRAY);
+		table2.setBorder(BorderFactory.createLineBorder(Color.DARK_GRAY));
+		table2.getTableHeader().setBorder(BorderFactory.createLineBorder(Color.DARK_GRAY));
+		table2.getTableHeader().setBackground(Color.LIGHT_GRAY);
 		for(int i=0;i<colName.length;i++){
 			tcm.getColumn(i).setCellRenderer(dtcr);
+			if(i==0){
+				tcm2.getColumn(i).setCellRenderer(dtcr);
+			}
 		}
 		if(flag==1){
 			printArr.clear();
 			nameArr.clear();
 			printTable = table;
+			printTable2 = table2;
 			printArr.add(printTable);
+			printArr.add(printTable2);
 			System.out.println(printTable.getRowCount());
 			nameArr.add("");
 		}
+		ArrayList<JScrollPane> scrollpaneArr = new ArrayList<>();
+		scrollpaneArr.add(scrollpane);
+		scrollpaneArr.add(scrollpane2);
 		validate();
-		return scrollpane;
+		return scrollpaneArr;
 	}
 	
 	public void setFilteringInformation(){
@@ -251,10 +382,15 @@ public class InvoiceCollectionStatusByPaid extends JFrame implements ActionListe
 		String begin = startPeriod.getText();
 		String end = endPeriod.getText();
 		String gbl = gblNo.getText();
-		list = dao.getInvoiceCollectionStatusByPaid(begin,end,scac,gbl);
+		String invoice = invoiceNo.getText();
+		list = dao.getInvoiceCollectionStatusByPaid(begin,end,scac,gbl,invoice);
 		center.removeAll();
-		autoCreateBorderLayout(center, 10, 10, 30, 30);
-		center.add("Center",getTable(list,1));
+//		autoCreateBorderLayout(center, 10, 10, 30, 30);
+//		JScrollPane upPane = getTable(list,1).get(0);
+//		JScrollPane downPane = getTable(list,1).get(1);
+		centerLayout(center,1, list);
+//		center.add("Center",upPane);
+//		center.add("South",downPane);
 		validate();
 	}
 	

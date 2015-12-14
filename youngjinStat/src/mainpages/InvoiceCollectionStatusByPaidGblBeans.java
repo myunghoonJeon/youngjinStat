@@ -1,15 +1,24 @@
 package mainpages;
 
 public class InvoiceCollectionStatusByPaidGblBeans {
+	public String getPaidDate() {
+		return paidDate;
+	}
+
+	public void setPaidDate(String paidDate) {
+		this.paidDate = paidDate;
+	}
 	private String gblNo;
 	private String amount;
 	private String paidAmount;
+	private String paidDate;
 	
 	public InvoiceCollectionStatusByPaidGblBeans() {
 		// TODO Auto-generated constructor stub
 		gblNo="";
 		amount="";
 		paidAmount="";
+		paidDate="";
 	}
 	
 	public String getGblNo() {

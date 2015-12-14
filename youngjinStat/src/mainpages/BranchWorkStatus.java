@@ -208,13 +208,9 @@ public class BranchWorkStatus extends JFrame implements ActionListener{
 			finalStr = WorkVolumeStat1BeansOut.getStr();
 			finalCuft = WorkVolumeStat1BeansOut.getCuftStr();
 		}
-		System.out.println("???"+finalStr[0][19]);
 		calcurationTotal(finalStr,"WEIGHT");
-		System.out.println("???"+finalStr[0][19]);
 		if(type.equals("DENSITY")){
 			calcaurationTotalCuft(finalCuft);
-			System.out.println("???"+finalStr[0][19]);
-			System.out.println("CUFT CALCURATION COMPLETE");
 			tempArr = calcurationDensity(finalStr, finalCuft);
 			checkMoneyComma(tempArr,"DENSITY");
 		}
@@ -253,12 +249,12 @@ public class BranchWorkStatus extends JFrame implements ActionListener{
 						}
 					}
 					else{
-						System.out.println("======================");
-						System.out.println("[i] : "+i+" [j] : "+j);
-						System.out.println("WEIGHT : "+weight[i][j]);
-						System.out.println("CUFT : "+cuft[i][j]);
-						System.out.println("======================");
-						result[i][j] = "-";
+//						System.out.println("======================");
+//						System.out.println("[i] : "+i+" [j] : "+j);
+//						System.out.println("WEIGHT : "+weight[i][j]);
+//						System.out.println("CUFT : "+cuft[i][j]);
+//						System.out.println("======================");
+//						result[i][j] = "-";
 					}
 				}
 			}
@@ -348,7 +344,7 @@ public class BranchWorkStatus extends JFrame implements ActionListener{
 						pushHhgUbTotal(i, j, total, arr, type);
 					}
 					else if(i==11){//in total
-						pushTotal(4, 9, i, j, total, arr, type);
+//						pushTotal(4, 9, i, j, total, arr, type);
 					}
 					else if(i>=12 && i<=16  ){
 						pushArr(11, i, j, total, arr, type);
@@ -362,12 +358,12 @@ public class BranchWorkStatus extends JFrame implements ActionListener{
 					else if(i==22){//ub total
 						pushHhgUbTotal(i, j, total, arr, type);
 					}
-					else if(i==23){//out total
-						pushTotal(15, 20, i, j, total, arr, type);
-					}
-					else if(i==24){//all total
-						pushTotal(10, 21, i, j, total, arr, type);
-					}
+//					else if(i==23){//out total
+//						pushTotal(15, 20, i, j, total, arr, type);
+//					}
+//					else if(i==24){//all total
+//						pushTotal(10, 21, i, j, total, arr, type);
+//					}
 			}//for (j)
 		}//for(i)
 	}

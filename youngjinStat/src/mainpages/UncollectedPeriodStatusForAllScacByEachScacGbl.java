@@ -37,6 +37,7 @@ public class UncollectedPeriodStatusForAllScacByEachScacGbl extends JFrame imple
 	JTable printTable4=new JTable();
 	JTable printTable5=new JTable();
 	String title="";
+	String flag2="0";
 	ArrayList<JTable> printArr = new ArrayList<>();
 	ArrayList<String> nameArr = new ArrayList<>();
 	GroupableColumnEachscacUncollectedStatus geus;
@@ -544,7 +545,7 @@ public class UncollectedPeriodStatusForAllScacByEachScacGbl extends JFrame imple
 		String type = typeCombo.getSelectedItem().toString();
 		String inOut = inoutCombo.getSelectedItem().toString();
 //		clearEsub();
-		esubOut = dao.getOutboundEachScacUncollectedGbl(scac, code, begin, end);
+		esubOut = dao.getOutboundEachScacUncollectedGbl(scac, code, begin, end,flag2);
 		p15Table.removeAll();
 		p1530Table.removeAll();
 		p3045Table.removeAll();
@@ -628,6 +629,7 @@ public class UncollectedPeriodStatusForAllScacByEachScacGbl extends JFrame imple
 		return result;
 	}
 	public void getResult(){
+		flag2="1";
 		tempEsub = new ArrayList<>();
 		System.out.println("[[ GET RESULT ]]");
 		initTotalValue();
@@ -640,12 +642,12 @@ public class UncollectedPeriodStatusForAllScacByEachScacGbl extends JFrame imple
 //		clearEsub();
 		if(inOut.equals("ALL")){
 //				System.out.println("[[ ALL CASE ]]");
-			tempEsub = dao.getOutboundEachScacUncollectedGbl(scac, code, begin, end);
+			tempEsub = dao.getOutboundEachScacUncollectedGbl(scac, code, begin, end,flag2);
 //				System.out.println("[[GET OUTBOUND DATE]]");
 			esubOut = detectedMultiGbl(tempEsub);
 //				System.out.println("--DETECTED MULTI GBL--");
 			tempEsub = new ArrayList<>();
-			tempEsub = dao.getInboundEachScacUncollectedGbl(scac, code, begin, end);
+			tempEsub = dao.getInboundEachScacUncollectedGbl(scac, code, begin, end,flag2);
 //				System.out.println("[[GET INBOUND DATE]]");
 			esubIn = detectedMultiGbl(tempEsub);
 //				System.out.println("--DETECTED MULTI GBL--");
@@ -653,13 +655,13 @@ public class UncollectedPeriodStatusForAllScacByEachScacGbl extends JFrame imple
 		}
 		else if(inOut.equals("IN")){
 //			System.out.println("[[ IN CASE ]]");
-			tempEsub = dao.getInboundEachScacUncollectedGbl(scac, code, begin, end);
+			tempEsub = dao.getInboundEachScacUncollectedGbl(scac, code, begin, end,flag2);
 //			System.out.println("[[GET ONLY INBOUND DATE]]");
 			esubOut = detectedMultiGbl(tempEsub);
 		}
 		else if(inOut.equals("OUT")){
 //			System.out.println("[[ OUT CASE ]]");
-			tempEsub = dao.getOutboundEachScacUncollectedGbl(scac, code, begin, end);
+			tempEsub = dao.getOutboundEachScacUncollectedGbl(scac, code, begin, end,flag2);
 //			System.out.println("[[GET ONLY OUTBOUND DATE]]");
 			esubOut = detectedMultiGbl(tempEsub);
 		}

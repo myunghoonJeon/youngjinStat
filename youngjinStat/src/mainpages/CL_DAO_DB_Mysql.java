@@ -3,9 +3,9 @@ package mainpages;
  * Copyright (c) 2012, RTOS Laboratory in Kyonggi University
  * All rights reserved.
  * ----------------------------------------------------------
- * ������������ : 12/09/26
- * �ӱ�ȣ�� ���� ���������Ǿ���ϴ�.
- * IT_DAO �������̽��� �޼ҵ� ����.
+ * 占쏙옙占쏙옙占쏙옙占쏙옙占쏙옙占쏙옙 : 12/09/26
+ * 占쌈깍옙호占쏙옙 占쏙옙占쏙옙 占쏙옙占쏙옙占쏙옙占쏙옙占실억옙占쏙옙求占�.
+ * IT_DAO 占쏙옙占쏙옙占쏙옙占싱쏙옙占쏙옙 占쌨소듸옙 占쏙옙占쏙옙.
  * ----------------------------------------------------------
 */
 
@@ -27,8 +27,8 @@ public class CL_DAO_DB_Mysql implements IT_DAO{
 	/*************************************************************************/
 	ErrorPopup ep;
 	/*-------------------system parameter---------------------------------*/
-	private String jdbc_driver = "com.mysql.jdbc.Driver";
-	private String jdbc_url = "jdbc:mysql://119.192.215.138/youngjin";
+	private String jdbc_driver = "com.mysql.cj.jdbc.Driver";
+	private String jdbc_url = "jdbc:mysql://119.192.215.138:3306/youngjin?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC";
 	private Connection conn;
 	private Statement stmt;
 	private String sql="";
@@ -857,7 +857,7 @@ public class CL_DAO_DB_Mysql implements IT_DAO{
 			while(rs.next()){
 				if(rs.getString("id")!=null){
 					/*
-					 * id가 널이 아니면 로그인 제대로 됬다는 뜻
+					 * id媛� �꼸�씠 �븘�땲硫� 濡쒓렇�씤 �젣��濡� �맟�떎�뒗 �쑜
 					 * 
 					 * */
 					System.out.println("[EXISTED USER INFORMATION]");
@@ -868,8 +868,8 @@ public class CL_DAO_DB_Mysql implements IT_DAO{
 				}
 				
 				/*
-				 * null이면???? 
-				 * 없은 사용자니깐 그냥 아무작동 안하게 구현
+				 * null�씠硫�???? 
+				 * �뾾�� �궗�슜�옄�땲源� 洹몃깷 �븘臾댁옉�룞 �븞�븯寃� 援ы쁽
 				 * 
 				 * */
 			}
@@ -1254,7 +1254,7 @@ public class CL_DAO_DB_Mysql implements IT_DAO{
 					double diff = Double.parseDouble(checkAmountsNull(rs.getString("diff")));
 					if(diff!=0){
 						if(diff>0){
-							System.out.println("돈이 초과되서 들어온 상황 GBL no : "+rs.getString("gblNo"));
+							System.out.println("�룉�씠 珥덇낵�릺�꽌 �뱾�뼱�삩 �긽�솴 GBL no : "+rs.getString("gblNo"));
 							diff=0;
 						}
 						else if(diff<0){
@@ -1277,7 +1277,7 @@ public class CL_DAO_DB_Mysql implements IT_DAO{
 //						System.out.println("Short Paid : "+diff);
 //						System.out.println("=======================");
 					}
-					else if(diff!=0 && net==0){//안걷힌돈
+					else if(diff!=0 && net==0){//�븞嫄룻엺�룉
 						list.get(index).addUncollectedAmount(rs.getString("gblamount"));
 //						System.out.println("?!");
 //						System.out.println("diff : "+diff+" net : "+net+" no : "+list.get(index).getInvoiceNo());
@@ -1286,7 +1286,7 @@ public class CL_DAO_DB_Mysql implements IT_DAO{
 //						System.out.println("UN Collected : "+rs.getString("gblamount"));
 //						System.out.println("=======================");
 					}
-					else{//완료 된돈
+					else{//�셿猷� �맂�룉
 //						System.out.println("@?diff : "+diff+" net : "+net+" no : "+list.get(index).getInvoiceNo());
 //						System.out.println("elseelseelseelse");
 //						System.out.println("!!!!!!!!!!!!!!!!!!!!! GBL no : "+rs.getString("gblNo"));
@@ -1673,7 +1673,7 @@ public class CL_DAO_DB_Mysql implements IT_DAO{
 				if(tempShortPaid<0){
 					tempShortPaid*=-1;
 				}
-				else{ // 돈이 더들어오면???
+				else{ // �룉�씠 �뜑�뱾�뼱�삤硫�???
 					tempShortPaid = 0;
 				}
 				double tempCollectedAmount = getDoubleValue(collectedAmount);
@@ -1682,7 +1682,7 @@ public class CL_DAO_DB_Mysql implements IT_DAO{
 					list.get(index).addShortPaid(tempShortPaid+"");
 				}
 				else{
-					System.out.println("인덱스가 없다?? "+invoiceNo+" 여기서 문제생김");
+					System.out.println("�씤�뜳�뒪媛� �뾾�떎?? "+invoiceNo+" �뿬湲곗꽌 臾몄젣�깮源�");
 				}
 			}
 			try {
@@ -1725,7 +1725,7 @@ public class CL_DAO_DB_Mysql implements IT_DAO{
 					}
 				}
 				else{
-					System.out.println("인덱스가 없다?? "+invoiceNo+" 여기서 문제생김");
+					System.out.println("�씤�뜳�뒪媛� �뾾�떎?? "+invoiceNo+" �뿬湲곗꽌 臾몄젣�깮源�");
 				}
 			}
 			try {
@@ -1772,7 +1772,7 @@ public class CL_DAO_DB_Mysql implements IT_DAO{
 				}
 			}
 			else{
-			System.out.println("인덱스가 없다?? "+invoiceNo+" 여기서 문제생김");
+			System.out.println("�씤�뜳�뒪媛� �뾾�떎?? "+invoiceNo+" �뿬湲곗꽌 臾몄젣�깮源�");
 			}
 		}
 		try {
@@ -1914,7 +1914,7 @@ public class CL_DAO_DB_Mysql implements IT_DAO{
 				ifb.setNet(checkAmountsNull(getDoubleRoundValue(rs.getString("sumAmount"))));
 				double diffTemp=Double.parseDouble(ifb.getInvoicedAmounts())-Double.parseDouble(ifb.getNet());
 				if(diffTemp<0){
-					System.out.println("@@@[[ 입력 값이 더 크다 ]] ");
+					System.out.println("@@@[[ �엯�젰 媛믪씠 �뜑 �겕�떎 ]] ");
 					System.out.println("INVOIE NO : "+ifb.getInvoiceNo()+" AMOUNT : "+diffTemp);
 					diffTemp = 0;
 				}
@@ -1930,7 +1930,7 @@ public class CL_DAO_DB_Mysql implements IT_DAO{
 //					
 //				}
 //				else if(diffTemp>0 && Double.parseDouble(ifb.getNet())!=0){
-//					System.out.println("[[ 입력 값이 더 작다 ]] "+Double.parseDouble(ifb.getInvoicedAmounts())+" - "+Double.parseDouble(ifb.getNet()));
+//					System.out.println("[[ �엯�젰 媛믪씠 �뜑 �옉�떎 ]] "+Double.parseDouble(ifb.getInvoicedAmounts())+" - "+Double.parseDouble(ifb.getNet()));
 //					System.out.println("INVOIE NO : "+ifb.getInvoiceNo()+" AMOUNT : "+diffTemp);
 //				}
 //				
@@ -1962,7 +1962,7 @@ public class CL_DAO_DB_Mysql implements IT_DAO{
 				
 //				}
 //				else{
-//					System.out.println("ACCEPT 인것");
+//					System.out.println("ACCEPT �씤寃�");
 //					System.out.println(rs.getString("invoiceNo"));
 //				}
 			}
@@ -3249,7 +3249,7 @@ public class CL_DAO_DB_Mysql implements IT_DAO{
 				String collectionAmount = rs.getString("collectionAmount");
 				double tempDiff = getDoubleValue(difference);
 				if(tempDiff <0){
-					System.out.println("@@@@0보다 작다  : "+tempDiff +"GBLno : "+gblNo);
+					System.out.println("@@@@0蹂대떎 �옉�떎  : "+tempDiff +"GBLno : "+gblNo);
 					if(collectionAmount==null){
 						tempDiff =0;
 					}
@@ -3258,11 +3258,11 @@ public class CL_DAO_DB_Mysql implements IT_DAO{
 					}
 				}
 				else if(tempDiff>0){
-					System.out.println("%%%%크잔아? : "+tempDiff+"GBLno : "+gblNo);
+					System.out.println("%%%%�겕�옍�븘? : "+tempDiff+"GBLno : "+gblNo);
 					tempDiff = 0;
 				}
 				else if(tempDiff==0){
-//					System.out.println("정상이네 : "+tempDiff+"GBLno : "+gblNo);
+//					System.out.println("�젙�긽�씠�꽕 : "+tempDiff+"GBLno : "+gblNo);
 				}
 				else{
 					System.out.println("?????");
@@ -3450,7 +3450,7 @@ public class CL_DAO_DB_Mysql implements IT_DAO{
 				String collectionAmount = rs.getString("collectionAmount");
 				double tempDiff = getDoubleValue(difference);
 				if(tempDiff <0){
-					System.out.println("@@@@@@@@0 정상 : "+tempDiff);
+					System.out.println("@@@@@@@@0 �젙�긽 : "+tempDiff);
 					if(collectionAmount==null){
 						tempDiff=0;
 					}
@@ -3459,7 +3459,7 @@ public class CL_DAO_DB_Mysql implements IT_DAO{
 					}
 				}
 				else if(tempDiff>0){
-					System.out.println("비정상 : "+tempDiff);
+					System.out.println("鍮꾩젙�긽 : "+tempDiff);
 					tempDiff = 0;
 				}
 				
@@ -3689,7 +3689,7 @@ public class CL_DAO_DB_Mysql implements IT_DAO{
 		columnString = "no,sn,content,reportingdate,remotedeviceid";
 		orderString = " order by no desc";
 		sql = "select "+columnString+" from "+ board +" where no>="+lowNumber+" and no<="+highNumber;
-		sql += orderString; // ���� 
+		sql += orderString; // 占쏙옙占쏙옙 
 		sql = sql.toUpperCase();
 		ArrayList<CL_DataBean> list = new ArrayList<CL_DataBean>();
 		try {

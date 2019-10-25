@@ -1,6 +1,7 @@
 package mainpages;
 /**
  * Copyright (c) 2012, RTOS Laboratory in Kyonggi University
+
  * All rights reserved.
  * ----------------------------------------------------------
  * 占쏙옙占쏙옙占쏙옙占쏙옙占쏙옙占쏙옙 : 12/09/26
@@ -52,7 +53,7 @@ public class CL_DAO_DB_Mysql implements IT_DAO{
 			conn = DriverManager.getConnection(jdbc_url, "root", "root");
 			stmt = conn.createStatement();
 		} catch (Exception e) {
-			throw new Exception("DB Error(connect) : "+e.toString());
+			throw new Exception("----- DB Error(connect) : "+e.toString());
 		}
 	}
 	

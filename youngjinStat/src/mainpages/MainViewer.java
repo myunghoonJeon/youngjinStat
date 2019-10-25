@@ -100,9 +100,9 @@ public class MainViewer extends JFrame implements ActionListener,Printable{
 	private JButton cottonbox4Btn = new JButton("Cotton Box - 4 cuft"+add);
 	private JButton cottonbox6Btn = new JButton("Cotton Box - 6 cuft"+add);
 	private JButton cardboardBtn = new JButton("Card board - "+add);
-	private JButton paperBtn = new JButton("Paper(평면지) - "+add);
+	private JButton paperBtn = new JButton("Paper(�룊硫댁�) - "+add);
 	private JButton tapeBtn = new JButton("Tape - "+add);
-	private JButton insidepaperBtn = new JButton("Inside Paper(선화지) - "+add);
+	private JButton insidepaperBtn = new JButton("Inside Paper(�꽑�솕吏�) - "+add);
 	private JButton aircapBtn = new JButton("Air Cap - "+add);
 	private JButton wardrobeboxBtn = new JButton("Wardrobe Box - "+add);
 	/*****************************************************************/
@@ -681,13 +681,13 @@ public class MainViewer extends JFrame implements ActionListener,Printable{
 			inputOpen("COTTON 6 CUFT","compensation");
 		}
 		else if(e.getSource() == paperBtn){
-			inputOpen("PAPER (평면지)","compensation");
+			inputOpen("PAPER (�룊硫댁�)","compensation");
 		}
 		else if(e.getSource() == tapeBtn){
 			inputOpen("TAPE","compensation");
 		}
 		else if(e.getSource() == insidepaperBtn){
-			inputOpen("INSIDE PAPER (선화지)","compensation");
+			inputOpen("INSIDE PAPER (�꽑�솕吏�)","compensation");
 		}
 		else if(e.getSource() == aircapBtn){
 			inputOpen("AIR CAP","compensation");
